@@ -1,0 +1,69 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pc="http://primefaces.org/california">
+
+    <div
+        class="layout-sidebar #{guestPreferences.darkMenu ? 'layout-sidebar-dark' : ''} #{guestPreferences.gradientMenu ? 'layout-sidebar-gradient': ''}">
+        <div id="nano-container" class="nano">
+            <div class="nano-content sidebar-scroll-content">
+                <h:outputStylesheet name="primeicons/primeicons.css"
+                                    library="primefaces" />
+                <ui:fragment
+                    rendered="#{guestPreferences.profileMode == 'inline' ? true : false}">
+                    <div class="user-profile layout-profile-active"
+                         style="margin-top: 10px;">
+                        <p:commandLink action="#{profileView.getViewPath}">
+                            <p:graphicImage width="100px" height="100px"
+                                            name="images/unnamed.png" library="california-layout" />
+
+                            <span class="sidebar-profile-name"
+                                  style="display: block !important;">#{umaRenderer.loggedInUser.fullName}</span>
+                            <span class="sidebar-profile-role"
+                                  style="display: block !important;">Administrator</span>
+                        </p:commandLink>
+                       
+                    </div>
+                </ui:fragment>
+
+                <h:form id="menuform">
+                    <pc:menu widgetVar="me">
+                        <p:menuitem id="om_dashboard" value="Dashboard"
+                                    icon="fa fa-fw fa-home" url="/pages/dashboard/Dashboard.xhtml" />
+
+
+
+
+                        <p:menuitem id="manufacturersView" value="Manufacturers"
+
+                                    icon="fa fa-fw fa-users" url="/pages/manufacturers/ManufacturersView.xhtml" />
+
+                        <p:menuitem id="sectorsView" value="Sectors"
+                                    icon="fa fa-fw fa-home" url="/pages/sectors/SectorsView.xhtml" />
+
+
+                        <p:menuitem id="userView" value="System Users"
+                                    icon="fa fa-fw fa-user" url="/pages/users/UserView.xhtml" />
+
+
+
+                        <p:menuitem id="backgroundTaskView" value="System Settings"
+                                    rendered="#{ (umaRenderer.administrator) }"
+                                    icon="fa fa-fw fa-cog"
+                                    url="/pages/settings/MailSettingForm.xhtml" />
+
+
+
+                        <p:menuitem id="logout" value="Logout" icon="fa fa-fw fa-sign-out"
+                                    url="/ServiceLogout" />
+                    </pc:menu>
+                </h:form>
+
+            </div>
+        </div>
+
+    </div>
+
+</ui:composition>

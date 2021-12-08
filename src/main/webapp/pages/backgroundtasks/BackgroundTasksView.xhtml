@@ -1,0 +1,161 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/pages/californiatemplate/template.xhtml">
+
+	<ui:define name="content">
+		<ui:fragment rendered="#{!pgwRenderer.administrator}">
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+					<div class="exception-topbar">
+						<h:link styleClass="logo">
+							<p:graphicImage library="california-layout" />
+						</h:link>
+					</div>
+
+					<div class="exception-panel">
+						<p:graphicImage styleClass="exception-icon"
+							name="images/icon-access.png" library="california-layout" />
+						<h1 class="exception-summary">Access Denied</h1>
+						<p class="exception-detail">
+							You don't have the necessary permissions.<br></br> Contact the
+							administrator for more information.
+						</p>
+					</div>
+
+				</div>
+			</div>
+		</ui:fragment>
+
+		<h:form id="backgroundTasksView" rendered="#{pgwRenderer.administrator}">
+			<div class="ui-g">
+				<div class="ui-g">
+					<div class="ui-g-12">
+						<div class="card">
+							<div>
+								<p:breadCrumb homeDisplay="text" styleClass="breadcrumbs">
+									<p:menuitem value="" />
+									<p:menuitem value="Background Tasks"
+										url="#{backgroundTasksView.viewPath}" />
+								</p:breadCrumb>
+							</div>
+						</div>
+					</div>
+
+					<div class="card card-w-title">
+						<div class="ui-g">
+							<p:inputText id="searchField" required="false"
+								placeholder="Search Background Jobs" style="width: 300px;"
+								value="#{backgroundTasksView.searchTerm}" />
+
+							<p:selectCheckboxMenu id="taskTypes" required="false"
+								label="-- Task Type --" converter="taskTypeConverter"
+								 style="width: 200px; margin-left: 10px;"
+								value="#{backgroundTasksView.selectedTaskTypes}" filter="true"
+								filterMatchMode="contains" updateLabel="true" multiple="true">
+								<f:selectItems value="#{backgroundTasksView.taskTypes}"
+									var="taskType" itemValue="#{taskType}" />
+							</p:selectCheckboxMenu>
+
+							<p:selectCheckboxMenu id="taskStatus" required="false"
+								label="-- Status --" converter="taskStatusConverter"
+								 style="width: 200px; margin-left: 10px;"
+								value="#{backgroundTasksView.selectedTaskStatus}" filter="true"
+								filterMatchMode="contains" updateLabel="true" multiple="true">
+								<f:selectItems value="#{backgroundTasksView.taskStatus}"
+									var="taskStatus" itemValue="#{taskStatus}" />
+							</p:selectCheckboxMenu>
+
+							<p:commandButton id="searchBtn" icon="fa fa-search"
+								value="Search" styleClass="green-btn WidthAuto"
+								style="width: 100px; margin-left: 10px;"
+								actionListener="#{backgroundTasksView.reloadFilterReset()}"
+								update="backgroundTasksTable">
+							</p:commandButton>
+						</div>
+
+					</div>
+
+					<div class="shadow-box ui-shadow-1">
+						<p:dataTable id="backgroundTasksTable" var="model"
+							value="#{backgroundTasksView}" widgetVar="backgroundTasksTable"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+							paginator="true" lazy="true"
+							rows="#{backgroundTasksView.maximumresultsPerpage}"
+							emptyMessage="#{backgroundTasksView.dataEmptyMessage}"
+							paginatorPosition="bottom" paginatorAlwaysVisible="false"
+							rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+							<f:facet name="header">
+								<p:outputPanel styleClass="leftAlign">
+									<p:outputPanel styleClass="centerAlign">
+										<p:outputLabel
+											value="#{backgroundTasksView.totalRecords}  Background Job (s) found"
+											styleClass="official-fg-color bold" />
+									</p:outputPanel>
+								</p:outputPanel>
+							</f:facet>
+
+							<p:column width="30" headerText="No.">
+								<h:outputText value="#{row + 1}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Name" />
+								</f:facet>
+								<h:outputText value="#{model.name}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Task Type" />
+								</f:facet>
+								<h:outputText value="#{model.taskType}" />
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Task Status" />
+								</f:facet>
+								<h:outputText value="#{model.taskStatus}" />
+							</p:column>
+
+							<p:column headerText="Options" width="60"
+								styleClass="centerAlign">
+								<p:commandButton icon="fa fa-close" title="Pause Background Job"
+									rendered="#{model.isActive()}" update="backgroundTasksTable"
+									styleClass="hyperLink red-btn"
+									action="#{backgroundTasksView.pause(model)}">
+									<p:confirm header="Confirmation"
+										message="You are about to Pause a Background Job. Do you wish to continue?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+
+								<p:commandButton icon="fa fa-check"
+									title="Resume Background Job" rendered="#{model.isPaused()}"
+									update="backgroundTasksTable" styleClass="hyperLink green-btn"
+									action="#{backgroundTasksView.resume(model)}">
+									<p:confirm header="Confirmation"
+										message="You are about to Resume Execution of a Background Job. Do you wish to continue?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+						<p:blockUI block="backgroundTasksView"
+							trigger="backgroundTasksTable searchBtn searchField">
+							<p:graphicImage value="/resources/images/workingicon.png" />
+						</p:blockUI>
+
+						<p:confirmDialog global="true">
+							<p:commandButton value="Yes" type="button"
+								styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />
+							<p:commandButton value="No" type="button"
+								styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />
+						</p:confirmDialog>
+					</div>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

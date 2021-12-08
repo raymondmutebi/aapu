@@ -1,0 +1,238 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:po="http://primefaces.org/freya" 
+                template="/pages/freyatemplate/template.xhtml">
+
+    <ui:define name="title">Dashboard</ui:define>
+
+    <ui:define name="head">
+        <h:outputScript name="chartjs/chart.js" library="demo" />
+        <script>
+            //<![CDATA[
+            $(function () {
+                var myChart1 = null;
+
+                window.redrawChart = function () {
+                    var style = getComputedStyle(document.body);
+                    var primCol = style.getPropertyValue('--primaryColor') || '#2c84d8';
+                    var primLighterCol = style.getPropertyValue('--primaryLighterColor') || '#2c84d8';
+
+                    myChart1 = new Chart(document.getElementById("chart1").getContext('2d'), {
+                        type: 'line',
+                        data: {
+                            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                            datasets: [{
+                                    label: 'Revenue',
+                                    data: [12, 19, 3, 5, 2, 3, 9],
+                                    borderColor: [
+                                        primCol,
+                                    ],
+                                    borderWidth: 4,
+                                    fill: true,
+                                    backgroundColor: [
+                                        primLighterCol
+                                    ],
+
+                                }
+                            ]
+                        },
+                        options: {
+                            legend: {
+                                display: false,
+                            },
+                            maintainAspectRatio: false,
+                            hover: {
+                                mode: 'index'
+                            },
+                            scales: {
+                                xAxes: [{
+                                        display: true,
+                                        gridLines: {
+                                            color: 'transparent',
+                                        },
+                                        ticks: {
+                                            fontColor: '#BFC2C6'
+                                        }
+                                    }],
+                                yAxes: [{
+                                        display: true,
+                                        gridLines: {
+                                            color: 'rgba(191, 194, 198, .45)',
+                                            borderDash: [5, 10],
+                                        },
+                                        ticks: {
+                                            fontColor: '#BFC2C6',
+                                            min: 0,
+                                            stepSize: 5,
+                                        }
+                                    }]
+                            }
+                        }
+                    });
+                }
+
+                window.redrawChart();
+
+                var ctx2 = document.getElementById("chart2").getContext('2d');
+
+                var myChart2 = new Chart(ctx2, {
+                    type: 'line',
+                    data: {
+                        labels: ['8Sun', '9Mon', '10Thu', '11Wed', '12Fri', '13Sat', '14Sun'],
+                        datasets: [{
+                                label: 'Revenue',
+                                data: [12, 19, 3, 5, 2, 3, 9],
+                                borderColor: [
+                                    '#FFA928',
+                                ],
+                                borderWidth: 4,
+                                fill: true,
+                                backgroundColor: [
+                                    'rgba(255, 169, 40, .2)'
+                                ],
+                            }
+                        ]
+                    },
+                    options: {
+                        legend: {
+                            display: false,
+                        },
+                        maintainAspectRatio: false,
+                        hover: {
+                            mode: 'index'
+                        },
+                        scales: {
+                            xAxes: [{
+                                    display: false,
+                                }],
+                            yAxes: [{
+                                    display: false,
+                                }]
+                        }
+                    }
+                });
+            });
+            //]]>  
+        </script>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="layout-dashboard">
+            <div class="p-grid">
+                <div class="p-col-12">
+                    <div class="notification">
+                        <h6>Hello! Welcome to UMA! Before start please complete your profile to know you better. <a href="#">Profile settings <i class="pi pi-arrow-up"></i></a></h6>
+                    </div>
+                </div>
+                <div class="p-col-12">
+                    <div class="p-grid" style="margin: -1rem;">
+                        <div class="p-col">
+                            <div class="card overview-box white">
+                                <div class="overview-info">
+                                    <h6>Total Manufacturers</h6>
+                                    <h1>
+                                        <h:outputText value="#{dashboard.manufacturers}">
+                                            <f:convertNumber groupingUsed="true"
+                                                             maxFractionDigits="2"  />
+                                        </h:outputText>
+                                    </h1>
+                                </div>
+                                <i class="pi pi-image"></i>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <div class="card overview-box blue">
+                                <div class="overview-info">
+                                    <h6>New users (Today)</h6>
+                                    <h1>32</h1>
+                                </div>
+                                <i class="pi pi-users"></i>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <div class="card overview-box gray">
+                                <div class="overview-info">
+                                    <h6>Uptime</h6>
+                                    <h1>5h12m</h1>
+                                </div>
+                                <i class="pi pi-globe"></i>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <div class="card overview-box darkgray">
+                                <div class="overview-info">
+                                    <h6>Total Sectors</h6>
+                                    <h1>#{dashboard.sectorsCount}</h1>
+                                </div>
+                                <i class="pi pi-th-large"></i>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <div class="card overview-box orange">
+                                <div class="overview-info">
+                                    <h6>Cloud users</h6>
+                                    <h1>4216</h1>
+                                </div>
+                                <i class="pi pi-cloud"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!--Section 7-->
+                <div class="p-col-12 p-md-12 p-xl-12">
+                    <div class="p-grid">
+                        <div class="p-col-12">
+                            <div class="card chart">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <h6>Company monthly revenue performance</h6>
+                                        <p class="subtitle">Line graph</p>
+                                    </div>
+                                </div>
+
+                                <p:chart type="line"  responsive="true" model="#{dashboard.dateModel}" style="max-height: 330px;"/>
+
+
+                            </div>
+                        </div>
+
+                        <div class="p-col-6">
+                            <div class="card chart">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <h6>Sector Shares</h6>
+                                        <p class="subtitle">Pie</p>
+                                    </div>
+                                </div>
+                                <p:chart type="pie" responsive="true" model="#{dashboard.pieModel1}" style="height:400px;"/>
+
+
+                            </div>
+                        </div>
+
+                        <div class="p-col-6">
+                            <div class="card chart">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <h6>Manufacturers per sector</h6>
+                                        <p class="subtitle">Bar</p>
+                                    </div>
+                                </div>
+                                <p:chart type="bar" responsive="true" model="#{dashboard.sectorsBarModel}" style="height:400px;"/>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

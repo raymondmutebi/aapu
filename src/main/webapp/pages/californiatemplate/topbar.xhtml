@@ -1,0 +1,63 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:po="http://primefaces.org/california">
+
+    <div class="layout-topbar">
+        <h:link styleClass="logo">
+            <p:graphicImage name="images/uma-logo.png" library="california-layout" style="height: 40pt"/>
+        </h:link>
+
+        <a id="menu-button" href="#">
+            <i class="fa fa-align-left" />
+        </a>
+
+        <ui:fragment rendered="#{guestPreferences.profileMode == 'topbar' ? true : false}">
+            <a id="topbar-menu-button" href="#">
+                <p:graphicImage name="images/avatar.png" library="california-layout" />
+                <span>Pauline Harrell</span>
+            </a>
+
+            <ul id="topbar-usermenu" class="usermenu usermenu-overlay">
+                <li>
+                    <a href="#">
+                        <i class="fa fa-fw fa-user"></i>
+                        <span class="topbar-item-name">Profile</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-fw fa-cog"></i>
+                        <span class="topbar-item-name">Settings</span>
+                        <i class="layout-menuitem-toggler fa fa-fw fa-angle-down"></i>
+                    </a>
+                    <ul>
+                        <li role="menuitem">
+                            <a href="#">
+                                <i class="fa fa-fw fa-paint-brush"></i>
+                                <span>Change</span>
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#">
+                                <i class="fa fa-fw fa-star-o"></i>
+                                <span>Favorites</span>
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#">
+                                <i class="fa fa-fw fa-lock"></i>
+                                <span>Lock Screen</span>
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#">
+                                <i class="fa fa-fw fa-picture-o"></i>
+                                <span>Wallpaper</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </ui:fragment>
+    </div>
+
+</ui:composition>

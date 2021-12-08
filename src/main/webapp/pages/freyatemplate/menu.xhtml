@@ -1,0 +1,49 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:h="http://java.sun.com/jsf/html" 
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fr="http://primefaces.org/freya">
+
+    <div class="menu-wrapper">
+        <div class="sidebar-logo">
+            <a href="#">
+                <p:graphicImage name="images/uma-logo.png" library="freya-layout" />
+            </a>
+            <a href="#" class="sidebar-pin" title="Toggle Menu">
+                <span class="pin"></span>
+            </a>
+
+        </div>
+        <div class="layout-menu-container">
+            <h:form id="menuform">
+                <fr:menu widgetVar="FreyaMenuWidget">
+                    <p:menuitem id="om_dashboard" value="Dashboard" icon="pi pi-home" 
+                                outcome="/pages/dashboard/Dashboard.xhtml" />
+                    <p:menuitem id="manufacturersView" 
+                                value="Manufacturers"
+                                icon="pi pi-id-card" 
+                                outcome="/pages/manufacturers/ManufacturersView.xhtml" />
+                    <p:menuitem id="om_input" value="Sectors" icon="pi pi-table" 
+                                outcome="/pages/sectors/SectorsView.xhtml"/>
+
+                    <p:menuitem id="om_icons" value="System Users"
+                                icon="pi pi-users" 
+                                outcome="/pages/users/UserView.xhtml" />
+                    
+                    <p:menuitem id="om_widgets" 
+                                value="System Settings"
+                                icon="pi pi-cog" 
+                                outcome="/pages/settings/MailSettingForm.xhtml"/>
+                    <p:menuitem id="om_grid" 
+                                value="Logout"
+                                icon="pi pi-arrow-circle-left" 
+                                url="/ServiceLogout" />
+
+                  
+                </fr:menu>
+            </h:form>
+        </div>
+    </div>
+
+</ui:composition>
