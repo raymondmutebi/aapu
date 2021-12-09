@@ -1,5 +1,6 @@
 package org.pahappa.systems.core.web;
 
+import org.pahappa.systems.security.HyperLinks;
 import org.sers.webutils.server.web.controllers.AbstractApplicationController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -17,5 +18,12 @@ public class ApplicationController extends AbstractApplicationController {
 	@RequestMapping(value = { "/Error" })
 	public ModelAndView errorHandler(ModelMap model) {
 		return new ModelAndView("Error", model);
+	}
+        
+        
+        
+	@RequestMapping(value = { HyperLinks.REGISTER })
+	public ModelAndView getRegister(ModelMap model) {
+		return new ModelAndView(HyperLinks.REGISTER, model);
 	}
 }

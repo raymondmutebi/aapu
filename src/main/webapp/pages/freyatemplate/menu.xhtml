@@ -20,22 +20,25 @@
                 <fr:menu widgetVar="FreyaMenuWidget">
                     <p:menuitem id="om_dashboard" value="Dashboard" icon="pi pi-home" 
                                 outcome="/pages/dashboard/Dashboard.xhtml" />
-                    <p:menuitem id="manufacturersView" 
-                                value="Manufacturers"
-                                icon="pi pi-id-card" 
-                                outcome="/pages/manufacturers/ManufacturersView.xhtml" />
-                    <p:menuitem id="om_input" value="Sectors" icon="pi pi-table" 
-                                outcome="/pages/sectors/SectorsView.xhtml"/>
-
-                    <p:menuitem id="om_icons" value="System Users"
+                    <p:menuitem id="membersView" 
+                                value="Members"
+                                icon="pi pi-users" 
+                                outcome="/pages/members/MembersView.xhtml" />
+                
+                    <p:menuitem id="admins" value="System Admins"
                                 icon="pi pi-users" 
                                 outcome="/pages/users/UserView.xhtml" />
                     
-                    <p:menuitem id="om_widgets" 
+                      <p:menuitem id="datasets" 
+                                value="Datasets"
+                                icon="pi pi-cog" 
+                                outcome="/pages/lookups/LookupsView.xhtml"/>
+                    
+                    <p:menuitem id="settings" 
                                 value="System Settings"
                                 icon="pi pi-cog" 
-                                outcome="/pages/settings/MailSettingForm.xhtml"/>
-                    <p:menuitem id="om_grid" 
+                                outcome="/pages/settings/SettingForm.xhtml"/>
+                    <p:menuitem id="logout" 
                                 value="Logout"
                                 icon="pi pi-arrow-circle-left" 
                                 url="/ServiceLogout" />

@@ -30,7 +30,7 @@ public class Member extends BaseEntity {
     private String profileImageUrl;
     private String location;
     private String bioInformation;
-    private AccountStatus accountStatus;
+    private AccountStatus accountStatus=AccountStatus.Created;
     private String twitterHandle;
     private String facebookUsername;
     private String website;
@@ -41,6 +41,8 @@ public class Member extends BaseEntity {
     private String firstName;
     private Gender gender;
     private String phoneNumber;
+    private String lastEmailVerificationCode;
+    private String lastPhoneVerificationCode;
     
 
     @OneToOne
@@ -181,6 +183,26 @@ public class Member extends BaseEntity {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+     @Column(name = "last_email_verification_code")
+    public String getLastEmailVerificationCode() {
+        return lastEmailVerificationCode;
+    }
+
+    public void setLastEmailVerificationCode(String lastEmailVerificationCode) {
+        this.lastEmailVerificationCode = lastEmailVerificationCode;
+    }
+
+     @Column(name = "last_phone_verification_code")
+    public String getLastPhoneVerificationCode() {
+        return lastPhoneVerificationCode;
+    }
+
+    public void setLastPhoneVerificationCode(String lastPhoneVerificationCode) {
+        this.lastPhoneVerificationCode = lastPhoneVerificationCode;
+    }
+    
+    
     
     
     

@@ -22,27 +22,12 @@ import org.sers.webutils.model.exception.OperationFailedException;
 @Transactional
 public class SystemSettingServiceImpl extends GenericServiceImpl<SystemSetting> implements SystemSettingService {
 
- 
-
     @Autowired
     CountryDao countryDao;
 
     @Override
     public SystemSetting saveInstance(SystemSetting appSetting) throws ValidationFailedException {
-
-        if (appSetting.getEgosmsUrl() == null) {
-            throw new ValidationFailedException("Missing Egosms URL");
-        }
-
-        if (appSetting.getEgoSmsApiUsername() == null) {
-            throw new ValidationFailedException("Missing Egosms username");
-        }
-
-        if (appSetting.getEgoSmsApiPassword() == null) {
-            throw new ValidationFailedException("Missing Egosms password");
-        }
-
-    return super.save(appSetting);
+        return super.save(appSetting);
     }
 
     @Override
@@ -54,8 +39,9 @@ public class SystemSettingServiceImpl extends GenericServiceImpl<SystemSetting> 
     public SystemSetting getAppSetting() {
         if (super.findAll().size() > 0) {
             return super.findAll().get(0);
+        } else {
+            return super.save(new SystemSetting());
         }
-        return null;
     }
 
     public int testUrls(String url) {
@@ -71,8 +57,7 @@ public class SystemSettingServiceImpl extends GenericServiceImpl<SystemSetting> 
 
     @Override
     public boolean isDeletable(SystemSetting entity) throws OperationFailedException {
-       return true;
+        return true;
     }
 
-  
 }

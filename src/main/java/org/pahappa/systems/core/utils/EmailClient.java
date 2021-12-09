@@ -30,14 +30,14 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
  */
 public class EmailClient {
 
-    private static String SMTPHOST;
-    private static int SMTP_PORT;
-    private static String SMTP_ADDRESS;
-    private static String SMTP_PASSWORD;
+    private static String SMTPHOST="smtp.gmail.com";
+    private static int SMTP_PORT=587;
+    private static String SMTP_ADDRESS="mail.pahappa@gmail.com";
+    private static String SMTP_PASSWORD="pass@2020@Pahappa";
     private static String FROM_EMAIL="mail.pahappa@gmail.com";
     private static String SENDGRID_URL = "https://api.sendgrid.com/v3/mail/send";
-    private static String SENDGRID_SENDER_ADDRESS = "fred@pahappa.com";
-    private static String SENDGRID_BEARER_TOKEN = "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";
+    private static String SENDGRID_SENDER_ADDRESS = "mail.pahappa@gmail.com";
+    private static String SENDGRID_BEARER_TOKEN = "";
 
     public static void initSendGridMailSettings() {
         SystemSetting appSetting = ApplicationContextProvider.getBean(SystemSettingService.class).getAppSetting();
@@ -87,7 +87,7 @@ public class EmailClient {
     public static void sendSimpleMessage(String to, String subject, String text) {
         initMailSettings();
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("noreply@rgw.com");
+        message.setFrom("noreply@aapu.com");
         message.setTo(to);
         message.setFrom(FROM_EMAIL);
         message.setSubject(subject);

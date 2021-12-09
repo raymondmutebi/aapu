@@ -3,6 +3,7 @@ package org.pahappa.systems.security;
 public class HyperLinks {
 
     public static final String DASHBOARD = "/pages/dashboard/Dashboard.xhtml";
+    public static final String REGISTER = "/Register";
 
     public static final String MEMBERS_VIEW = "/pages/manufacturers/ManufacturersView.xhtml?faces-redirect=true";
     public static final String MAMBER_DIALOG_FORM = "/pages/manufacturers/ManufacturerForm.xhtml?faces-redirect=true";

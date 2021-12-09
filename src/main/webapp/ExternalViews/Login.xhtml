@@ -12,7 +12,9 @@
             <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
             <meta name="apple-mobile-web-app-capable" content="yes" />
         </f:facet>
-        <title>UMA Login</title>
+        <title>AAPU Login</title>
+          <link rel="shortcut icon" type="image/x-icon"
+              href="#{request.contextPath}/resources/images/favicon_ico.png" />
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
     </h:head>
 
@@ -33,7 +35,7 @@
                                  action="#{loginController.doLogin}"  />
 
 <!--                <a href="#">forget password?</a>-->
-<p style="margin-top: 2px" >Not yet a member ?  <a href="ExternalViews/ExternalManufacturerForm.xhtml">register</a></p>
+<p style="margin-top: 2px" >Not yet a member ?  <a href="ExternalViews/ExternalMemberForm.xhtml">register</a></p>
                 <!--                </div>-->
             </h:form>
             <div class="login-footer">

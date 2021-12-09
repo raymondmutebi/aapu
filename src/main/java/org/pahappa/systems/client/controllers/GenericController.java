@@ -21,7 +21,7 @@ public class GenericController implements Serializable {
 	private int currentYear;
 	private Date currentDate;
 	private String currentDateAsString;
-	private String systemName = "Payment Gateway";
+	private String systemName = "AAPU";
 	private String searchPlaceHolder = "Enter text to search";
 	private String dataEmptyMessage = "No records found";
 	private String contactNumbers;

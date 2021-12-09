@@ -63,6 +63,11 @@
             class="org.pahappa.systems.models.Payment" />      
         <mapping 
             class="org.pahappa.systems.models.SystemSetting" />
+        
+        <mapping 
+            class="org.pahappa.systems.models.Subscription" />
+        <mapping 
+            class="org.pahappa.systems.models.Communication" />
        
           
             

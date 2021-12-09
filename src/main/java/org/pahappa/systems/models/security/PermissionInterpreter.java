@@ -14,8 +14,8 @@ public class PermissionInterpreter {
 
 		for (Field field : PermissionConstants.class.getFields()) {
 
-			if (field.isAnnotationPresent(UMAPermission.class)) {
-				UMAPermission permissionAnnotation = field.getAnnotation(UMAPermission.class);
+			if (field.isAnnotationPresent(CustomPermission.class)) {
+				CustomPermission permissionAnnotation = field.getAnnotation(CustomPermission.class);
 				Permission permission = new Permission();
 				permission.setName(permissionAnnotation.name());
 				permission.setDescription(permissionAnnotation.description());

@@ -6,7 +6,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
-
 import org.pahappa.systems.models.security.PermissionConstants;
 import org.sers.webutils.model.security.User;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
@@ -18,36 +17,24 @@ import org.pahappa.systems.models.SystemSetting;
 @SessionScoped
 public class ComponentRenderer implements Serializable {
 
-    /**
-     *
-     */
+   
     private static final long serialVersionUID = 1L;
 
-    private boolean administrator = false;
-    private boolean companyPerm = false;
-    private boolean dashboardsPerm = false;
+    private boolean administrator, manageMembers, manageCommunications, managePayments, memberPerm = false;
     private User loggedInUser;
-    private SystemSetting appSetting = new SystemSetting();
-    private SystemSettingService appSettingService;
+    private SystemSetting appSetting;
 
     @PostConstruct
     public void init() {
-        this.administrator = SharedAppData.getLoggedInUser().hasAdministrativePrivileges();
-        this.companyPerm = SharedAppData.getLoggedInUser()
-                .hasPermission(PermissionConstants.PERM_MANAGE_COMPANIES);
+        loggedInUser = SharedAppData.getLoggedInUser();
 
-        this.dashboardsPerm = SharedAppData.getLoggedInUser()
-                .hasPermission(PermissionConstants.PERM_VIEW_DASHBOARD);
+        this.appSetting = ApplicationContextProvider.getBean(SystemSettingService.class).getAppSetting();
+        this.administrator = loggedInUser.hasAdministrativePrivileges();
+        this.manageCommunications = loggedInUser.hasPermission(PermissionConstants.PERM_MANAGE_COMMUNICATIONS);
+        this.managePayments = loggedInUser.hasPermission(PermissionConstants.PERM_MANAGE_PAYMENTS);
+        this.manageMembers = loggedInUser.hasPermission(PermissionConstants.PERM_MANAGE_MEMBERS);
+        this.memberPerm = loggedInUser.hasPermission(PermissionConstants.PERM_MEMBER);
 
-        this.loggedInUser = SharedAppData.getLoggedInUser();
-
-       this.appSettingService = ApplicationContextProvider.getBean(SystemSettingService.class);
-
-        
-
-        if (this.appSettingService.getAppSetting() != null) {
-            this.appSetting = this.appSettingService.getAppSetting();
-        }
     }
 
     /**
@@ -78,29 +65,6 @@ public class ComponentRenderer implements Serializable {
         this.administrator = administrator;
     }
 
-    public boolean isCompanyPerm() {
-        return companyPerm;
-    }
-
-    public void setCompanyPerm(boolean companyPerm) {
-        this.companyPerm = companyPerm;
-    }
-
-    /**
-     * @return the dashboardsPerm
-     */
-    public boolean isDashboardsPerm() {
-        return dashboardsPerm;
-    }
-
-    /**
-     * @param dashboardsPerm the dashboardsPerm to set
-     */
-    public void setDashboardsPerm(boolean dashboardsPerm) {
-        this.dashboardsPerm = dashboardsPerm;
-    }
-
- 
 
     /**
      * @return the appSetting
@@ -115,5 +79,39 @@ public class ComponentRenderer implements Serializable {
     public void setAppSetting(SystemSetting appSetting) {
         this.appSetting = appSetting;
     }
+
+    public boolean isManageMembers() {
+        return manageMembers;
+    }
+
+    public void setManageMembers(boolean manageMembers) {
+        this.manageMembers = manageMembers;
+    }
+
+    public boolean isManageCommunications() {
+        return manageCommunications;
+    }
+
+    public void setManageCommunications(boolean manageCommunications) {
+        this.manageCommunications = manageCommunications;
+    }
+
+    public boolean isManagePayments() {
+        return managePayments;
+    }
+
+    public void setManagePayments(boolean managePayments) {
+        this.managePayments = managePayments;
+    }
+
+    public boolean isMemberPerm() {
+        return memberPerm;
+    }
+
+    public void setMemberPerm(boolean memberPerm) {
+        this.memberPerm = memberPerm;
+    }
+    
+    
 
 }

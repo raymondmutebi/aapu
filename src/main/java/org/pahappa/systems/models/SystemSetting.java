@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.sers.webutils.model.BaseEntity;
@@ -30,6 +32,7 @@ public class SystemSetting extends BaseEntity {
     private String smtpPassword = "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";
     private String smtpHost = "smtp.sendgrid.net";
     private String smtpPort = "587";
+    private LookUpField professional;
 
     private boolean sendGrid;
     private String sendGridUrl;
@@ -41,7 +44,7 @@ public class SystemSetting extends BaseEntity {
     /**
      * @return the referrerPercentageCharge
      */
-    @Column(name = "referrer_percentage_charge", nullable = false, length = 10)
+    @Column(name = "referrer_percentage_charge", nullable = true, length = 10)
     public float getReferrerPercentageCharge() {
         return referrerPercentageCharge;
     }
@@ -56,7 +59,7 @@ public class SystemSetting extends BaseEntity {
     /**
      * @return the egosmsUrl
      */
-    @Column(name = "egosms_url", nullable = false, length = 100)
+    @Column(name = "egosms_url", nullable = true, length = 100)
     public String getEgosmsUrl() {
         return egosmsUrl;
     }
@@ -71,7 +74,7 @@ public class SystemSetting extends BaseEntity {
     /**
      * @return the egoSmsApiUsername
      */
-    @Column(name = "ego_sms_api_username", nullable = false, length = 100)
+    @Column(name = "ego_sms_api_username", nullable = true, length = 100)
     public String getEgoSmsApiUsername() {
         return egoSmsApiUsername;
     }
@@ -86,7 +89,7 @@ public class SystemSetting extends BaseEntity {
     /**
      * @return the egoSmsApiPassword
      */
-    @Column(name = "ego_sms_api_password", nullable = false, length = 100)
+    @Column(name = "ego_sms_api_password", nullable = true, length = 100)
     public String getEgoSmsApiPassword() {
         return egoSmsApiPassword;
     }
@@ -214,6 +217,19 @@ public class SystemSetting extends BaseEntity {
     public void setSendGridBearerToken(String sendGridBearerToken) {
         this.sendGridBearerToken = sendGridBearerToken;
     }
+
+    @ManyToOne
+    @JoinColumn(name = "proffesionals_database")
+    public LookUpField getProfessional() {
+        return professional;
+    }
+
+    public void setProfessional(LookUpField professional) {
+        this.professional = professional;
+    }
+    
+    
+    
 
     @Override
     public boolean equals(Object object) {

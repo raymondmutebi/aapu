@@ -17,10 +17,8 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 public class AppUtils {
 
-    public static String AUTHOR_ROLE_NAME = "Book author";
-    public static String CHURCH_USER_ROLE_NAME = "Church admin";
-    public static String NATIONAL_ADMIN_ROLE_NAME = "National admin";
-    public static String APP_USER_ROLE_NAME = "App user";
+    public static String MEMBER_ROLE_NAME = "Aapu member";
+    public static String PROF_DATASET_NAME = "Professionals";
 
     public static String CLOUDINARY_CLOUD_NAME = "revival-gateway";
     public static String CLOUDINARY_API_KEY = "114516888855596";
@@ -34,7 +32,6 @@ public class AppUtils {
 
     private static String smtpHost, smtpPort, senderAddress, senderPassword;
 
-   
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(smtpHost);
