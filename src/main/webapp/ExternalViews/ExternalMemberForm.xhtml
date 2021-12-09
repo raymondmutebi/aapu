@@ -25,7 +25,7 @@
 
         <div class="ui-g-12  layout-wrapper layout-topbar-#{guestPreferences.topbarTheme} layout-menu-#{guestPreferences.menuTheme} #{guestPreferences.menuMode}" >
             <div class="ui-g-4 card-body" style="text-align: center">
-                <h2>Register Company </h2>
+                <h2>Become a member</h2>
                 <h:link  styleClass="logo">
                     <p:graphicImage name="images/uma-logo.png" width="200" height="200" library="freya-layout" />
                 </h:link>
@@ -123,7 +123,7 @@
                                                     <h:outputText value="Gender" style="font-size: 18px;" />
                                                     <span style="color: red"> * </span><br/>
                                                     <p:selectOneMenu  value="#{externalMemberForm.model.gender}" 
-                                                                      id="gender"   effect="fade" filter="true"  
+                                                                      id="gender"   effect="fade" 
                                                                       style="padding: 10px;margin-bottom: 2%; font-size: 20px; width: 90%" 
                                                                       >
 
@@ -134,11 +134,12 @@
 
                                             </div>
                                             <div class="ui-g-12 ui-md-12 ui-lg-12" >
-                                                <div class="ui-g-12 ui-md-12 ui-lg-1" style="text-align: end; margin-right: auto">
+                                                <div style="text-align: end; display: flex">
 
-                                                    <p:commandButton icon="fa fa-save" value="Submit" id="saveBtn"
+                                                    <p:commandButton  value="Submit" id="saveBtn"
                                                                      styleClass="green-btn" validateClient="true"
-                                                                     action="#{externalMemberForm.save}"
+                                                                     style="margin-left: auto"
+                                                                     action="#{externalMemberForm.createMember()}"
                                                                      update="externalMemberForm" />
 
                                                 </div>

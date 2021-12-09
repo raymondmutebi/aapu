@@ -54,14 +54,16 @@ public class ExternalMemberForm extends WebFormView<Member, ExternalMemberForm, 
         super.model = new Member();
         this.userService = ApplicationContextProvider.getBean(UserService.class);
         this.contactService = ApplicationContextProvider.getBean(MemberService.class);
+           this.systemSettingService = ApplicationContextProvider.getBean(SystemSettingService.class);
+         this.professionals = new ArrayList<>(this.systemSettingService.getAppSetting().getProfessional().getLookUpValues());
+        this.genders = Arrays.asList(Gender.values());
     }
 
     @Override
     public void pageLoadInit() {
         // TODO Auto-generated method stub
         super.model = new Member();
-        this.professionals = new ArrayList<>(this.systemSettingService.getAppSetting().getProfessional().getLookUpValues());
-        this.genders = Arrays.asList(Gender.values());
+       
     }
 
     @Override
@@ -88,7 +90,7 @@ public class ExternalMemberForm extends WebFormView<Member, ExternalMemberForm, 
             this.showPaymentSection = false;
             customUiMessage = "Details saved, chech you email ";
             PrimeFaces.current().ajax().update("externalMemberForm");
-        } catch (ValidationFailedException ex) {
+        } catch (Exception ex) {
             customUiMessage = "Ops, some error occured\n " + ex.getLocalizedMessage();
             Logger.getLogger(ExternalMemberForm.class.getName()).log(Level.SEVERE, null, ex);
         }

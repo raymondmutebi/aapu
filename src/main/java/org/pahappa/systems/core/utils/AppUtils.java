@@ -28,9 +28,12 @@ public class AppUtils {
 
     public static final String FLUTTER_SECRET_KEY = "FLWSECK-433eeec81d5f1e5bdb811111db9484dd-X";
     public final static SortField DEFAULT_SORT_FIELD = new SortField("Date Created Desc", "dateCreated", true);
-    final static String senderGridApiKey = "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";
+    final static String senderGridApiKey = "";
 
-    private static String smtpHost, smtpPort, senderAddress, senderPassword;
+    private static String smtpHost="smtp.gmail.com";
+    private static String smtpPort="587";
+    private static String senderAddress="mail.pahappa@gmail.com";
+    private static String senderPassword="pass@2020@Pahappa";
 
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
@@ -49,8 +52,7 @@ public class AppUtils {
         return mailSender;
     }
 
-    private JavaMailSender emailSender;
-
+  
     public static void sendEmail(
             String to, String subject, String text) {
 

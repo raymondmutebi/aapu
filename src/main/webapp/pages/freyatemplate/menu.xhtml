@@ -18,32 +18,41 @@
         <div class="layout-menu-container">
             <h:form id="menuform">
                 <fr:menu widgetVar="FreyaMenuWidget">
-                    <p:menuitem id="om_dashboard" value="Dashboard" icon="pi pi-home" 
+                    <p:menuitem id="om_dashboard" value="Dashboard" icon="fa fa-home" 
                                 outcome="/pages/dashboard/Dashboard.xhtml" />
                     <p:menuitem id="membersView" 
                                 value="Members"
-                                icon="pi pi-users" 
+                                icon="fa fa-id-card" 
                                 outcome="/pages/members/MembersView.xhtml" />
-                
+                    
+                     <p:menuitem id="communicationsView" 
+                                value="Communications"
+                                icon="fa fa-send" 
+                                outcome="/pages/members/MembersView.xhtml" />
+
                     <p:menuitem id="admins" value="System Admins"
-                                icon="pi pi-users" 
+                                icon="fa fa-users" 
                                 outcome="/pages/users/UserView.xhtml" />
-                    
-                      <p:menuitem id="datasets" 
-                                value="Datasets"
-                                icon="pi pi-cog" 
-                                outcome="/pages/lookups/LookupsView.xhtml"/>
-                    
-                    <p:menuitem id="settings" 
-                                value="System Settings"
-                                icon="pi pi-cog" 
-                                outcome="/pages/settings/SettingForm.xhtml"/>
+
+
+                    <p:submenu id="tools"  icon="fa fa-cogs"   label="Tools">
+                        <p:menuitem id="datasets" 
+                                    value="Datasets"
+                                    icon="fa fa-bars" 
+                                    outcome="/pages/lookups/LookupsView.xhtml"/>
+                        <p:menuitem id="settings" 
+                                    value="System Settings"
+                                    icon="fa fa-cog" 
+                                    outcome="/pages/settings/SettingForm.xhtml"/>
+
+                    </p:submenu>
+
                     <p:menuitem id="logout" 
                                 value="Logout"
                                 icon="pi pi-arrow-circle-left" 
                                 url="/ServiceLogout" />
 
-                  
+
                 </fr:menu>
             </h:form>
         </div>
