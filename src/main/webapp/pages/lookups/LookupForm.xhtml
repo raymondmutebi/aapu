@@ -3,13 +3,36 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/pages/freyatemplate/template.xhtml">
 
+
     <ui:define name="content">
-        <h:form id="lookUpForm" enctype="multipart/form-data">
-            <p:growl id="msgs" showDetail="true"/>
-            <ui:fragment>
+        <ui:fragment rendered="#{!componentRenderer.administrator}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="california-layout" />
+                        </h:link>
+                    </div>
+
+                    <div class="exception-panel">
+                        <p:graphicImage styleClass="exception-icon"
+                                        name="images/icon-access.png" library="california-layout" />
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br></br> Contact the
+                            administrator for more information.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </ui:fragment>
+        <ui:fragment rendered="#{componentRenderer.administrator}">
+
+            <h:form id="lookUpForm" >
+
                 <div class="p-grid ">
                     <div class="p-col-12">
                         <div class="card p-grid">
@@ -27,10 +50,11 @@
                                                       icon="fa fa-backward" style="margin-right: 5px"
                                                       outcome="#{lookUpsView.parentView}" />
                                             <p:commandButton icon="fa fa-save" value="Save" id="saveBtn1"
-                                                             styleClass="green-btn"  process="valuesTable @this"
+                                                             styleClass="green-btn"  process=":lookUpForm:valuesTable @this"
                                                              action="#{lookUpForm.save}"
 
                                                              update="lookUpForm" />
+
 
 
 
@@ -42,38 +66,38 @@
                                 <p:outputPanel styleClass="ui-g-12 ui-md-12 ui-lg-12">
 
                                     <p:dataTable id="valuesTable" var="value" value="#{lookUpForm.model.lookUpValues}" 
-                                                 rowKey="#{value.name}" editable="true"
-                                                 editMode="cell" widgetVar="cellProducts">
-
-                                        <p:ajax event="cellEdit" listener="#{lookUpForm.onCellEdit}" update=":lookUpForm:msgs"/>
+                                                 rowKey="#{value.name}" 
+                                                 widgetVar="cellProducts">
 
                                         <f:facet name="header">
                                             <div class="p-d-flex p-jc-between">
                                                 <div>
-                                                    <span style="font-weight: bold">#{lookUpForm.model.name} values(Click on value to edit)</span>
+                                                    <span style="font-weight: bold">#{lookUpForm.model.name}</span>
 
                                                 </div>
                                                 <div>
 
-                                                    <p:commandButton icon="fa fa-plus" value="Add New" styleClass="success-button"
+                                                    <p:commandButton icon="fa fa-plus" value="Add New" 
+                                                                     styleClass="success-button"
                                                                      style="margin-left: 5px"
+                                                                     process="@this"
                                                                      validateClient="true"
-                                                                     update=":lookUpForm:valuesTable :lookUpForm:bottom_buttons"
-                                                                     actionListener="#{lookUpForm.addNewValue() }">
+                                                                     oncomplete="PF('valueDialogue').show()"
+                                                                     update="lookUpValuesForm"
+                                                                     actionListener="#{lookUpForm.loadLookupValue(null) }"
+
+                                                                     >
                                                     </p:commandButton>
                                                 </div>
                                             </div>
                                         </f:facet>
 
                                         <p:column headerText="Name">
-                                            <p:cellEditor>
-                                                <f:facet name="output">
-                                                    <h:outputText value="#{value.name}"/>
-                                                </f:facet>
-                                                <f:facet name="input">
-                                                    <p:inputText value="#{value.name}" required="true" style="width:90%" label="Name"/>
-                                                </f:facet>
-                                            </p:cellEditor>
+
+                                            <f:facet name="output">
+                                                <h:outputText value="#{value.name}"/>
+                                            </f:facet>
+
                                         </p:column>
 
 
@@ -86,6 +110,15 @@
                                                 <p:confirm header="Confirmation"
                                                            message="You are about to remove this value. Do you wish to continue?"
                                                            icon="ui-icon-alert" />
+                                            </p:commandButton>
+
+                                            <p:commandButton icon="fa fa-edit"  styleClass="success-button"
+                                                             style="margin-left: 5px"
+                                                             validateClient="true"
+                                                             process="@this"
+                                                             actionListener="#{lookUpForm.loadLookupValue(value) }"
+
+                                                             oncomplete="PF('valueDialogue').show()" >
                                             </p:commandButton>
                                         </p:column>
                                     </p:dataTable>
@@ -115,39 +148,52 @@
 
                             </p:outputPanel>
 
-                            <p:outputPanel  rendered="#{!lookUpForm.model.isMigration}" styleClass="ui-g-12 ui-md-12 ui-lg-12">
-                                <p:accordionPanel widgetVar="basic" dynamic="true" 
-                                                  cache="true" multiple="true"  >
-                                    <p:tab title="Paste new values">
-                                        <h:outputText value="Paste fields(comma separated)" style="font-size: 18px;" />
-                                        <p:chips  value="#{lookUpForm.stringLookupValues}"    style="width:100% "  required="false" title="Values"  />
-                                        <p:commandButton icon="fa fa-save" value="Save" id="loadBtn"
-                                                         styleClass="green-btn" 
-                                                         action="#{lookUpForm.loadPastedValues}"
-                                                         update=":lookUpForm:valuesTable" >
-
-                                            <p:confirm header="Confirmation"
-                                                       message="These added values will replace all the existing values. Do you wish to continue?"
-                                                       icon="ui-icon-alert" />
-                                        </p:commandButton>
-                                    </p:tab>
-                                </p:accordionPanel>
-
-                            </p:outputPanel>
                         </div>
                     </div>
 
 
 
                 </div>
+
+
                 <p:blockUI block="lookUpForm" trigger="saveBtn1 saveBtn2">
                     <p:graphicImage value="/resources/images/workingicon.png" />
                 </p:blockUI>
 
 
-            </ui:fragment>
-        </h:form>
+            </h:form>
+            <p:dialog  widgetVar="valueDialogue" height="100px" width="400px" 
+                       header="#{(lookUpForm.selectedLookUpValue != null and lookUpForm.selectedLookUpValue.name != null)? lookUpForm.selectedLookUpValue.name:'New value'}" 
+                       minHeight="40"   showEffect="fade" modal="true">
+                <p:outputPanel id="lookUpValuesForm" >
+                    <p:outputPanel styleClass="p-grid ui-fluid" rendered="#{lookUpForm.selectedLookUpValue!=null}">
 
+                        <div class="p-col-12 p-md-12">
+                            <h5>Name</h5>
+                            <div class="ui-inputgroup">
+
+                                <p:inputText value="#{lookUpForm.selectedLookUpValue.name}" required="true" />
+                            </div>
+                        </div>
+
+                    </p:outputPanel>
+
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <div class="ui-inputgroup" style="display: flex">
+                        <p:commandButton icon="pi pi-check" style="margin-left: auto"
+                                         process="@this" 
+                                         actionListener="#{lookUpForm.saveNewValue(lookUpForm.selectedLookUpValue)}" 
+                                         oncomplete="PF('valueDialogue').hide()" 
+                                         update=":lookUpForm:valuesTable" value="Save" />
+
+                    </div>
+                </f:facet>
+
+
+            </p:dialog>
+        </ui:fragment>
 
     </ui:define>
 </ui:composition>

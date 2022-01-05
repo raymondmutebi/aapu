@@ -1,18 +1,54 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui" xmlns:po="http://primefaces.org/freya" 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" 
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" 
+                xmlns:po="http://primefaces.org/freya" 
                 template="/pages/freyatemplate/template.xhtml">
 
     <ui:define name="title">Dashboard</ui:define>
 
     <ui:define name="head">
         <h:outputScript name="chartjs/chart.js" library="demo" />
-      
+        <script  src="https://checkout.flutterwave.com/v3.js"></script>
+        <script type="text/javascript">
+            //<![CDATA[  
+            function makePayment(amount, transactionId) {
+                FlutterwaveCheckout({
+                    public_key: "#{dashboard.appSetting.flutterwavePublicKey}",
+                    tx_ref: transactionId,
+                    amount: amount,
+                    currency: "UGX",
+                    country: "US",
+                    payment_options: "card, mobilemoney ",
+                    redirect_url: // specified redirect URL
+                            "#{dashboard.appSetting.flutterwaveReditectUrl}",
+
+                    customer: {
+                        email: "#{dashboard.loggedInMember.emailAddress}",
+                        phone_number: "#{dashboard.loggedInMember.phoneNumber}",
+                        name: "#{dashboard.loggedInMember.firstName} #{dashboard.loggedInMember.lastName}",
+                                    },
+                                    callback: function (data) {
+                                        console.log(data);
+                                    },
+                                    onclose: function () {
+                                        // close modal
+                                    },
+                                    customizations: {
+                                        title: "Aapu Subscription",
+                                        description: "Payment for aapu subscription",
+                                        logo: "https://aapug.org/wp-content/uploads/2021/10/cropped-image014-1.png",
+                                    },
+                                });
+                            }
+                            //]]>
+        </script>
     </ui:define>
 
     <ui:define name="content">
         <div class="layout-dashboard">
-            <div class="p-grid">
+            <p:outputPanel rendered="#{componentRenderer.administrator}" styleClass="p-grid">
                 <div class="p-col-12">
                     <div class="notification">
                         <h6>Hello! Welcome to AAPU! Before start please complete your profile to know you better. <a href="#">Profile settings <i class="pi pi-arrow-up"></i></a></h6>
@@ -25,7 +61,7 @@
                                 <div class="overview-info">
                                     <h6>Total Members</h6>
                                     <h1>
-                                        <h:outputText value="#{dashboard.manufacturers}">
+                                        <h:outputText value="#{dashboard.totalMembers}">
                                             <f:convertNumber groupingUsed="true"
                                                              maxFractionDigits="2"  />
                                         </h:outputText>
@@ -38,7 +74,7 @@
                             <div class="card overview-box blue">
                                 <div class="overview-info">
                                     <h6>New users (Today)</h6>
-                                    <h1>32</h1>
+                                    <h1>#{dashboard.egosmsBalance}</h1>
                                 </div>
                                 <i class="pi pi-users"></i>
                             </div>
@@ -56,7 +92,7 @@
                             <div class="card overview-box darkgray">
                                 <div class="overview-info">
                                     <h6>Monthly subscriptions</h6>
-                                    <h1>#{dashboard.manufacturers}</h1>
+                                    <h1>#{dashboard.monthySubscriptions}</h1>
                                 </div>
                                 <i class="pi pi-th-large"></i>
                             </div>
@@ -71,9 +107,270 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
 
-            </div>
+                <!--Section 7-->
+                <div class="p-col-12 p-md-12 p-xl-12">
+                    <div class="p-grid">
+
+
+                        <div class="p-col-12 p-md-12 p-lg-12">
+                            <div class="card chart">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <h5>Registered members this year</h5>  
+                                    </div>
+                                </div>
+                                <p:barChart model="#{dashboard.clientsBarChartModel}" style="width: 100%; height: 500px;"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </p:outputPanel>
+
+            <p:outputPanel id="memberView" rendered="#{componentRenderer.memberPerm and not componentRenderer.administrator}" styleClass="p-grid">
+                <div class="p-col-12">
+                    <div class="notification">
+                        <h6>Hello! Welcome to AAPU! Before start please complete your profile to know you better. <a href="#{request.contextPath}/pages/members/MemberProfileView.xhtml">Profile settings <i class="pi pi-arrow-up"></i></a></h6>
+                    </div>
+                </div>
+                <div class="p-col-12">
+                    <div class="p-grid" style="margin: -1rem;">
+                        <div class="p-col">
+                            <div class="card overview-box white">
+                                <div class="overview-info">
+                                    <h6>Subscription status</h6>
+                                    <h4>
+                                        #{'Active'}
+                                    </h4>
+                                </div>
+                                <i class="pi pi-image"></i>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <div class="card overview-box blue">
+                                <div class="overview-info">
+                                    <h6>New sms</h6>
+                                    <h1>#{dashboard.monthyCommunications}</h1>
+                                </div>
+                                <i class="pi pi-users"></i>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <div class="card overview-box gray">
+                                <div class="overview-info">
+                                    <h6>My subscriptions</h6>
+                                    <h1>#{dashboard.myTotalSubscriptions}</h1>
+                                </div>
+                                <i class="pi pi-globe"></i>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <div class="card overview-box darkgray">
+                                <div class="overview-info">
+                                    <h6>Subscription ends in</h6>
+                                    <h1>#{dashboard.subscripionDaysRemaining} days</h1>
+                                </div>
+                                <i class="pi pi-th-large"></i>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <div class="card overview-box orange">
+                                <div class="overview-info">
+                                    <h6>Total members</h6>
+                                    <h1>4216</h1>
+                                </div>
+                                <i class="pi pi-cloud"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col-4">
+                    <div class="card card-w-title" >
+
+                        <div class="p-grid ">
+                            <div class="p-g-12 p-md-12 p-lg-5 " >
+                                <p:graphicImage id="imageView" title="Change image"
+                                                style="margin-top: 20px"
+                                                styleClass="profile-image"  width="100%" height="100%"
+                                                value="#{not empty dashboard.loggedInMember.profileImageUrl?dashboard.loggedInMember.profileImageUrl:'/resources/freya-layout/images/unmamed.png'}" 
+                                                />
+                            </div>   
+                            <div class="p-g-12 p-md-12 p-lg-7">
+
+                                <div class="ui-g-12 ui-md-12 ui-lg-12" >
+                                    <h6>Full name</h6>
+
+                                    <p>#{dashboard.loggedInMember.firstName} #{dashboard.loggedInMember.lastName}</p>
+                                </div>
+
+
+                                <div class="ui-g-12 ui-md-12 ui-lg-12" >
+                                    <h6>Email address</h6>
+
+                                    <p>#{dashboard.loggedInMember.emailAddress}</p>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-12" >
+                                    <h6>Phone number</h6>
+
+                                    <p>#{dashboard.loggedInMember.phoneNumber}</p>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="p-col-5">
+
+                    <div class="card schedule">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <h6>Subscriptions</h6>
+                                <p class="subtitle">Last 6 years</p>
+                            </div>
+                            <p class="subtitle">
+                                <p:commandButton value="make Subscription" 
+                                                 process="@this"  
+                                                 oncomplete="makePayment('#{dashboard.appSetting.subscriptionFee}','#{dashboard.initiateSubscriptionPayment()}');" />
+                            </p>
+                        </div>
+
+                        <p:dataTable widgetVar="subscriptions_table"
+                                     rows="6"
+                                     rowIndexVar="row" var="subscription" value="#{dashboard.memberSubscriptions}">
+
+                            <p:column headerText="#">
+                                <h:outputText value="#{row+1}" />
+
+                            </p:column>
+
+                            <p:column headerText="Start date">
+                                <h:outputText value="#{subscription.startDate}" />
+
+                            </p:column>
+
+                            <p:column headerText="End date">
+                                <h:outputText value="#{subscription.endDate}" />
+
+                            </p:column>
+                            <p:column headerText="Status">
+                                <h:outputText value="#{subscription.status}" />
+
+                            </p:column>
+
+                        </p:dataTable>
+                    </div>
+
+                </div>
+                <div class="p-col-3">
+
+                    <div class="card schedule">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <h6>Email</h6>
+                                <p class="subtitle">Communications</p>
+                            </div>
+                            <p class="subtitle">Today</p>
+                        </div>
+
+                        <ul>
+                            <p:repeat var="email" value="#{dashboard.emailCommunications}">
+                                <li>
+                                    <div class="schedule-header">
+                                        <h6>#{email.emailSubject}</h6>
+                                        <span>#{email.scheduleDate}</span>
+                                    </div>
+                                    <a href="#">#{email.scheduleTime}</a>
+                                    <span>#{email.emailBody}</span>
+                                </li>
+                            </p:repeat>
+
+                        </ul>
+                       
+                    </div>
+
+                </div>
+
+                <div class="p-col-4">
+
+                    <div class="card schedule">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <h6>Short messages</h6>
+                                <p class="subtitle">Communications</p>
+                            </div>
+                            <p class="subtitle">Today</p>
+                        </div>
+
+                        <ul>
+                            <p:repeat var="sms" value="#{dashboard.smsCommunications}">
+                                <li>
+                                    <div class="schedule-header">
+                                        <h6>#{sms.smsMessage}</h6>
+                                        <span>#{sms.scheduleDate}</span>
+                                    </div>
+
+                                </li>
+                            </p:repeat>
+
+                        </ul>
+                      
+                    </div>
+
+                </div>
+
+                <div class="p-col-12">
+
+                    <div class="card schedule">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <h6>Recent news and posts</h6>
+                              
+                            </div>
+                          
+                        </div>
+
+                        <p:dataView var="product" value="#{dashboard.previousPosts}" rows="10" paginator="true"
+                                    rowsPerPageTemplate="6,12,16" layout="grid"
+                                    paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                    gridIcon="pi pi-th-large" listIcon="pi pi-bars">
+
+                            <p:dataViewListItem>
+                                <div class="product-list-item">
+                                    <p:graphicImage name="demo/images/product/#{product.featuredMedia}"/>
+                                    <div class="product-list-detail">
+                                        <div class="product-name">#{product.title.rendered}</div>
+                                        <div class="product-description">#{product.content.rendered}</div>
+
+                                        <i class="pi pi-tag product-category-icon"/><span
+                                            class="product-category">#{product.categories.get(0)}</span>
+                                    </div>
+                                    <div class="product-list-action">
+
+                                        <p:commandButton type="button"
+                                                         value="Read more"
+                                                         onclick="#{product.link}"
+                                                         >
+                                        </p:commandButton>
+
+                                    </div>
+                                </div>
+                            </p:dataViewListItem>
+                        </p:dataView>
+
+
+                    </div>
+
+                </div>
+
+
+
+            </p:outputPanel>
         </div>
     </ui:define>
 </ui:composition>
