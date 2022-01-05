@@ -17,44 +17,44 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class CustomMigrationService extends MigrationTemplate {
 
-	@Autowired
-	MigrationDao migrationDao;
-
-	@Autowired
-	SessionFactory sessionFactory;
-
-	@Autowired
-	CustomPermissionMigrations permissionMigrations;
-	
-	
-        
     @Autowired
-	ReffererPaymentMaker reffererPaymentMaker;
-	
-	@Autowired
-	SubcriptionObserver subcriptionObserver;
-	
-	@Autowired
-	TransactionStatusUpdater transactionStatusUpdater;
+    MigrationDao migrationDao;
 
-	private final List<Class<?>> migrationClasses = Arrays
-			.asList(new Class<?>[] { CustomPermissionMigrations.class,
-		});
+    @Autowired
+    SessionFactory sessionFactory;
 
-	public static boolean EXECUTED_MIGRATIONS = false;
- 
-	@PostConstruct
-	public void execute() {
-		System.out.println("Executing migrations...");
-		EXECUTED_MIGRATIONS = super.executeMigrations(EXECUTED_MIGRATIONS, migrationClasses, migrationDao,
-				sessionFactory);
-		System.out.println("Executed migrations...");
-	}
+    @Autowired
+    CustomPermissionMigrations permissionMigrations;
 
-	public Object getBean(Class<?> klass) throws Exception {
-		for (Field field : CustomMigrationService.class.getDeclaredFields())
-			if (field.getType() == klass)
-				return field.get(CustomMigrationService.this);
-		throw new Exception("No bean declared for class " + klass + " in this class");
-	}
+    @Autowired
+    CommunicationScheduler communicationScheduler;
+
+    @Autowired
+    SubcriptionObserver subcriptionObserver;
+
+    @Autowired
+    TransactionStatusUpdater transactionStatusUpdater;
+
+    private final List<Class<?>> migrationClasses = Arrays
+            .asList(new Class<?>[]{CustomPermissionMigrations.class,SubcriptionObserver.class,
+                TransactionStatusUpdater.class,CommunicationScheduler.class});
+
+    public static boolean EXECUTED_MIGRATIONS = false;
+
+    @PostConstruct
+    public void execute() {
+        System.out.println("Executing migrations...");
+        EXECUTED_MIGRATIONS = super.executeMigrations(EXECUTED_MIGRATIONS, migrationClasses, migrationDao,
+                sessionFactory);
+        System.out.println("Executed migrations...");
+    }
+
+    public Object getBean(Class<?> klass) throws Exception {
+        for (Field field : CustomMigrationService.class.getDeclaredFields()) {
+            if (field.getType() == klass) {
+                return field.get(CustomMigrationService.this);
+            }
+        }
+        throw new Exception("No bean declared for class " + klass + " in this class");
+    }
 }

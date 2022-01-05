@@ -34,7 +34,7 @@ public class TransactionStatusUpdater {
 		backgroundTask.setTaskType(TaskType.Interval);
 		backgroundTask.setIntervalInMinutes(2);
 		backgroundTask.setPackageName("org.pahappa.systems.core.services");
-		backgroundTask.setClassName("PaymentLogService");
+		backgroundTask.setClassName("PaymentService");
 		backgroundTask.setMethodName("checkAndUpdatePendingTransactions");
 		try {
 			backgroundTaskService.saveOutsideSecurityContext(backgroundTask);

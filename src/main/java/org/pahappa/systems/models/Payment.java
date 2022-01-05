@@ -5,8 +5,13 @@
  */
 package org.pahappa.systems.models;
 
+import org.pahappa.systems.constants.TransactionStatus;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import org.sers.webutils.model.BaseEntity;
 
@@ -20,17 +25,21 @@ public class Payment extends BaseEntity {
 
     private String phoneNumber;
     private String description;
+    private String transactionId;
     private float amount;
     private String trasanctionType;
     private float totalCharge;
     private float serviceCharge;
     private float percentageCharge;
-    private String trasanctionStatus;
+    private String raveId;
+    private TransactionStatus trasanctionStatus;
     private String referenceNumber;
     private String trasanctionDate;
     private String message;
     private int status;
-   
+
+    private Member member;
+    private PaymentReasonType reasonType;
 
     @Column(name = "phoneNumber")
     public String getPhoneNumber() {
@@ -41,7 +50,7 @@ public class Payment extends BaseEntity {
         this.phoneNumber = phoneNumber;
     }
 
-    @Column(name = "description",columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "TEXT")
     public String getDescription() {
         return description;
     }
@@ -85,8 +94,8 @@ public class Payment extends BaseEntity {
     public void setServiceCharge(float serviceCharge) {
         this.serviceCharge = serviceCharge;
     }
-    
-    @Column(name = "percentage_charge",length = 10)
+
+    @Column(name = "percentage_charge", length = 10)
     public float getPercentageCharge() {
         return percentageCharge;
     }
@@ -95,12 +104,13 @@ public class Payment extends BaseEntity {
         this.percentageCharge = percentageCharge;
     }
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "transaction_status")
-    public String getTrasanctionStatus() {
+    public TransactionStatus getTrasanctionStatus() {
         return trasanctionStatus;
     }
 
-    public void setTrasanctionStatus(String trasanctionStatus) {
+    public void setTrasanctionStatus(TransactionStatus trasanctionStatus) {
         this.trasanctionStatus = trasanctionStatus;
     }
 
@@ -123,7 +133,7 @@ public class Payment extends BaseEntity {
         this.trasanctionDate = trasanctionDate;
     }
 
-    @Column(name = "message",columnDefinition = "TEXT")
+    @Column(name = "message", columnDefinition = "TEXT")
     public String getMessage() {
         return message;
     }
@@ -141,13 +151,47 @@ public class Payment extends BaseEntity {
         this.status = status;
     }
 
-    
-   
-    @Override
-    public String toString() {
-        return "PaymentLog{" + "phoneNumber=" + phoneNumber + ", description=" + description + ", amount=" + amount  + '}';
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    public Member getMember() {
+        return member;
     }
 
-    
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_reason_type")
+    public PaymentReasonType getReasonType() {
+        return reasonType;
+    }
+
+    public void setReasonType(PaymentReasonType reasonType) {
+        this.reasonType = reasonType;
+    }
+
+    @Column(name = "transaction_id", unique = true, nullable = false)
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    @Column(name = "rave_id", nullable = true)
+    public String getRaveId() {
+        return raveId;
+    }
+
+    public void setRaveId(String raveId) {
+        this.raveId = raveId;
+    }
+
+    @Override
+    public String toString() {
+        return "PaymentLog{" + "phoneNumber=" + phoneNumber + ", description=" + description + ", amount=" + amount + '}';
+    }
 
 }

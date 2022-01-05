@@ -73,6 +73,10 @@ public class CustomPermissionMigrations {
                 if (p.getName().equals(AppUtils.MEMBER_ROLE_NAME)) {
                     role.addPermission(p);
                 }
+
+                if (p.getName().equals(org.sers.webutils.model.security.PermissionConstants.PERM_WEB_ACCESS)) {
+                    role.addPermission(p);
+                }
             }
 
             roleDao.mergeBG(role);
@@ -114,4 +118,3 @@ public class CustomPermissionMigrations {
     }
 
 }
-

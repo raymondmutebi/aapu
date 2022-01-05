@@ -1,59 +1,75 @@
 package org.pahappa.systems.views;
 
-import com.googlecode.genericdao.search.Search;
-import java.security.GeneralSecurityException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Date;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import org.pahappa.systems.core.services.LookUpService;
-
+import javax.faces.bean.ViewScoped;
+import org.pahappa.systems.core.services.SystemSettingService;
+import org.pahappa.systems.core.utils.EmailService;
+import org.pahappa.systems.core.utils.UiUtils;
 import org.pahappa.systems.models.SystemSetting;
 import org.pahappa.systems.security.HyperLinks;
-import org.primefaces.context.RequestContext;
-import org.sers.webutils.client.utils.UiUtils;
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.client.views.presenters.WebFormView;
+import org.sers.webutils.model.exception.OperationFailedException;
+import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
-import org.pahappa.systems.core.services.SystemSettingService;
-import org.pahappa.systems.core.utils.EmailClient;
-import org.pahappa.systems.models.LookUpField;
-import org.sers.webutils.model.RecordStatus;
-import org.sers.webutils.server.shared.SharedAppData;
 
 @ManagedBean(name = "appSettingForm")
-@SessionScoped
+@ViewScoped
 @ViewPath(path = HyperLinks.SETTING_FORM)
-public class AppSettingForm extends WebFormView<SystemSetting, AppSettingForm, Dashboard> {
+public class AppSettingForm extends WebFormView<SystemSetting, AppSettingForm, AppSettingForm> {
 
     /**
      *
      */
     private static final long serialVersionUID = 1L;
-    private SystemSettingService appSettingService;
-    private List<LookUpField> lookupFields;
+    private SystemSettingService defaultSettingService;
+
+    private boolean showPrice = true;
+    private boolean flutterLive;
+    private String testEmail="raymond@pahappa.com";
+
+    private String testMessage = "This is a test email from CRAMS";
 
     @Override
     public void beanInit() {
-        this.appSettingService = ApplicationContextProvider.getBean(SystemSettingService.class);
-        if (this.appSettingService.getAppSetting() != null) {
-            super.model = this.appSettingService.getAppSetting();
+        this.defaultSettingService = ApplicationContextProvider.getBean(SystemSettingService.class);
+        super.model = this.defaultSettingService.getAppSetting();
+
+        if (this.model == null) {
+            this.model = new SystemSetting();
+        } else {
+            super.model = this.defaultSettingService.getAppSetting();
         }
+
     }
 
     @Override
     public void pageLoadInit() {
-        if (this.appSettingService.getAppSetting() != null) {
-            super.model = this.appSettingService.getAppSetting();
-        }
-        this.lookupFields = ApplicationContextProvider.getBean(LookUpService.class).getInstances(new Search().addFilterEqual("recordStatus", RecordStatus.ACTIVE), 0, 0);
+        super.model = this.defaultSettingService.getAppSetting();
     }
 
     @Override
     public void persist() throws Exception {
-        this.appSettingService.save(super.model);
-        UiUtils.showMessageBox("App settings updated", "Action Successful", RequestContext.getCurrentInstance());
+        System.out.println("-----------Saving setting------");
+        this.defaultSettingService.saveInstance(super.model);
+        UiUtils.showMessageBox("Default settings updated", "Action Successful");
+    }
+
+    public void saveSettings() throws ValidationFailedException, OperationFailedException {
+        System.out.println("-----------Saving setting------");
+        this.defaultSettingService.saveInstance(super.model);
+        UiUtils.showMessageBox("Default settings updated", "Action Successful");
+
+    }
+
+    @Override
+    public String getViewUrl() {
+        return HyperLinks.SETTING_FORM;
+    }
+
+    public void hidePrice() {
+        this.showPrice = false;
     }
 
     @Override
@@ -62,33 +78,54 @@ public class AppSettingForm extends WebFormView<SystemSetting, AppSettingForm, D
         super.model = new SystemSetting();
     }
 
-    public void sendTestEmail() {
-
-        try {
-            new EmailClient().sendSimpleMessage(SharedAppData.getLoggedInUser().getEmailAddress(), "CRM account creation", "This is a text email");
-        } catch (Exception ex) {
-            Logger.getLogger(AppSettingForm.class.getName()).log(Level.SEVERE, null, ex);
-       
-        }
-
-    }
-
     @Override
     public void setFormProperties() {
         super.setFormProperties();
     }
 
-    @Override
-    public String getViewUrl() {
-        return this.getViewPath();
+    public void sendTestEmail() {
+
+        try {
+
+            new EmailService().sendMail(this.testEmail, this.testMessage, "Sent this test email from RGW web on " + new Date());
+
+        } catch (Exception ex) {
+            UiUtils.ComposeFailure("Action failed", ex.getLocalizedMessage());
+            ex.printStackTrace();
+        }
+
     }
 
-    public SystemSettingService getAppSettingService() {
-        return appSettingService;
+    public boolean isShowPrice() {
+        return showPrice;
     }
 
-    public void setAppSettingService(SystemSettingService appSettingService) {
-        this.appSettingService = appSettingService;
+    public void setShowPrice(boolean showPrice) {
+        this.showPrice = showPrice;
+    }
+
+    public String getTestEmail() {
+        return testEmail;
+    }
+
+    public void setTestEmail(String testEmail) {
+        this.testEmail = testEmail;
+    }
+
+    public String getTestMessage() {
+        return testMessage;
+    }
+
+    public void setTestMessage(String testMessage) {
+        this.testMessage = testMessage;
+    }
+
+    public boolean isFlutterLive() {
+        return flutterLive;
+    }
+
+    public void setFlutterLive(boolean flutterLive) {
+        this.flutterLive = flutterLive;
     }
 
 }
