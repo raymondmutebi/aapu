@@ -1,0 +1,142 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/freyatemplate/dialog-template.xhtml">
+    <ui:define name="head">
+        <style type="text/css">
+            .capitalized {
+                text-transform: capitalize;
+            }
+        </style>
+    </ui:define>
+    <ui:define name="content">
+        <title>Create member account</title>
+        <h:form id="memberFormDialog" styleClass="card ui-fluid" style="padding-bottom: 0px !important; border-radius: 2px !important">
+            <div class=" p-grid" >
+
+                <div class="p-col-12 p-md-5 " >
+                    <h5>First name</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText required="true" id="fname"
+                                     value="#{memberFormDialog.model.firstName}"/>
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-5 " >
+                    <h5>Last Name</h5>
+                    <div class="ui-inputgroup">
+
+                        <p:inputText required="true" id="lname"
+                                     value="#{memberFormDialog.model.lastName}"/>
+
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-2 " >
+                    <h5>Gender</h5>
+                    <div class="ui-inputgroup">
+                        <p:selectOneMenu  value="#{memberFormDialog.model.gender}" 
+                                          id="gender"   effect="fade">
+
+                            <f:selectItems value="#{memberFormDialog.genders}"/>
+
+                        </p:selectOneMenu>
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-md-6 " >
+                    <h5>Phone number</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText required="true" id="phone"
+                                     value="#{memberFormDialog.model.phoneNumber}"/>
+
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-md-6 " >
+                    <h5>Email</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText required="true" id="email"
+                                     value="#{memberFormDialog.model.emailAddress}"/>
+
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-12 " >
+                    <h5>Location</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputTextarea rows="2" required="true" id="loc"
+                                     value="#{memberFormDialog.model.location}"/>
+
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-md-6 " >
+                    <h5>Profession</h5>
+                    <div class="ui-inputgroup">
+                        <p:selectOneMenu  value="#{memberFormDialog.model.professionValue}" 
+                                          id="prof"  effect="fade" filter="true"  
+                                          filterMatchMode="startsWith">
+
+                            <f:selectItems value="#{memberFormDialog.professions}" var="proffession"
+                                           itemLabel="#{proffession.name}" itemValue="#{proffession}" />
+
+                        </p:selectOneMenu>       
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-md-6 " >
+                    <h5>Region</h5>
+                    <div class="ui-inputgroup">
+                        <p:selectOneMenu  value="#{memberFormDialog.model.region}" 
+                                          id="prof2"  effect="fade" filter="true"  
+                                          filterMatchMode="startsWith">
+
+                            <f:selectItems value="#{memberFormDialog.regions}" var="proffession"
+                                           itemLabel="#{proffession}" itemValue="#{proffession}" />
+
+                        </p:selectOneMenu>          
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-md-6 " >
+                    <h5>Date registered</h5>
+                    <div class="ui-inputgroup">
+                        <p:calendar required="true" maxdate="#{now}"
+                                     value="#{memberFormDialog.model.dateCreated}"/>
+
+                    </div>
+                </div>
+                
+                 <div class="p-col-12 p-md-6 " >
+                    <h5>Subscription start date</h5>
+                    <div class="ui-inputgroup">
+                        <p:calendar required="true" maxdate="#{now}"
+                                     value="#{memberFormDialog.model.dateChanged}"/>
+
+                    </div>
+                </div>
+
+
+
+                <div class="p-col-12 p-md-12" style="margin-top: 5px;margin-bottom: 0px">
+                    <div class="p-grid p-justify-end">
+                        <div class="p-col-2">
+                            <p:commandButton value="Cancel" icon="pi pi-times"
+                                             validateClient="false"
+                                             process="@this"
+                                             action="#{memberFormDialog.hide}"
+                                             styleClass="ui-button-help" />
+                        </div>
+                        <div class="p-col-2">
+                            <p:commandButton value="Save" icon="pi pi-check"
+                                             process="@form"
+                                             actionListener="#{memberFormDialog.save}"
+                                             update="memberFormDialog" validateClient="true" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+      
+    </ui:define>
+</ui:composition>

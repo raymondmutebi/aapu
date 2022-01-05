@@ -1,6 +1,5 @@
 package org.pahappa.systems.models;
 
-
 import org.pahappa.systems.constants.AccountStatus;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +10,9 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import org.apache.commons.lang3.StringUtils;
+import org.pahappa.systems.constants.MemberRegistrationType;
+import org.pahappa.systems.constants.Region;
 
 import org.sers.webutils.model.BaseEntity;
 import org.sers.webutils.model.Gender;
@@ -26,24 +28,27 @@ public class Member extends BaseEntity {
      */
     private static final long serialVersionUID = 1L;
 
-   private User userAccount;
+    private User userAccount;
     private String profileImageUrl;
     private String location;
     private String bioInformation;
-    private AccountStatus accountStatus=AccountStatus.Created;
+    private AccountStatus accountStatus = AccountStatus.Created;
     private String twitterHandle;
     private String facebookUsername;
     private String website;
     private LookUpValue profession;
+    private ProfessionValue professionValue;
     private String clearTextPassword;
     private String emailAddress;
     private String lastName;
     private String firstName;
     private Gender gender;
+    private Region region;
     private String phoneNumber;
+    private Payment registrationFeePayment;
     private String lastEmailVerificationCode;
     private String lastPhoneVerificationCode;
-    
+    private MemberRegistrationType registrationType;
 
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -72,10 +77,8 @@ public class Member extends BaseEntity {
         this.profileImageUrl = profileImageUrl;
     }
 
-  
-
     @Enumerated(EnumType.STRING)
-    @Column(name = "accountStatus",length = 20)
+    @Column(name = "accountStatus", length = 20)
     public AccountStatus getAccountStatus() {
         return accountStatus;
     }
@@ -84,7 +87,7 @@ public class Member extends BaseEntity {
         this.accountStatus = accountStatus;
     }
 
-     @Column(name = "twitter_handle",length = 50)
+    @Column(name = "twitter_handle", length = 50)
     public String getTwitterHandle() {
         return twitterHandle;
     }
@@ -93,7 +96,7 @@ public class Member extends BaseEntity {
         this.twitterHandle = twitterHandle;
     }
 
-     @Column(name = "facebook_username",length = 50)
+    @Column(name = "facebook_username", length = 50)
     public String getFacebookUsername() {
         return facebookUsername;
     }
@@ -102,7 +105,7 @@ public class Member extends BaseEntity {
         this.facebookUsername = facebookUsername;
     }
 
-     @Column(name = "website",length = 200)
+    @Column(name = "website", length = 200)
     public String getWebsite() {
         return website;
     }
@@ -111,7 +114,7 @@ public class Member extends BaseEntity {
         this.website = website;
     }
 
-     @Column(name = "bio",columnDefinition = "TEXT")
+    @Column(name = "bio", columnDefinition = "TEXT")
     public String getBioInformation() {
         return bioInformation;
     }
@@ -120,7 +123,11 @@ public class Member extends BaseEntity {
         this.bioInformation = bioInformation;
     }
 
-     @Column(name = "profession")
+    public String composeFullName() {
+        return StringUtils.capitalize(this.firstName + " " + this.lastName);
+    }
+
+    @Column(name = "profession")
     public LookUpValue getProfession() {
         return profession;
     }
@@ -129,7 +136,7 @@ public class Member extends BaseEntity {
         this.profession = profession;
     }
 
-     @Column(name = "password")
+    @Column(name = "password")
     public String getClearTextPassword() {
         return clearTextPassword;
     }
@@ -138,7 +145,7 @@ public class Member extends BaseEntity {
         this.clearTextPassword = clearTextPassword;
     }
 
-     @Column(name = "email_address")
+    @Column(name = "email_address")
     public String getEmailAddress() {
         return emailAddress;
     }
@@ -147,7 +154,7 @@ public class Member extends BaseEntity {
         this.emailAddress = emailAddress;
     }
 
-     @Column(name = "last_name")
+    @Column(name = "last_name")
     public String getLastName() {
         return lastName;
     }
@@ -156,7 +163,7 @@ public class Member extends BaseEntity {
         this.lastName = lastName;
     }
 
-     @Column(name = "first_name")
+    @Column(name = "first_name")
     public String getFirstName() {
         return firstName;
     }
@@ -166,7 +173,7 @@ public class Member extends BaseEntity {
     }
 
     @Enumerated(EnumType.ORDINAL)
-     @Column(name = "gender")
+    @Column(name = "gender")
     public Gender getGender() {
         return gender;
     }
@@ -175,7 +182,7 @@ public class Member extends BaseEntity {
         this.gender = gender;
     }
 
-     @Column(name = "phone_number")
+    @Column(name = "phone_number")
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -184,7 +191,7 @@ public class Member extends BaseEntity {
         this.phoneNumber = phoneNumber;
     }
 
-     @Column(name = "last_email_verification_code")
+    @Column(name = "last_email_verification_code")
     public String getLastEmailVerificationCode() {
         return lastEmailVerificationCode;
     }
@@ -193,7 +200,7 @@ public class Member extends BaseEntity {
         this.lastEmailVerificationCode = lastEmailVerificationCode;
     }
 
-     @Column(name = "last_phone_verification_code")
+    @Column(name = "last_phone_verification_code")
     public String getLastPhoneVerificationCode() {
         return lastPhoneVerificationCode;
     }
@@ -201,18 +208,56 @@ public class Member extends BaseEntity {
     public void setLastPhoneVerificationCode(String lastPhoneVerificationCode) {
         this.lastPhoneVerificationCode = lastPhoneVerificationCode;
     }
-    
-    
-    
-    
-    
-    
-     @Override
-    public String toString() {
-        return this.userAccount.toString();
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "profession_value")
+    public ProfessionValue getProfessionValue() {
+        return professionValue;
     }
 
-   
+    public void setProfessionValue(ProfessionValue professionValue) {
+        this.professionValue = professionValue;
+    }
+
+     @Enumerated(EnumType.STRING)
+    @Column(name = "registration_type")
+    public MemberRegistrationType getRegistrationType() {
+        return registrationType;
+    }
+
+    public void setRegistrationType(MemberRegistrationType registrationType) {
+        this.registrationType = registrationType;
+    }
+    
+    
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "regions")
+    public Region getRegion() {
+        return region;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
+    }
+
+    @OneToOne
+    @JoinColumn(name = "registartion_payment_id")
+    public Payment getRegistrationFeePayment() {
+        return registrationFeePayment;
+    }
+
+    public void setRegistrationFeePayment(Payment registrationFeePayment) {
+        this.registrationFeePayment = registrationFeePayment;
+    }
+
+    @Override
+    public String toString() {
+        return "Member{" + "userAccount=" + userAccount + ", profileImageUrl=" + profileImageUrl + ", location=" + location + ", bioInformation=" + bioInformation + ", accountStatus=" + accountStatus + ", twitterHandle=" + twitterHandle + ", facebookUsername=" + facebookUsername + ", website=" + website + ", profession=" + profession + ", professionValue=" + professionValue + ", clearTextPassword=" + clearTextPassword + ", emailAddress=" + emailAddress + ", lastName=" + lastName + ", firstName=" + firstName + ", gender=" + gender + ", region=" + region + ", phoneNumber=" + phoneNumber + ", registrationFeePayment=" + registrationFeePayment + ", lastEmailVerificationCode=" + lastEmailVerificationCode + ", lastPhoneVerificationCode=" + lastPhoneVerificationCode + '}';
+    }
+
+    
+
     @Override
     public boolean equals(Object object) {
         return object instanceof Member && (super.getId() != null) ? super.getId().equals(((Member) object).getId())

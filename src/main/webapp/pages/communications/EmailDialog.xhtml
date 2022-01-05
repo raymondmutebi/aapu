@@ -1,0 +1,71 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/freyatemplate/dialog-template.xhtml">
+    <ui:define name="head">
+        <style type="text/css">
+            .capitalized {
+                text-transform: capitalize;
+            }
+        </style>
+    </ui:define>
+    <ui:define name="content">
+        <title>Compose broadcast email</title>
+        <h:form id="emailFormDialog" styleClass="card ui-fluid" style="border-radius: 2px !important">
+            <div class=" p-grid" >
+                
+                <div class="p-col-12 p-md-8 " >
+                    <h5>Schedule date</h5>
+                    <div class="ui-inputgroup">
+
+                        <p:datePicker value="#{emailFormDialog.model.scheduleDate}"  mindate="#{now}" showTime="false" />
+                    </div>
+                </div>
+                 <div class="p-col-12 p-md-4 " >
+                    <h5>Schedule time</h5>
+                    <div class="ui-inputgroup">
+
+                        <p:datePicker value="#{emailFormDialog.model.scheduleTime}" timeOnly="true" pattern="HH:mm"  />
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-12 " >
+                    <h5>Subject</h5>
+                    <div class="ui-inputgroup">
+
+                        <p:inputText value="#{emailFormDialog.model.emailSubject}" required="true" />
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-md-12 " >
+                    <h5>Body</h5>
+                    <div class="ui-inputgroup">
+
+                        <p:textEditor value="#{emailFormDialog.model.emailBody}" height="350" required="true" />
+                    </div>
+                </div>
+
+
+
+                <div class="p-col-12 p-md-12" style="margin-top: 20px;">
+                    <div class="p-grid p-justify-end">
+                        <div class="p-col-2">
+                            <p:commandButton value="Cancel" icon="pi pi-times"
+                                             validateClient="false"
+                                             process="@this"
+                                             action="#{emailFormDialog.hide}"
+                                             styleClass="ui-button-help" />
+                        </div>
+                        <div class="p-col-2">
+                            <p:commandButton value="Save" icon="pi pi-check"
+                                             process="@form"
+                                             actionListener="#{emailFormDialog.save}"
+                                             update="emailFormDialog" validateClient="true" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

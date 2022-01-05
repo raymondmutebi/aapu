@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport"
+                  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+       
+        <h:outputScript name="js/layout.js" library="freya-layout" />
+       
+    </h:head>
+
+    <h:body styleClass="landing-body">
+        <div class="login-panel">
+            <ui:insert name="content" />
+        </div>
+
+
+        <h:outputStylesheet name="css/primeicons.css" library="freya-layout" />
+        <h:outputStylesheet name="css/primeflex.min.css" library="freya-layout" />
+        <h:outputStylesheet name="css/custom.css" library="freya-layout" />
+        
+        <h:outputStylesheet name="css/#{guestPreferences.layout}.css" library="freya-layout" />
+        <h:outputStylesheet name="css/demo-#{guestPreferences.darkMode}.css" library="demo" />
+
+    </h:body>
+
+</html>

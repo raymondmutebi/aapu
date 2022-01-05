@@ -37,6 +37,7 @@ public class Communication extends BaseEntity {
     private boolean emailsSent=false;
     private boolean smsSent=false;
     private Date scheduleDate;
+     private Date scheduleTime;
     private int sentEmails;
     private int sentPhones;
 
@@ -108,7 +109,7 @@ public class Communication extends BaseEntity {
         this.smsSent = smsSent;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
      @Column(name = "schedule_date")
     public Date getScheduleDate() {
         return scheduleDate;
@@ -117,6 +118,18 @@ public class Communication extends BaseEntity {
     public void setScheduleDate(Date scheduleDate) {
         this.scheduleDate = scheduleDate;
     }
+
+     @Temporal(TemporalType.TIME)
+     @Column(name = "schedule_time")
+    public Date getScheduleTime() {
+        return scheduleTime;
+    }
+
+    public void setScheduleTime(Date scheduleTime) {
+        this.scheduleTime = scheduleTime;
+    }
+    
+    
 
      @Column(name = "sent_emails")
     public int getSentEmails() {

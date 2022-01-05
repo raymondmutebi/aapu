@@ -1,6 +1,7 @@
 package org.pahappa.systems.constants;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+
 
 public enum TemplateType {
 	/**
@@ -8,13 +9,13 @@ public enum TemplateType {
 	 */
 	RESET_PASSWORD("Reset Password"),
 	
-	CHURCH_REGISTRATION("Church Registration"),
+	EMAIL_VERIFICATION("Email verification"),
         
-        AUTHOR_REGISTRATION("Author Registration"),
+        LOGIN_CREDENTIALS("Login credentials"),
 	
-	CHURCH_APPROVAL("Church Approval"),
+	SUCCESS_PAYMENT("Success payment"),
 	
-	CHURCH_REJECTION("Church Rejection"),
+	SUBSCRIPTION_REMINDER("Subscription reminder"),
 	
 	TOKEN_RESEND("Token Resend"),
 	

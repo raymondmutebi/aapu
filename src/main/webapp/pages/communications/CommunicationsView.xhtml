@@ -1,0 +1,292 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/freyatemplate/template.xhtml">
+
+    <ui:define name="content">
+        <ui:fragment rendered="#{!componentRenderer.memberPerm}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="freya-layout" />
+                        </h:link>
+                    </div>
+
+                    <div class="exception-panel">
+                        <p:graphicImage styleClass="exception-icon"
+                                        name="images/icon-access.png" library="freya-layout" />
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br></br> Contact the
+                            administrator for more information.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </ui:fragment>
+        <ui:fragment rendered="#{componentRenderer.memberPerm}">
+            <h:form id="communicationsView" rendered="#{componentRenderer.memberPerm}">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+
+                        <div class="card">
+
+                            <p:inputText id="searchBtn" required="false"
+                                         placeholder="Search for Message ..."
+                                         style="width:50%; margin-right: 10px; margin-top: 20px; "
+
+                                         onkeypress="#{communicationsView.reloadFilterReset()}"
+                                         value="#{communicationsView.searchTerm}" />
+                            <p:commandButton icon="fa fa-search" styleClass="orange-btn"
+                                             actionListener="#{communicationsView.reloadFilterReset()}"
+                                             update="communicationsTable" value="Search">
+                            </p:commandButton>
+
+                        </div>
+
+                        <div class="card">
+                            <p:dataTable id="communicationsTable" var="model"
+                                         value="#{communicationsView}" widgetVar="communicationsTable"
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                         paginator="true" lazy="true"
+                                         rows="#{communicationsView.maximumresultsPerpage}"
+                                         emptyMessage="#{communicationsView.dataEmptyMessage}"
+                                         paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                         rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+
+                                <f:facet name="header">
+                                    <div class="p-d-flex p-jc-between">
+                                        <div>
+                                            <h:outputText
+                                                value="#{communicationsView.totalRecords} Messages (es) found"
+                                                styleClass="white bold" />
+                                        </div>
+
+
+                                        <div>
+                                            <p:commandButton value="send sms"
+                                                             icon="fa fa-mobile"
+                                                             process="@this"
+                                                             immediate="true"
+                                                             styleClass="help-button"
+                                                             actionListener="#{smsFormDialog.show}"
+                                                             >
+                                                <f:setPropertyActionListener
+                                                    value="#{null}"
+                                                    target="#{smsFormDialog.model}"
+                                                    />
+                                                <p:ajax event="dialogReturn" listener="#{communicationsView.reloadFilterReset()}" update="communicationsView" />
+                                            </p:commandButton>
+                                            <p:commandButton value="Send email"
+                                                             icon="fa fa-envelope"
+                                                             immediate="true" 
+                                                             process="@this"
+                                                             styleClass="secondary-button"
+                                                             style="margin-left: 10px"
+                                                             actionListener="#{emailFormDialog.show}"
+                                                             >
+                                                <f:setPropertyActionListener
+                                                    value="#{null}"
+                                                    target="#{emailFormDialog.model}"
+                                                    />
+                                                <p:ajax event="dialogReturn" listener="#{communicationsView.reloadFilterReset()}" update="communicationsView"  />
+                                            </p:commandButton>
+                                        </div>
+                                    </div>
+                                </f:facet>
+
+                                <p:column width="30" headerText="No.">
+                                    <h:outputText value="#{row + 1}" />
+                                </p:column>
+
+
+                                <p:column width="50">
+                                    <f:facet name="header">
+                                        <h:outputText value="Channel" />
+                                    </f:facet>
+                                    <h:outputText value="#{model.communicationType}" />
+                                </p:column>
+
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Subject" />
+                                    </f:facet>
+                                    <h:outputText value="#{model.emailSubject} #{model.smsMessage}" />
+                                </p:column>
+
+
+                                <p:column >
+                                    <f:facet name="header">
+                                        <h:outputText value="Message body" />
+                                    </f:facet>
+                                    <h:outputText value="#{model.emailBody} #{model.smsMessage}" />
+                                </p:column>
+
+                                <p:column width="100" headerText="Scedule date" >
+                                   
+                                    <h:outputText value="#{model.scheduleDate}" >
+                                        <f:convertDateTime pattern="dd/MMM/yyyy" />
+
+                                    </h:outputText>
+                                </p:column  >
+                                    <p:column width="100" headerText="Scedule time" >
+                                     <h:outputText value="#{model.scheduleTime}" >
+                                        <f:convertDateTime pattern="hh:mm a" />
+
+                                    </h:outputText>
+                                </p:column>
+                                <p:column width="50" >
+                                    <f:facet name="header">
+                                        <h:outputText value="Sent" />
+                                    </f:facet>
+                                    <h:outputText value="#{!(model.emailsSent and model.smsSent)?'Not yet':'Yes'}" />
+                                </p:column>
+
+                                <p:column width="100">
+                                    <f:facet name="header">
+                                        <h:outputText value="Receipients" />
+                                    </f:facet>
+                                    <h:outputText value="#{model.sentEmails} #{model.sentPhones}" />
+                                </p:column>
+                                <p:column width="50">
+                                    <f:facet name="header">
+                                        <h:outputText value="Options" />
+
+                                    </f:facet>
+                                    <p:commandButton 
+                                        rendered="#{model.communicationType eq 'Email' and not model.emailsSent}"
+                                        icon="fa fa-edit"
+                                        immediate="true" 
+                                        process="@this"
+                                        style="margin-left: 10px"
+                                        actionListener="#{emailFormDialog.show}"
+                                        >
+                                        <f:setPropertyActionListener
+                                            value="#{model}"
+                                            target="#{emailFormDialog.model}"
+                                            />
+                                        <p:ajax event="dialogReturn" listener="#{communicationsView.reloadFilterReset()}" update="communicationsView"  />
+                                    </p:commandButton>
+                                    <p:commandButton 
+                                        rendered="#{model.communicationType eq 'Sms' and not model.smsSent}"
+                                        icon="fa fa-edit"
+                                        immediate="true" 
+                                        process="@this"
+                                        style="margin-left: 10px"
+                                        actionListener="#{smsFormDialog.show}"
+                                        >
+                                        <f:setPropertyActionListener
+                                            value="#{model}"
+                                            target="#{smsFormDialog.model}"
+                                            />
+                                        <p:ajax event="dialogReturn" listener="#{communicationsView.reloadFilterReset()}" update="communicationsView"  />
+                                    </p:commandButton>
+
+                                </p:column>
+
+                            </p:dataTable>
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <p:dialog widgetVar="smsDialog"
+                          resizable="true" 
+                          width="400px" 
+                          header="Select user" 
+                          minHeight="40"   showEffect="fade" modal="true">
+                    <p:outputPanel id="smsForm">
+                        <p:outputPanel styleClass="p-grid" rendered="#{communicationsView.selectedCommunication != null}">
+                            <div class="p-field p-col-12 p-md-12">
+                                <p:outputLabel for="sms" value="SMS Message" />
+                                <p:inputTextarea required="true" id="sms"
+                                                 maxlength="120" rows="20" 
+                                                 value="#{communicationsView.selectedCommunication.smsMessage}"/>
+                            </div>
+
+                            <div class="p-field p-col-12 p-md-12">
+                                <p:outputLabel for="date" value="Schedule" />
+                                <p:calendar required="true" id="date"
+                                            value="#{communicationsView.selectedCommunication.scheduleDate}"/>
+                            </div>
+
+
+                        </p:outputPanel>
+
+
+                    </p:outputPanel>
+
+                    <f:facet name="footer">
+                        <p:commandButton process="smsForm"
+                                         oncomplete="PF('smsDialog').hide()"
+                                         styleClass="primary-button"
+                                         action="#{communicationsView.saveSMS()}" 
+                                         update="communicationsView"
+
+                                         />
+
+                    </f:facet>
+                </p:dialog>
+
+                <p:dialog widgetVar="emailDialog" header="Send email" width="40%" height="50%">
+                    <p:outputPanel id="emailForm">
+                        <p:outputPanel styleClass="p-grid" rendered="#{not empty communicationsView.selectedCommunication}" >
+                            <div class="p-field p-col-12 p-md-6" >
+                                <p:outputLabel for="subject" value="Email subject" />
+                                <p:inputText required="true" id="subject"
+                                             maxlength="120" 
+                                             value="#{communicationsView.selectedCommunication.emailSubject}"/>
+                            </div>
+
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:outputLabel for="body" value="Email body" />
+                                <p:inputTextarea required="true" id="body"
+                                                 maxlength="1000" rows="20"
+                                                 value="#{communicationsView.selectedCommunication.emailBody}"/>
+                            </div>
+
+                            <div class="p-field p-col-12 p-md-12">
+                                <p:outputLabel for="sdate" value="Schedule" />
+                                <p:calendar required="true" id="sdate"
+                                            value="#{communicationsView.selectedCommunication.scheduleDate}"/>
+                            </div>
+
+
+                        </p:outputPanel>
+
+
+                    </p:outputPanel>
+
+                    <f:facet name="footer">
+                        <p:commandButton process="emailForm"
+                                         styleClass="primary-button"
+                                         oncomplete="PF('emailDialog').hide()"
+                                         action="#{communicationsView.saveSMS()}" update="communicationsView"
+
+                                         />
+
+                    </f:facet>
+                </p:dialog>
+
+
+                <p:blockUI block="communicationsView" trigger="searchBtn">
+                    <p:graphicImage value="/resources/images/workingicon.png" />
+                </p:blockUI>
+                <p:confirmDialog global="true">
+                    <p:commandButton value="Yes" type="button"
+                                     styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />
+                    <p:commandButton value="No" type="button"
+                                     styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />
+                </p:confirmDialog>
+            </h:form>
+        </ui:fragment>
+    </ui:define>
+</ui:composition>

@@ -7,10 +7,9 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import org.pahappa.systems.core.utils.UiUtils;
 
 import org.pahappa.systems.security.HyperLinks;
-import org.primefaces.context.RequestContext;
-import org.sers.webutils.client.utils.UiUtils;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.model.bgtasks.TaskSchedule;
@@ -60,10 +59,9 @@ public class TaskSchedulesView extends
 			backgroundTaskService.cancelExecution(taskSchedule);
 			UiUtils.showMessageBox(
 					"Execution for this task has been CANCELLED.",
-					"Action Successful", RequestContext.getCurrentInstance());
+					"Action Successful");
 		} catch (OperationFailedException e) {
-			UiUtils.showMessageBox(e.getMessage(), "Action Failed",
-					RequestContext.getCurrentInstance());
+			UiUtils.showMessageBox(e.getMessage(), "Action Failed");
 			SystemCrashHandler.reportSystemCrash(e,
 					SharedAppData.getLoggedInUser());
 		}
@@ -73,10 +71,9 @@ public class TaskSchedulesView extends
 		try {
 			backgroundTaskService.resumeExecution(taskSchedule);
 			UiUtils.showMessageBox("Execution for this task has been RESUMED.",
-					"Action Successful", RequestContext.getCurrentInstance());
+					"Action Successful");
 		} catch (OperationFailedException e) {
-			UiUtils.showMessageBox(e.getMessage(), "Action Failed",
-					RequestContext.getCurrentInstance());
+			UiUtils.showMessageBox(e.getMessage(), "Action Failed");
 			SystemCrashHandler.reportSystemCrash(e,
 					SharedAppData.getLoggedInUser());
 		}
