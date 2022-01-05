@@ -1,19 +1,21 @@
 package org.pahappa.systems.views;
 
 import com.googlecode.genericdao.search.Search;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import org.pahappa.systems.constants.AccountStatus;
+import org.pahappa.systems.constants.Region;
+import org.pahappa.systems.constants.TemplateType;
+import org.pahappa.systems.core.services.EmailTemplateService;
 
 import org.pahappa.systems.security.HyperLinks;
-import org.primefaces.context.RequestContext;
-import org.sers.webutils.client.utils.UiUtils;
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.client.views.presenters.WebFormView;
 import org.sers.webutils.model.Gender;
@@ -22,10 +24,14 @@ import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.server.core.service.UserService;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.pahappa.systems.core.services.MemberService;
+import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.SystemSettingService;
 import org.pahappa.systems.core.utils.AppUtils;
-import org.pahappa.systems.models.LookUpValue;
+import org.pahappa.systems.core.utils.EmailService;
+import org.pahappa.systems.core.utils.UiUtils;
+import org.pahappa.systems.models.EmailTemplate;
 import org.pahappa.systems.models.Member;
+import org.pahappa.systems.models.ProfessionValue;
 import org.primefaces.PrimeFaces;
 
 @ManagedBean(name = "externalMemberForm")
@@ -40,13 +46,15 @@ public class ExternalMemberForm extends WebFormView<Member, ExternalMemberForm, 
     private UserService userService;
     private SystemSettingService systemSettingService;
     private List<Gender> genders;
+    private List<ProfessionValue> professions;
+    private List<Region> regions;
 
-    private List<LookUpValue> professionals;
     private String customUiMessage;
     private String verificationCode;
     private boolean successResponse = true;
     private String paymentPhoneNumber;
-    private boolean showForm=true;
+    private boolean showForm = true;
+    private String paymentUrl;
     private boolean showCodeSection, showPaymentSection, showSuccessMessageSection;
 
     @Override
@@ -54,16 +62,18 @@ public class ExternalMemberForm extends WebFormView<Member, ExternalMemberForm, 
         super.model = new Member();
         this.userService = ApplicationContextProvider.getBean(UserService.class);
         this.contactService = ApplicationContextProvider.getBean(MemberService.class);
-           this.systemSettingService = ApplicationContextProvider.getBean(SystemSettingService.class);
-         this.professionals = new ArrayList<>(this.systemSettingService.getAppSetting().getProfessional().getLookUpValues());
+        this.systemSettingService = ApplicationContextProvider.getBean(SystemSettingService.class);
         this.genders = Arrays.asList(Gender.values());
+        this.professions = Arrays.asList(ProfessionValue.values());
+        this.regions = Arrays.asList(Region.values());
+        super.model = new Member();
     }
 
     @Override
     public void pageLoadInit() {
         // TODO Auto-generated method stub
-        super.model = new Member();
-       
+        // super.model = new Member();
+
     }
 
     @Override
@@ -72,26 +82,39 @@ public class ExternalMemberForm extends WebFormView<Member, ExternalMemberForm, 
         this.contactService.saveOutsideContext(super.model);
         super.model = new Member();
         resetModal();
-        UiUtils.showMessageBox("Thank you for regisering with UMA, check " + super.model.getEmailAddress() + " inbox for login credentials", "Registration successfull", RequestContext.getCurrentInstance());
+        UiUtils.showMessageBox("Thank you for regisering with UMA, check " + super.model.getEmailAddress() + " inbox for login credentials", "Registration successfull");
 
         // createDefaultUser(super.model);
     }
 
     public void createMember() {
         try {
-            String code = String.valueOf(new Random(6).nextInt());
-            super.model.setLastEmailVerificationCode(code);
-            super.model.setAccountStatus(AccountStatus.Created);
-            super.model = this.contactService.saveOutsideContext(super.model);
+            EmailTemplate emailTemplate = ApplicationContextProvider.getBean(EmailTemplateService.class)
+                    .getEmailTemplateByType(TemplateType.EMAIL_VERIFICATION);
+            if (emailTemplate != null) {
+                String code = AppUtils.generateOTP(6);
+                super.model.setLastEmailVerificationCode(code);
+                super.model.setAccountStatus(AccountStatus.Created);
+                super.model = this.contactService.saveOutsideContext(super.model);
 
-            AppUtils.sendEmail(super.model.getEmailAddress(), "AAPU registartion", "Confirm your email address with this code\n ");
-            this.showCodeSection = true;
-            this.showForm = false;
-            this.showPaymentSection = false;
-            customUiMessage = "Details saved, chech you email ";
-            PrimeFaces.current().ajax().update("externalMemberForm");
+                String html = emailTemplate.getTemplate();
+
+                html = html.replace("{fullName}", super.model.composeFullName());
+                html = html.replace("{code}", code);
+
+                new EmailService().sendMail(super.model.getEmailAddress(), "AAPU verify email address", html);
+                showCodeForm();
+                customUiMessage = "Details saved, check your email ";
+                successResponse = true;
+                PrimeFaces.current().ajax().update("externalMemberForm");
+            } else {
+                customUiMessage = "No email templates set";
+                successResponse = false;
+                PrimeFaces.current().ajax().update("externalMemberForm");
+            }
         } catch (Exception ex) {
             customUiMessage = "Ops, some error occured\n " + ex.getLocalizedMessage();
+            successResponse = false;
             Logger.getLogger(ExternalMemberForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -102,36 +125,65 @@ public class ExternalMemberForm extends WebFormView<Member, ExternalMemberForm, 
 
                 super.model.setAccountStatus(AccountStatus.Verified);
                 super.model = this.contactService.saveOutsideContext(super.model);
-                this.showCodeSection = true;
-                this.showForm = false;
-                this.showPaymentSection = true;
+                makePayment();
+                showPaymentSection();
+                customUiMessage = "Succeess";
+                successResponse = true;
+
                 PrimeFaces.current().ajax().update("externalMemberForm");
             } else {
 
+                customUiMessage = "Invalid code ";
+                successResponse = false;
+
             }
+            verificationCode = null;
         } catch (ValidationFailedException ex) {
             customUiMessage = "Ops, some error occured\n " + ex.getLocalizedMessage();
+            successResponse = false;
             Logger.getLogger(ExternalMemberForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public void makePayment() {
+
         try {
-            if (verificationCode.equalsIgnoreCase(super.model.getLastEmailVerificationCode())) {
+            
+            paymentUrl = ApplicationContextProvider.getBean(PaymentService.class).initiateRegistrationFeePayment(super.model);
 
-                super.model.setAccountStatus(AccountStatus.Verified);
-                this.contactService.saveOutsideContext(super.model);
-                this.showCodeSection = true;
-                this.showForm = false;
-                this.showPaymentSection = true;
-                PrimeFaces.current().ajax().update("externalMemberForm");
-            } else {
+            System.out.println("Generated url ==>" + paymentUrl);
 
+            if (paymentUrl != null) {
+                this.successResponse = true;
             }
-        } catch (ValidationFailedException ex) {
+        } catch (Exception ex) {
             customUiMessage = "Ops, some error occured\n " + ex.getLocalizedMessage();
+            successResponse = false;
             Logger.getLogger(ExternalMemberForm.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public void showRegForm() {
+        this.showForm = true;
+        this.showCodeSection = false;
+        this.showPaymentSection = false;
+        PrimeFaces.current().ajax().update("externalMemberForm");
+
+    }
+
+    public void showCodeForm() {
+        this.showForm = false;
+        this.showCodeSection = true;
+        this.showPaymentSection = false;
+        PrimeFaces.current().ajax().update("externalMemberForm");
+
+    }
+
+    public void showPaymentSection() {
+        this.showForm = false;
+        this.showCodeSection = false;
+        this.showPaymentSection = true;
+        PrimeFaces.current().ajax().update("externalMemberForm");
 
     }
 
@@ -156,14 +208,6 @@ public class ExternalMemberForm extends WebFormView<Member, ExternalMemberForm, 
 
     public void setGenders(List<Gender> genders) {
         this.genders = genders;
-    }
-
-    public List<LookUpValue> getProfessionals() {
-        return professionals;
-    }
-
-    public void setProfessionals(List<LookUpValue> professionals) {
-        this.professionals = professionals;
     }
 
     public String getCustomUiMessage() {
@@ -229,7 +273,29 @@ public class ExternalMemberForm extends WebFormView<Member, ExternalMemberForm, 
     public void setShowSuccessMessageSection(boolean showSuccessMessageSection) {
         this.showSuccessMessageSection = showSuccessMessageSection;
     }
-    
-    
+
+    public List<ProfessionValue> getProfessions() {
+        return professions;
+    }
+
+    public void setProfessions(List<ProfessionValue> professions) {
+        this.professions = professions;
+    }
+
+    public List<Region> getRegions() {
+        return regions;
+    }
+
+    public void setRegions(List<Region> regions) {
+        this.regions = regions;
+    }
+
+    public String getPaymentUrl() {
+        return paymentUrl;
+    }
+
+    public void setPaymentUrl(String paymentUrl) {
+        this.paymentUrl = paymentUrl;
+    }
 
 }

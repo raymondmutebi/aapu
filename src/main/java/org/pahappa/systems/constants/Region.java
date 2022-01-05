@@ -25,4 +25,24 @@ public enum Region {
         this.name = uiName;
 
     }
+
+    public static Region fromString(String text) {
+        for (Region b : Region.values()) {
+            if (b.name.equalsIgnoreCase(text)) {
+                return b;
+            }
+        }
+        return null;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    
+
 }

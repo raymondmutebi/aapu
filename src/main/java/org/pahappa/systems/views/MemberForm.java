@@ -15,9 +15,9 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.pahappa.systems.core.services.MemberService;
 import org.pahappa.systems.models.Member;
 
-@ManagedBean(name = "manufacturerForm")
+@ManagedBean(name = "memberForm")
 @SessionScoped
-@ViewPath(path = HyperLinks.MAMBER_DIALOG_FORM)
+@ViewPath(path = HyperLinks.MEMBER_DIALOG_FORM)
 public class MemberForm extends WebFormView<Member, MemberForm, MembersView> {
 
     /**

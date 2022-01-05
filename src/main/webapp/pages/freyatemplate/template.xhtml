@@ -13,7 +13,7 @@
             <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
             <meta name="apple-mobile-web-app-capable" content="yes" />
             <link rel="shortcut icon" type="image/x-icon"
-              href="#{request.contextPath}/resources/images/favicon_ico.png" />
+              href="#{request.contextPath}/resources/images/favicon.png" />
         </f:facet>
         <title><ui:insert name="title">AAPU</ui:insert></title>
         <h:outputScript name="js/layout.js" library="freya-layout" />
@@ -47,6 +47,8 @@
         </div>
         <h:outputStylesheet name="css/primeicons.css" library="freya-layout" />
         <h:outputStylesheet name="css/primeflex.min.css" library="freya-layout" />
+        <h:outputStylesheet name="css/custom.css" library="freya-layout" />
+        
         <h:outputStylesheet name="css/#{guestPreferences.layout}.css" library="freya-layout" />
         <h:outputStylesheet name="css/demo-#{guestPreferences.darkMode}.css" library="demo" />
     </h:body>

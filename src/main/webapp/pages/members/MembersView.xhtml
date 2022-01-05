@@ -34,102 +34,344 @@
                 rendered="#{ (componentRenderer.administrator) }">
             <div class="ui-g">
                 <div class="ui-g-12">
-                   
+                    <div class="p-grid overlay-demo">
+                        <div class="p-col-12 p-md-3">
+                            <div class="card">
+                                <h:outputText value="Total " />
+                                <h2 class="p-text-right">#{membersView.total}</h2>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-3">
+                            <div class="card">
+                                <h:outputText value="Created" />
+                                <h2 class="p-text-right">#{membersView.created}</h2>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-3">
+                            <div class="card">
+                                <h:outputText value="Verified" />
+                                <h2 class="p-text-right">#{membersView.verified}</h2>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-3">
+                            <div class="card">
+                                <h:outputText value="Registered" />
+                                <h2 class="p-text-right">#{membersView.regisered}</h2>
+                            </div>
+                        </div>
+
+                    </div>
                     <div class="card">
 
-                     
-                        <div style="display: flex; ">
+                        <h:outputText value="Filters" />
+
+                        <div class="p-grid" >
+                            <div class="p-col" >
+
                                 <p:inputText id="searchTerm" required="false"
                                              placeholder="Search for members ..."
-                                             style="width:70%; margin-right: 10px; margin-top: 20px;"
+                                             style="width: 100%;"
                                              onkeypress="#{membersView.reloadFilterReset()}"
                                              value="#{membersView.searchTerm}" />
-                                <p:commandButton icon="fa fa-search" styleClass="orange-btn"
-                                                 id="searchBtn" style=" margin-left: auto;margin-top: 20px;"
+                            </div>
+                            <div class="p-col" >
+                                <p:selectOneMenu id="regions" label="Filter region" 
+                                                      value="#{membersView.selectedRegion}" 
+                                                      style="width: 100%;height: 100%" >
+                                    <f:selectItem itemLabel="All regions" itemValue="#{null}"/>
+                                    <f:selectItems itemLabel="#{region.name}" var="region" value="#{membersView.regions}"/>
+                                    <p:ajax event="change" update="membersView" listener="#{membersView.reloadFilterReset()}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="p-col" >
+                                <p:selectOneMenu id="professions" label="Filter profession"
+                                                  
+                                                      value="#{membersView.selectedProfession}" 
+                                                      style="width: 100%;height: 100%" >
+                                    <f:selectItem itemLabel="All professions" itemValue="#{null}"/>
+                                    <f:selectItems  itemLabel="#{profession.name}" var="profession" value="#{membersView.professions}"/>
+                                    <p:ajax event="change" update="membersView" listener="#{membersView.reloadFilterReset()}"/>
+                                </p:selectOneMenu>
+                            </div>
+                              <div class="p-col" >
+                                <p:selectOneMenu id="regType" label="Filter registartion type"
+                                                   
+                                                 value="#{membersView.selectedRegistrationType}" 
+                                                      style="width: 100%;height: 100%" >
+                                    <f:selectItem itemLabel="All" itemValue="#{null}"/>
+                                    <f:selectItems value="#{membersView.registrationTypes}"/>
+                                    <p:ajax event="change" update="membersView" listener="#{membersView.reloadFilterReset()}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="p-col" >
+                                <p:selectOneMenu id="accStatus" label="Filter status" value="#{membersView.selectedAccountStatus}" 
+                                                 style="width: 100%;" placeholder="Filter status" >
+                                    <f:selectItem itemLabel="All accounts" itemValue=""/>
+                                    <f:selectItems value="#{membersView.accountStatuses}"/>
+                                    <p:ajax event="change" update="membersView" listener="#{membersView.reloadFilterReset()}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="p-col-fixed" style="width:100px; margin-right: 10px">
+
+                                <p:commandButton icon="fa fa-search" styleClass="primary-button"
+                                                 id="searchBtn"
                                                  actionListener="#{membersView.reloadFilterReset()}"
-                                                 update="memberTable" value="Search">
+                                                 update="membersTable" value="Search">
                                 </p:commandButton>
 
-                               
 
+                            </div>
                         </div>
-                      
-                       
-                            <p:dataTable id="memberTable" var="model" value="#{membersView}"
-                                         widgetVar="memberTable"
-                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                                         paginator="true" lazy="true"
-                                         rows="#{membersView.maximumresultsPerpage}"
-                                         emptyMessage="#{membersView.dataEmptyMessage}"
-                                         paginatorPosition="bottom" paginatorAlwaysVisible="false"
-                                         rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
-
-                                <f:facet name="header">
-                                    <p:row>
-                                        <p:column>
-                                            <p:outputPanel styleClass="leftAlign">
-                                                <p:outputPanel styleClass="centerAlign">
-                                                    <p:outputLabel
-                                                        value="#{membersView.totalRecords} member (s) found"
-                                                        styleClass="white bold" />
-                                                </p:outputPanel>
-                                            </p:outputPanel>
-                                        </p:column>
-                                    </p:row>
-                                </f:facet>
-
-                                <p:column width="30" headerText="No.">
-                                    <h:outputText value="#{row + 1}" />
-                                </p:column>
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="First name" />
-                                    </f:facet>
-                                    <h:outputText value="#{model.firstName}" />
-                                </p:column>
-                                
-                                 <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Last name" />
-                                    </f:facet>
-                                    <h:outputText value="#{model.lastName}" />
-                                </p:column>
-                                
-                                  <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Status" />
-                                    </f:facet>
-                                    <h:outputText value="#{model.accountStatus}" />
-                                </p:column>
-
-                                
-
-                                <p:column headerText="Options" width="80">
-                                    <p:commandLink action="#{memberForm.getViewPath}"
-                                                   value="View/Edit" styleClass="hyperLink">
-                                        <f:setPropertyActionListener target="#{memberForm.model}"
-                                                                     value="#{model}" />
-                                    </p:commandLink>
-                                </p:column>
-
-                                <p:column headerText="Delete" width="50">
-                                    <p:commandButton icon="fa fa-trash"
-                                                     styleClass="red-btn MarginLeft5"
-                                                     action="#{membersView.deleteManufacturer(model)}"
-                                                     update="memberTable">
-                                        <p:confirm header="Confirmation"
-                                                   message="You are about to delete a member. Do you wish to continue?"
-                                                   icon="ui-icon-alert" />
-                                    </p:commandButton>
-                                </p:column>
-
-                            </p:dataTable>
-
-                            <p:blockUI block="membersView" trigger="searchBtn">
-                                <p:graphicImage value="/resources/images/workingicon.png" />
-                            </p:blockUI>
-                       
                     </div>
+                    <div class="p-grid table-demo">
+                        <div class="p-col-12">
+                            <div class="card">
+
+                                <p:dataTable id="membersTable" var="model" value="#{membersView}"
+                                             widgetVar="membersTable"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                             paginator="true" lazy="true"
+                                             rows="#{membersView.maximumresultsPerpage}"
+                                             emptyMessage="#{membersView.dataEmptyMessage}"
+                                             paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                             rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+                                    <f:facet name="header">
+                                        <div class="p-d-flex">
+                                            
+                                            <div class="p-mr-2" style="margin-left: auto">
+                                                <p:commandButton value="Export" process=":membersView:membersTable" 
+                                                                 title="Export members list" icon="pi pi-print" styleClass="help-button" ajax="false">
+                                                    <p:dataExporter type="pdf"  target="membersTable" fileName="members"/>
+                                                </p:commandButton> 
+
+                                                <p:commandButton title="Download template for uploading members" 
+                                                                 icon="fa fa-download" value="Template" 
+                                                                 process="@this"
+                                                                 styleClass="secondary-button"
+                                                                 style="margin-left: 5px"  ajax="false" >
+                                                    <p:fileDownload value="#{membersView.loadTemplateForDownload()}"  />
+                                                </p:commandButton>
+
+                                                <p:commandButton icon="fa fa-upload" value="Upload" styleClass="success-button"
+                                                                 style="margin-left: 5px" process="@this" 
+                                                                 title="Upload members from file" 
+                                                                 oncomplete="PF('fileUploadDialogue').show()" 
+                                                                 validateClient="true"
+                                                                 update=":membersView:fileUploadDialogue">
+                                                </p:commandButton>
+                                                  <p:commandButton icon="fa fa-plus" value="Add new" styleClass="primary-button"
+                                                                 style="margin-left: 5px" process="@this" 
+                                                                 title="Add new member" 
+                                                                 actionListener="#{memberFormDialog.show}">
+                                                      <f:setPropertyActionListener value="#{null}" target="#{memberFormDialog.model}"/>
+                                                      <p:ajax  update="membersView" event="dialogReturn"  />
+                                                </p:commandButton>
+                                            </div>
+                                        </div>
+                                    </f:facet>
+
+                                    <p:column width="30" headerText="No.">
+                                        <h:outputText value="#{row + 1}" />
+                                    </p:column>
+                                    <p:column exportable="false" headerText="Image">
+
+                                        <p:graphicImage id="imageView"
+                                                        styleClass="profile-image-small"  value="#{not empty model.profileImageUrl?model.profileImageUrl:'/resources/freya-layout/images/unnamed.png'}" 
+                                                        />
+                                    </p:column>
+                                    <p:column width="100">
+                                        <f:facet name="header">
+                                            <h:outputText value="First name" />
+                                        </f:facet>
+                                        <h:outputText value="#{model.firstName}" />
+                                    </p:column>
+
+                                    <p:column width="100">
+                                        <f:facet name="header">
+                                            <h:outputText value="Last name" />
+                                        </f:facet>
+                                        <h:outputText value="#{model.lastName}" />
+                                    </p:column>
+
+                                    <p:column width="100" headerText="Gender">
+
+                                        <h:outputText value="#{model.gender}" />
+                                    </p:column>
+
+                                    <p:column width="100" headerText="Region">
+
+                                        <h:outputText value="#{model.region}" />
+                                    </p:column>
+
+                                    <p:column width="100" headerText="Phone">
+
+                                        <h:outputText value="#{model.phoneNumber}" />
+                                    </p:column>
+
+                                    <p:column headerText="Email">
+
+                                        <h:outputText value="#{model.emailAddress}" />
+                                    </p:column>
+
+                                    <p:column headerText="Proffessional">
+
+                                        <h:outputText value="#{model.professionValue.name}" />
+                                    </p:column>
+                                    <p:column width="150" headerText="Sign up date">
+
+                                        <h:outputText value="#{model.dateCreated}" />
+                                    </p:column>
+
+                                    <p:column width="50">
+                                        <f:facet name="header">
+                                            <h:outputText value="Status" />
+                                        </f:facet>
+                                        <h:outputText value="#{model.accountStatus}" />
+                                    </p:column>
+                                    <p:column width="50">
+                                        <f:facet name="header">
+                                            <h:outputText value="Last OTP" />
+                                        </f:facet>
+                                        <h:outputText value="#{model.lastEmailVerificationCode}" />
+                                    </p:column>
+
+
+
+                                    <p:column exportable="false" headerText="Action" style="text-align: center" width="100">
+                                        <p:commandButton action="#{memberProfileView.getViewPath}"
+                                                         icon="fa fa-eye">
+                                            <f:setPropertyActionListener target="#{memberProfileView.model}"
+                                                                         value="#{model}" />
+                                        </p:commandButton>
+
+                                        <p:commandButton icon="fa fa-pause"
+                                                         rendered="#{model.accountStatus eq 'Registered' or model.accountStatus eq 'Active'}"
+                                                         styleClass="danger-button"
+                                                         title="Block this member"
+                                                         style="margin-left: 5px"
+                                                         actionListener="#{membersView.loadSelectedMember(model)}"
+                                                         update=":membersView:blockDialog"
+                                                         oncomplete="PF('blockDialog').show()"
+                                                         >
+
+                                        </p:commandButton>
+
+                                        <p:commandButton icon="fa fa-check"
+                                                         title="Unblock this member"
+                                                         styleClass="success-button"
+                                                         rendered="#{model.accountStatus eq 'Blocked'}"
+                                                         style="margin-left: 5px"
+                                                         actionListener="#{membersView.loadSelectedMember(model)}"
+                                                         update=":membersView:unBlockDialog"
+                                                         oncomplete="PF('unBlockDialog').show()"
+                                                         >
+
+                                        </p:commandButton>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p:dialog id="fileUploadDialogue" height="300px" width="60%" 
+                              header="Upload members list" 
+                              widgetVar="fileUploadDialogue" minHeight="40"   showEffect="fade" modal="true">
+                        <p:outputPanel >
+                            <div class="p-grid ui-fluid ">
+                                <p:growl id="filemessages" showDetail="true"/>
+
+
+                                <div class="p-col-12 p-md-12 " >
+                                    <p>Headings should be in upper-camel case i.e. FirstName,LastName, PhoneNumber, Email,  Location. Column order doesn't matter. Category names should match those already in the system. Dates should be in format dd/MM/yyyy </p>
+
+                                </div>
+                                <div class="p-col-12 p-md-12">
+                                    <h:outputText id="counterText" value="#{membersView.counterMessage}"/>
+                                    <p:fileUpload 
+                                        multiple="false"
+                                        style="width: 100%" 
+
+                                        sizeLimit="30145728" allowTypes="/(\.|\/)(csv)$/"
+                                        invalidSizeMessage="Maximum file size allowed is 30 MB"
+                                        invalidFileMessage="Only csv type is allowed"
+                                        update="counterText uploadSaveBtn"
+
+                                        fileUploadListener="#{membersView.handleCSVFileUpload}"/>
+
+                                    <p:commandButton id="uploadSaveBtn" icon="pi pi-save" process="@this" disabled="#{!membersView.showSaveUploadsButton()}" actionListener="#{membersView.saveUploadedMembers()}" 
+                                                     oncomplete="PF('fileUploadDialogue').hide()" update="membersTable" value="Save" />
+
+
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:dialog>
+
+                    <p:dialog  height="400px" width="50%" 
+                               header="Block #{membersView.selectedMember.composeFullName()}" 
+                               widgetVar="blockDialog" minHeight="40"   showEffect="fade" modal="true">
+                        <p:outputPanel id="blockDialog" >
+                            <div class="p-grid ui-fluid ">
+
+                                <div class="p-col-12 p-md-12">
+                                    <h4><h:outputLabel for="blockNotes" value="Blocking notes"/></h4>
+                                    <p:textEditor id="notes1"
+                                                  value="#{membersView.blockNotes}"
+                                                  height="200"
+                                                  />
+
+
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <f:facet name="footer" >
+                            <div style="display: flex">
+                                <p:commandButton id="uploadSaveBtn1" icon="pi pi-save" 
+                                                 process="notes1 @this" 
+                                                 style="margin-left: auto"
+                                                 actionListener="#{membersView.blockMember(membersView.selectedMember,membersView.blockNotes)}" 
+                                                 oncomplete="PF('blockDialog').hide()" update="membersTable" value="Save" />
+
+                            </div>
+                        </f:facet>
+                    </p:dialog>
+
+                    <p:dialog  height="400px" width="50%" 
+                               header="Unblock #{membersView.selectedMember.composeFullName()}" 
+                               widgetVar="unBlockDialog" minHeight="40"   showEffect="fade" modal="true">
+                        <p:outputPanel id="unBlockDialog" >
+                            <div class="p-grid ui-fluid ">
+
+                                <div class="p-col-12 p-md-12">
+                                    <h4>  <h:outputLabel for="unblockNotes" value="UnBlocking notes"/></h4>
+                                    <p:textEditor id="unblockNotes"
+                                                  value="#{membersView.blockNotes}"
+                                                  height="200"/>
+
+
+
+                                </div>
+                            </div>
+
+                        </p:outputPanel>
+                        <f:facet name="footer">
+                            <div style="display: flex">
+                                <p:commandButton id="uploadSaveBtn2" icon="pi pi-save" 
+                                                 style="margin-left: auto"
+                                                 process="unblockNotes @this" 
+                                                 actionListener="#{membersView.unBlockMember(membersView.selectedMember,membersView.blockNotes)}" 
+                                                 oncomplete="PF('unBlockDialog').hide()" update="membersTable" value="Save" />
+
+                            </div>
+                        </f:facet>
+                    </p:dialog>
+                    <p:blockUI block="membersView" trigger="searchBtn ">
+                        <p:graphicImage value="/resources/images/workingicon.png" />
+                    </p:blockUI>
+
+
                 </div>
             </div>
 

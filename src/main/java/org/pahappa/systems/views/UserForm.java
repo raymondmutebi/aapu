@@ -8,9 +8,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import org.pahappa.systems.core.services.impl.CustomApplicationSettings;
+import org.pahappa.systems.core.utils.UiUtils;
 import org.pahappa.systems.security.HyperLinks;
-import org.primefaces.context.RequestContext;
-import org.sers.webutils.client.utils.UiUtils;
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.client.views.presenters.WebFormView;
 import org.sers.webutils.model.exception.OperationFailedException;
@@ -88,11 +87,11 @@ public class UserForm extends WebFormView<User, UserForm, UsersView> {
 //        String mailInfo = HtmlEmailTemplates.registrationTemplate(user.getUsername(), mailContent, "Go to Login", loginUrl);
 //        final MailCustomService mailService = new MailCustomService();
 //        if(customApplicationSettings.getDefaultMailSenderAddress().isEmpty()) {
-//			UiUtils.showMessageBox("Sender address not set ", "User created successfully but email not sent", RequestContext.getCurrentInstance());
+//			UiUtils.showMessageBox("Sender address not set ", "User created successfully but email not sent");
 //        }else if(customApplicationSettings.getDefaultMailSenderPassword().isEmpty()) {
-//			UiUtils.showMessageBox("Sender password not set ", "User created successfully but email not sent", RequestContext.getCurrentInstance());
+//			UiUtils.showMessageBox("Sender password not set ", "User created successfully but email not sent");
 //        }else if(customApplicationSettings.getDefaultMailSenderSmtpHost().isEmpty()) {
-//			UiUtils.showMessageBox("Sender host not set ", "User created successfully but email not sent", RequestContext.getCurrentInstance());
+//			UiUtils.showMessageBox("Sender host not set ", "User created successfully but email not sent");
 //        }else {
 //            mailService.setSenderEmail(customApplicationSettings.getDefaultMailSenderAddress());
 //            mailService.setSenderPassword(customApplicationSettings.getDefaultMailSenderPassword());
@@ -163,7 +162,7 @@ public class UserForm extends WebFormView<User, UserForm, UsersView> {
 				super.getModel().addRole(role);
 			}
 			this.userService.saveUser(super.getModel());
-			UiUtils.showMessageBox("User roles updated", "Action Successful", RequestContext.getCurrentInstance());
+			UiUtils.showMessageBox("User roles updated", "Action Successful");
 		}
 	}
 		
@@ -173,9 +172,9 @@ public class UserForm extends WebFormView<User, UserForm, UsersView> {
 		try {
 			super.getModel().removeRole(role);
 			this.userService.saveUser(super.getModel());
-			UiUtils.showMessageBox("User roles updated", "Action Successful", RequestContext.getCurrentInstance());
+			UiUtils.showMessageBox("User roles updated", "Action Successful");
 		} catch (Exception e) {
-			UiUtils.showMessageBox(e.getMessage(), "Action failed", RequestContext.getCurrentInstance());
+			UiUtils.showMessageBox(e.getMessage(), "Action failed");
 		}
 	}
 

@@ -1,0 +1,139 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <ui:define name="content">
+        <ui:fragment rendered="#{!pgwRenderer.messagesPerm}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="california-layout" />
+                        </h:link>
+                    </div>
+
+                    <div class="exception-panel">
+                        <p:graphicImage styleClass="exception-icon"
+                                        name="images/icon-access.png" library="california-layout" />
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br></br> Contact the
+                            administrator for more information.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </ui:fragment>
+
+        <h:form id="sendMessageForm" enctype="multipart/form-data" rendered="#{pgwRenderer.messagesPerm}">
+            <div class="ui-g ui-g-nopad">
+                <div class="ui-g-12 NoMargin">
+                    <div class="card">
+                        <div>
+                            <p:breadCrumb homeDisplay="text" styleClass="breadcrumbs">
+                                <p:menuitem value="" />
+                                <p:menuitem value="Send Message"
+                                            url="#{sendMessageForm.viewPath}" />
+                            </p:breadCrumb>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ui-g-12 NoMargin">
+                    <div class="card panelgridcolumns">
+                        <p:tabView>
+                            <p:tab title="To Group">
+                                <p:panelGrid columns="1" layout="grid"
+                                             styleClass="ui-panelgrid-blank form-group">
+                                    <h:outputText value="Choose Groups: "
+                                                  style="padding: 10px; font-size: 18px;" />
+                                    <p:selectCheckboxMenu id="multipleGroups"
+                                                          style="padding: 10px; font-size: 20px; width: 60%;"
+                                                          value="#{sendMessageForm.selectedContactGroups}"
+                                                          label="Contacts" multiple="true"
+                                                          converter="contactGroupConverter" filter="true"
+                                                          filterMatchMode="startsWith" panelStyle="width:250px">
+                                        <f:selectItems value="#{sendMessageForm.contactGroups}" />
+                                    </p:selectCheckboxMenu>
+                                    <h:outputText value="Message: "
+                                                  style="padding: 10px; font-size: 18px;" />
+                                    <p:inputTextarea value="#{sendMessageForm.groupMessage}"
+                                                     style="padding: 10px; font-size: 20px; width: 60%;"
+                                                     placeholder="Type your message here" rows="10" cols="70"
+                                                     autoResize="true" maxlength="150" counter="display1"
+                                                     counterTemplate="{0} characters remaining." />
+                                    <h:outputText id="display1" />
+                                    <p:commandButton id="saveBtn1"
+                                                     action="#{sendMessageForm.sendGroupMessages()}" value="Send"
+                                                     update="sendMessageForm" validateClient="true"
+                                                     icon="fa fa-send-o"
+                                                     styleClass="#{recordsCountController.formButtonColor}" />
+
+                                    <p:blockUI block="sendMessageForm" trigger="saveBtn1">
+                                        <p:graphicImage value="/resources/images/workingicon.png" />
+                                    </p:blockUI>
+                                </p:panelGrid>
+                            </p:tab>
+                            <p:tab title="To Custom Contacts">
+                                <p:panelGrid columns="1" layout="grid"
+                                             styleClass="ui-panelgrid-blank form-group">
+                                    <h:outputText value="Select Contacts"
+                                                  style="padding: 10px; font-size: 18px;" />
+                                    <p:selectCheckboxMenu id="multipleContacts"
+                                                          style="padding: 10px; font-size: 20px; width: 60%;"
+                                                          value="#{sendMessageForm.selectedContacts}" label="Contacts"
+                                                          multiple="true" converter="contactConverter" filter="true"
+                                                          filterMatchMode="startsWith" panelStyle="width:250px">
+                                        <f:selectItems value="#{sendMessageForm.allContacts}" />
+                                    </p:selectCheckboxMenu>
+                                    <h:outputText value="Message: "
+                                                  style="padding: 10px; font-size: 18px;" />
+                                    <p:inputTextarea value="#{sendMessageForm.customMessage}"
+                                                     style="padding: 10px; font-size: 20px; width: 60%;"
+                                                     placeholder="Type your message here" rows="10" cols="70"
+                                                     autoResize="true" maxlength="150" counter="display2"
+                                                     counterTemplate="{0} characters remaining." />
+                                    <h:outputText id="display2" />
+                                    <p:commandButton id="saveBtn2"
+                                                     action="#{sendMessageForm.sendSelectedMessages()}"
+                                                     value="Send" update="sendMessageForm" validateClient="true"
+                                                     icon="fa fa-send-o"
+                                                     styleClass="#{recordsCountController.formButtonColor}" />
+                                </p:panelGrid>
+                            </p:tab>
+                            <p:tab title="To New Contacts">
+                                <h:panelGrid columns="1" cellpadding="4">
+                                    <h:outputText value="Type Contacts" />
+                                    <p:inputTextarea value="#{sendMessageForm.typedStringContacts}"
+                                                     rows="7" cols="70"
+                                                     placeholder="Type each phone number on a new line. Use format 2567** or 07** or 7**"
+                                                     autoResize="true" />
+                                    <h:outputText value="Type Message" />
+                                    <p:inputTextarea value="#{sendMessageForm.newContactsMessage}"
+                                                     rows="10" cols="70" autoResize="true" maxlength="150" 
+                                                     counter="display3"
+                                                     counterTemplate="{0} characters remaining." />
+                                    <h:outputText id="display3" />
+                                    <p:outputPanel styleClass="rightAlign">
+                                        <p:commandButton id="saveBtn3"
+                                                         action="#{sendMessageForm.sendNewContactsMessage()}"
+                                                         value="Send" update="sendMessageForm" validateClient="true"
+                                                         icon="fa fa-send-o"
+                                                         styleClass="#{recordsCountController.formButtonColor}" />
+                                    </p:outputPanel>
+                                    <p:blockUI block="sendMessageForm" trigger="saveBtn1 saveBtn2 saveBtn3 ">
+                                        <p:graphicImage value="/resources/images/workingicon.png" />
+                                    </p:blockUI>
+                                </h:panelGrid>
+                            </p:tab>
+                        </p:tabView>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -18,31 +18,60 @@
         <div class="layout-menu-container">
             <h:form id="menuform">
                 <fr:menu widgetVar="FreyaMenuWidget">
-                    <p:menuitem id="om_dashboard" value="Dashboard" icon="fa fa-home" 
+                    <p:menuitem id="om_dashboard" value="Dashboard" icon="pi pi-home" 
                                 outcome="/pages/dashboard/Dashboard.xhtml" />
+                      <p:menuitem id="memberProfileView" 
+                                  rendered="#{componentRenderer.memberPerm and not componentRenderer.administrator }"
+                                value="My Profile"
+                                icon="pi pi-user" 
+                                outcome="/pages/members/MemberProfileView.xhtml" />
+                      
+                      <p:menuitem id="userProfileView" rendered="#{not componentRenderer.memberPerm}"
+                                value="My Profile"
+                                icon="pi pi-user" 
+                                outcome="/pages/users/UserProfileView.xhtml" />
                     <p:menuitem id="membersView" 
                                 value="Members"
-                                icon="fa fa-id-card" 
+                                rendered="#{ componentRenderer.manageMembers}"
+                               
+                                icon="pi pi-id-card" 
                                 outcome="/pages/members/MembersView.xhtml" />
                     
                      <p:menuitem id="communicationsView" 
                                 value="Communications"
-                                icon="fa fa-send" 
-                                outcome="/pages/members/MembersView.xhtml" />
+                                rendered="#{ componentRenderer.manageCommunications}"
+                                icon="pi pi-comment" 
+                                outcome="/pages/communications/CommunicationsView.xhtml" />
+                     
+                      <p:menuitem id="paymentsView" 
+                                value="Payments"
+                                rendered="#{ componentRenderer.managePayments}"
+                                icon="pi pi-money-bill" 
+                                outcome="/pages/payments/PaymentsView.xhtml" />
 
                     <p:menuitem id="admins" value="System Admins"
-                                icon="fa fa-users" 
+                                icon="pi pi-users" 
+                                rendered="#{ componentRenderer.administrator}"
                                 outcome="/pages/users/UserView.xhtml" />
 
 
-                    <p:submenu id="tools"  icon="fa fa-cogs"   label="Tools">
+                    <p:submenu id="tools"  icon="pi pi-cog" rendered="#{ componentRenderer.administrator}"   label="Tools">
                         <p:menuitem id="datasets" 
-                                    value="Datasets"
-                                    icon="fa fa-bars" 
+                                    value="Datasets" rendered="false"
+                                    icon="pi pi-bars" 
                                     outcome="/pages/lookups/LookupsView.xhtml"/>
+                        
+                          <p:menuitem id="mail" 
+                                    value="Mail templates"
+                                    icon="pi pi-bars" 
+                                    outcome="/pages/settings/MailTemplatesView.xhtml"/>
+                          <p:menuitem id="roles" 
+                                    value="Roles"
+                                    icon="pi pi-bars" 
+                                    outcome="/pages/users/RolesView.xhtml"/>
                         <p:menuitem id="settings" 
                                     value="System Settings"
-                                    icon="fa fa-cog" 
+                                    icon="pi pi-bars" 
                                     outcome="/pages/settings/SettingForm.xhtml"/>
 
                     </p:submenu>
@@ -50,7 +79,7 @@
                     <p:menuitem id="logout" 
                                 value="Logout"
                                 icon="pi pi-arrow-circle-left" 
-                                url="/ServiceLogout" />
+                                url="#{request.contextPath}/ServiceLogout" />
 
 
                 </fr:menu>

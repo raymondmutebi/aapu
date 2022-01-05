@@ -2,7 +2,6 @@ package org.pahappa.systems.security;
 
 import java.io.IOException;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
@@ -15,10 +14,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.primefaces.context.RequestContext;
-import org.sers.webutils.client.utils.UiUtils;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.web.WebAttributes;
 
 /**
  * 

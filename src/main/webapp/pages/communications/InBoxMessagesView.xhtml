@@ -1,0 +1,192 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/pages/californiatemplate/template.xhtml">
+
+	<ui:define name="content">
+		<ui:fragment rendered="#{!pgwRenderer.messagesPerm}">
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+					<div class="exception-topbar">
+						<h:link styleClass="logo">
+							<p:graphicImage library="california-layout" />
+						</h:link>
+					</div>
+
+					<div class="exception-panel">
+						<p:graphicImage styleClass="exception-icon"
+							name="images/icon-access.png" library="california-layout" />
+						<h1 class="exception-summary">Access Denied</h1>
+						<p class="exception-detail">
+							You don't have the necessary permissons.<br></br> Contact the
+							administrator for more information.
+						</p>
+					</div>
+
+				</div>
+			</div>
+		</ui:fragment>
+
+		<h:form id="inboxMessagesView" rendered="#{pgwRenderer.messagesPerm}">
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card">
+						<div class="shadow-box ui-shadow-1">
+							<p:breadCrumb homeDisplay="text" styleClass="breadcrumbs">
+								<p:menuitem value="" />
+								<p:menuitem value="Inbox" url="#{inboxMessagesView.viewPath}" />
+							</p:breadCrumb>
+						</div>
+					</div>
+					<div class="card">
+
+						<p:inputText id="searchBtn" required="false"
+							placeholder="Search for Message ..."
+							style="width:50%; margin-right: 10px; margin-top: 20px; "
+							onkeypress="#{inboxMessagesView.reloadFilterReset()}"
+							value="#{inboxMessagesView.searchTerm}" />
+						<p:commandButton icon="fa fa-search" styleClass="orange-btn"
+							actionListener="#{inboxMessagesView.reloadFilterReset()}"
+							update="inboxMessagesView" value="Search">
+						</p:commandButton>
+						<p:outputPanel>
+							<h:panelGrid columns="2" styleClass="Wid100"
+								columnClasses="ui-g-12 ui-lg-6, ui-g-12 ui-lg-6">
+
+
+								<p:panelGrid styleClass="Wid100" style="width: 30%">
+									<p:row>
+										<p:column styleClass="Wid100" width="100%" colspan="1">Sort</p:column>
+										<p:column colspan="1" styleClass="Wid50">
+											<p:selectOneMenu
+												value="#{inboxMessagesView.selectedSortField}"
+												var="sortField" styleClass="Wid100" effect="fade"
+												filter="true" converter="sortFieldConverter"
+												onchange="#{inboxMessagesView.reloadFilterReset()}"
+												filterMatchMode="startsWith">
+												<f:selectItem itemLabel="--Select--" itemValue="#{null}" />
+												<f:selectItems value="#{inboxMessagesView.sortFields}"
+													var="sortField" itemLabel="#{sortField}"
+													itemValue="#{sortField}" />
+												<p:column>
+													<h:outputText value="#{sortField}" />
+												</p:column>
+											</p:selectOneMenu>
+										</p:column>
+
+									</p:row>
+								</p:panelGrid>
+
+
+							</h:panelGrid>
+						</p:outputPanel>
+					</div>
+
+					<div class="shadow-box ui-shadow-1">
+						<p:dataTable id="inboxMessagesTable" var="model"
+							value="#{inboxMessagesView}" widgetVar="inboxMessagesTable"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+							paginator="true" lazy="true"
+							rows="#{inboxMessagesView.maximumresultsPerpage}"
+							emptyMessage="#{inboxMessagesView.dataEmptyMessage}"
+							paginatorPosition="bottom" paginatorAlwaysVisible="false"
+							rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+
+							<f:facet name="header">
+								<p:outputPanel styleClass="leftAlign">
+									<p:outputPanel styleClass="centerAlign">
+										<p:outputLabel
+											value="#{inboxMessagesView.totalRecords} Messages (es) found"
+											styleClass="white bold" />
+									</p:outputPanel>
+								</p:outputPanel>
+							</f:facet>
+
+							<p:column width="30" headerText="No.">
+								<h:outputText value="#{row + 1}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Sender" />
+								</f:facet>
+								<h:outputText value="#{model.senderNumber}" />
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Subject" />
+								</f:facet>
+								<h:outputText value="#{model.subject}" />
+							</p:column>
+
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Body" />
+								</f:facet>
+								<h:outputText value="#{model.body}" />
+							</p:column>
+
+							<p:commandLink update="inboxMessageDetail"
+								oncomplete="PF('inboxMessageDialog').show()" title="View Detail">
+								<h:outputText value="View Details" style="margin:0 auto;" />
+								<f:setPropertyActionListener value="#{model}"
+									target="#{inboxMessagesView.selectedMessage}" />
+							</p:commandLink>
+							<p:column headerText="Delete" width="50">
+								<p:commandButton icon="fa fa-trash"
+									styleClass="red-btn MarginLeft5"
+									action="#{inboxMessagesView.delete(model)}"
+									update="inboxMessagesTable">
+									<p:confirm header="Confirmation"
+										message="You are about to delete this connection. Do you wish to continue?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+
+						<p:blockUI block="inboxMessagesView" trigger="searchBtn">
+							<p:graphicImage value="/resources/images/workingicon.png" />
+						</p:blockUI>
+					</div>
+				</div>
+			</div>
+
+			<p:confirmDialog global="true">
+				<p:commandButton value="Yes" type="button"
+					styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />
+			</p:confirmDialog>
+		</h:form>
+		<p:dialog header="Message Info" widgetVar="inboxMessageDialog"
+			modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+			<p:outputPanel id="inboxMessageDetail" style="text-align:left;">
+				<p:panelGrid columns="2"
+					rendered="#{not empty inboxMessagesView.selectedMessage}"
+					style="text-align: left !important;max-width: 100%"
+					columnClasses="label,value">
+
+					<h:outputText value="Message Id:" style="text-align: left" />
+					<h:outputText value="#{inboxMessagesView.selectedMessage.id}" />
+
+					<h:outputText value="Subject" />
+					<h:outputText value="#{inboxMessagesView.selectedMessage.subject}" />
+
+					<h:outputText value="Body" />
+					<h:outputText value="#{inboxMessagesView.selectedMessage.body}" />
+
+					<h:outputText value="Date Sent" />
+					<h:outputText
+						value="#{inboxMessagesView.selectedMessage.dateCreated}" />
+
+
+				</p:panelGrid>
+			</p:outputPanel>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

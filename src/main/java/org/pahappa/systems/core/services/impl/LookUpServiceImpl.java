@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.googlecode.genericdao.search.Search;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.pahappa.systems.core.services.LookUpService;
 import org.pahappa.systems.models.LookUpField;
 import org.pahappa.systems.models.LookUpValue;
