@@ -30,10 +30,10 @@ public class AppUtils {
     public final static SortField DEFAULT_SORT_FIELD = new SortField("Date Created Desc", "dateCreated", true);
     final static String senderGridApiKey = "";
 
-    private static String smtpHost="smtp.gmail.com";
-    private static String smtpPort="587";
-    private static String senderAddress="mail.pahappa@gmail.com";
-    private static String senderPassword="pass@2020@Pahappa";
+    private static String smtpHost = "smtp.gmail.com";
+    private static String smtpPort = "587";
+    private static String senderAddress = "mail.pahappa@gmail.com";
+    private static String senderPassword = "pass@2020@Pahappa";
 
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
@@ -52,7 +52,6 @@ public class AppUtils {
         return mailSender;
     }
 
-  
     public static void sendEmail(
             String to, String subject, String text) {
 
@@ -119,6 +118,29 @@ public class AppUtils {
             sb.append(ALLOWED_CHARACTERS.charAt(random.nextInt(ALLOWED_CHARACTERS.length())));
         }
         return sb.toString();
+    }
+
+    public static String generateOTP(int len) {
+        System.out.println("Generating OTP using random() : ");
+
+        // Using numeric values
+        String numbers = "0123456789";
+
+        // Using random method
+        Random rndm_method = new Random();
+
+        char[] otp = new char[len];
+
+        for (int i = 0; i < len; i++) {
+            // Use of charAt() method : to get character value
+            // Use of nextInt() as it is scanning the value as int
+            otp[i]
+                    = numbers.charAt(rndm_method.nextInt(numbers.length()));
+        }
+
+        String OTP = String.valueOf(otp);
+        System.out.print("Generated OTP is : " + OTP);
+        return OTP;
     }
 
 }

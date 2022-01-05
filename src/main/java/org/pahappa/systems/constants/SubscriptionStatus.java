@@ -12,6 +12,7 @@ package org.pahappa.systems.constants;
 public enum SubscriptionStatus {
     ACTIVE,
     STOPPED,
+    SCHEDULED,
     CANCELLED
 
 }

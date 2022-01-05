@@ -38,8 +38,14 @@ public class SystemSetting extends BaseEntity {
     private String sendGridUrl;
     private String sendGridSenderAddress;
     private String sendGridBearerToken;
+     private String postEndpoint="http://aapug.org/wp-json/wp/v2/posts";
 
     private String balanceCode = "UGX-MTNMM";
+    private String flutterwavePublicKey = "FLWPUBK_TEST-f43bfbb4d1e42b1452641aa8585f49ab-X";
+    private String flutterwaveEncryptionKey = "FLWSECK_TESTe172564b6676";
+    private String flutterwaveSecretKey = "FLWSECK-433eeec81d5f1e5bdb811111db9484dd-X";
+    private String flutterwaveUrl = "https://api.flutterwave.com/v3/";
+     private String flutterwaveReditectUrl = "http://212.111.42.51:8080/aapu/PaymentComplete";
 
     /**
      * @return the referrerPercentageCharge
@@ -226,6 +232,60 @@ public class SystemSetting extends BaseEntity {
 
     public void setProfessional(LookUpField professional) {
         this.professional = professional;
+    }
+
+     @Column(name = "rave_public_key")
+    public String getFlutterwavePublicKey() {
+        return flutterwavePublicKey;
+    }
+
+    public void setFlutterwavePublicKey(String flutterwavePublicKey) {
+        this.flutterwavePublicKey = flutterwavePublicKey;
+    }
+
+      @Column(name = "rave_encryption_key")
+    public String getFlutterwaveEncryptionKey() {
+        return flutterwaveEncryptionKey;
+    }
+
+    public void setFlutterwaveEncryptionKey(String flutterwaveEncryptionKey) {
+        this.flutterwaveEncryptionKey = flutterwaveEncryptionKey;
+    }
+
+      @Column(name = "rave_secret_key")
+    public String getFlutterwaveSecretKey() {
+        return flutterwaveSecretKey;
+    }
+
+    public void setFlutterwaveSecretKey(String flutterwaveSecretKey) {
+        this.flutterwaveSecretKey = flutterwaveSecretKey;
+    }
+
+      @Column(name = "rave_base_url")
+    public String getFlutterwaveUrl() {
+        return flutterwaveUrl;
+    }
+
+    public void setFlutterwaveUrl(String flutterwaveUrl) {
+        this.flutterwaveUrl = flutterwaveUrl;
+    }
+
+    @Column(name = "rave_redirect_url")
+    public String getFlutterwaveReditectUrl() {
+        return flutterwaveReditectUrl;
+    }
+
+    public void setFlutterwaveReditectUrl(String flutterwaveReditectUrl) {
+        this.flutterwaveReditectUrl = flutterwaveReditectUrl;
+    }
+
+     @Column(name = "posts_endpoint_url")
+    public String getPostEndpoint() {
+        return postEndpoint;
+    }
+
+    public void setPostEndpoint(String postEndpoint) {
+        this.postEndpoint = postEndpoint;
     }
     
     

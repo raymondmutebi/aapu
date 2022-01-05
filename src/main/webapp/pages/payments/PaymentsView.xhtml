@@ -1,0 +1,210 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/freyatemplate/template.xhtml">
+
+    <ui:define name="content">
+        <ui:fragment rendered="#{!componentRenderer.administrator}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="california-layout" />
+                        </h:link>
+                    </div>
+
+                    <div class="exception-panel">
+                        <p:graphicImage styleClass="exception-icon"
+                                        name="images/icon-access.png" library="california-layout" />
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br></br> Contact the
+                            administrator for more information.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </ui:fragment>
+
+        <h:form id="paymentsView" rendered="#{componentRenderer.administrator}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="p-grid overlay-demo">
+                        <div class="p-col-12 p-md-3">
+                            <div class="card">
+                                <h:outputText value="Total " />
+                                <h2 class="p-text-right">#{paymentsView.total}</h2>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-3">
+                            <div class="card">
+                                <h:outputText value="Success" />
+                                <h2 class="p-text-right">#{paymentsView.success}</h2>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-3">
+                            <div class="card">
+                                <h:outputText value="Pending" />
+                                <h2 class="p-text-right">#{paymentsView.pending}</h2>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-3">
+                            <div class="card">
+                                <h:outputText value="Failed" />
+                                <h2 class="p-text-right">#{paymentsView.failed}</h2>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="card">
+                        <h:outputText value="Filters" />
+
+                        <div class="p-grid" >
+                            <div class="p-col" >
+                                <p:inputText id="searchTerm" required="false"
+                                             placeholder="Search for payments ..."
+                                             value="#{paymentsView.searchTerm}" >
+                                    <p:ajax event="change" update="paymentsView" listener="#{businessesView.reloadFilterReset()}"/>
+                                </p:inputText>
+                            </div>
+                            <div class="p-col" >
+                                <p:selectCheckboxMenu id="statuses" label="Filter status" value="#{paymentsView.selectedTransactionStatuses}" 
+                                                      style="height: 100%" >
+
+                                    <f:selectItems value="#{paymentsView.transactionStatuses}"/>
+                                    <p:ajax event="change" update="paymentsView" listener="#{paymentsView.reloadFilterReset()}"/>
+                                </p:selectCheckboxMenu>
+                            </div>
+
+                            <div class="p-col" >
+                                <p:selectOneMenu id="reason" label="Filter reason" value="#{paymentsView.selectedReasonType}" 
+                                                 style="height: 100%" >
+                                    <f:selectItem itemLabel="All types"  itemValue="#{null}"/>
+                                    <f:selectItems value="#{paymentsView.paymentReasonTypes}"/>
+                                    <p:ajax event="change" update="paymentsView" listener="#{paymentsView.reloadFilterReset()}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="p-col-fixed" style="width:100px; margin-right: 10px">
+                                <p:commandButton icon="fa fa-search" styleClass="primary-button"
+
+                                                 id="searchBtn" actionListener="#{paymentsView.reloadFilterReset()}"
+                                                 update="paymentsTable" >
+                                </p:commandButton>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="p-grid table-demo">
+                        <div class="p-col-12">
+                            <div class="card">
+                                <p:dataTable id="paymentsTable" var="model" value="#{paymentsView}"
+                                             widgetVar="paymentsTable"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                             paginator="true" lazy="true"
+                                             rows="#{paymentsView.maximumresultsPerpage}"
+                                             emptyMessage="#{paymentsView.dataEmptyMessage}"
+                                             paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                             rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+                                    <f:facet name="header">
+                                        <p:outputPanel styleClass="leftAlign">
+                                            <p:outputPanel styleClass="centerAlign">
+                                                <p:outputLabel
+                                                    value="#{paymentsView.totalRecords} payment (s) found"
+                                                    styleClass="white bold" />
+                                            </p:outputPanel>
+                                        </p:outputPanel>
+                                    </f:facet>
+
+                                    <p:column width="30" headerText="No.">
+                                        <h:outputText value="#{row + 1}" />
+                                    </p:column>
+
+                                    <p:column  headerText="Transaction id">
+                                        <h:outputText value="#{model.transactionId}" />
+                                    </p:column>
+
+                                    <p:column  width="200" headerText="Reason">
+                                        <h:outputText value="#{model.reasonType}" />
+                                    </p:column>
+
+                                    <p:column width="200"  headerText="Member">
+                                        <h:outputText value="#{model.member.firstName} #{model.member.lastName}" />
+                                    </p:column>
+
+                                    <p:column width="100">
+                                        <f:facet name="header">
+                                            <h:outputText value="Amount" />
+                                        </f:facet>
+                                        <h:outputText value="#{model.amount}" />
+                                    </p:column>
+
+
+
+                                    <p:column width="100">
+                                        <f:facet name="header">
+                                            <h:outputText value="T Status" />
+                                        </f:facet>
+                                        <h:outputText value="#{model.trasanctionStatus}" />
+                                    </p:column>
+
+                                    <p:column width="200">
+                                        <f:facet name="header">
+                                            <h:outputText value="Date" />
+                                        </f:facet>
+                                        <h:outputText value="#{model.dateCreated}" />
+                                    </p:column>
+
+                                    <p:column headerText="Action" style="text-align: center" width="80">
+
+                                        <p:commandButton update="transactionDetail" 
+                                                         styleClass="help-button"
+                                                         icon="fa fa-eye"
+                                                         oncomplete="PF('transactionDialog').show()" 
+                                                         title="View Detail">
+                                            <f:setPropertyActionListener value="#{model}" target="#{paymentsView.selectedTransaction}" />
+                                        </p:commandButton>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </div>
+                        </div>
+                    </div>
+                    <p:blockUI block="paymentsView" trigger="searchBtn">
+                        <p:graphicImage value="/resources/images/workingicon.png" />
+                    </p:blockUI>
+                </div>
+            </div>
+
+
+        </h:form>
+        <p:dialog header="Transaction Info" widgetVar="transactionDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+            <p:outputPanel id="transactionDetail" style="text-align:left;">
+                <p:panelGrid  columns="2" rendered="#{not empty paymentsView.selectedTransaction}" style="text-align: left !important;max-width: 100%" columnClasses="label,value">
+
+                    <h:outputText value="Id:" style="text-align: left" />
+                    <h:outputText value="#{paymentsView.selectedTransaction.id}" />
+
+                    <h:outputText value="Internal Reference Number" />
+                    <h:outputText value="#{paymentsView.selectedTransaction.referenceNumber}" />
+
+
+                    <h:outputText value="Amount" />
+                    <h:outputText value="#{paymentsView.selectedTransaction.amount}" />
+
+
+                    <h:outputText value="Details" />
+                    <h:outputText value="#{paymentsView.selectedTransaction.description}" />
+
+
+
+
+                </p:panelGrid>
+            </p:outputPanel>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

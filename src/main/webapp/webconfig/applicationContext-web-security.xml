@@ -88,7 +88,7 @@
             <security:filter-chain
                 pattern="/ExternalViews/Login.xhtml" filters="none" />
              <security:filter-chain
-                pattern="/ExternalViews/ExternalManufacturerForm.xhtml" filters="none" />
+                pattern="/ExternalViews/ExternalMemeberForm.xhtml" filters="none" />
 
             <security:filter-chain
                 pattern="/javax.faces.resource/**" filters="none" />
@@ -111,6 +111,12 @@
                 pattern="/ServiceLoginFailure" filters="none" />
 
             <security:filter-chain pattern="/api/**"
+                                   filters="none" />
+            
+             <security:filter-chain pattern="/PaymentCompletion/**"
+                                   filters="none" />
+            
+             <security:filter-chain pattern="/rave/**"
                                    filters="none" />
             <security:filter-chain pattern="/**"
                                    filters="

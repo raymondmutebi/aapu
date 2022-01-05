@@ -43,54 +43,63 @@
 
                     <div class="card card-w-title" >
                       
-                        <p:tabView >
+                        <p:tabView id="tab" >
                             
-                            <p:tab  title="General">
+                            <p:tab  id="general" title="General">
                                 <div class="p-grid ">
                                     <div class="p-col-12 p-md-12 p-lg-6">
 
-                                        <h:outputLabel for="@next" style="font-size: 18px;"  
+                                        <h:outputLabel for="rgef" 
                                                        value="Registartion fee"/>
 
-                                        <p:inputNumber required="true" decimalPlaces="0"
+                                        <p:inputNumber required="true"  id="regf" decimalPlaces="0"
                                                      value="#{appSettingForm.model.registartionFee}" 
                                                       />
 
                                     </div>
-                                </div>
-                                
-                                 <div class="p-grid ">
+                               
                                     <div class="p-col-12 p-md-12 p-lg-6">
 
-                                        <h:outputLabel for="@next" style="font-size: 18px;"  
+                                        <h:outputLabel for="subf" style="font-size: 18px;"  
                                                        value="Subscription fee"/>
 
-                                        <p:inputNumber required="true" decimalPlaces="0"
+                                        <p:inputNumber  id="subf" decimalPlaces="0"
                                                      value="#{appSettingForm.model.subscriptionFee}" 
+                                                     maxlength="20" />
+
+                                    </div>
+                                    
+                                      <div class="p-col-12 p-md-12 p-lg-6">
+
+                                        <h:outputLabel for="wpp" style="font-size: 18px;"  
+                                                       value="Wordpress posts endpoint"/>
+
+                                        <p:inputText  id="wpp" 
+                                                     value="#{appSettingForm.model.postEndpoint}" 
                                                      maxlength="20" />
 
                                     </div>
                                 </div>
                             </p:tab>
-                            <p:tab  title="Ego sms">
+                            <p:tab id="egoSms" title="Ego sms">
                                 <div class="p-grid ">
                                     <div class="p-col-12 p-md-12 p-lg-6">
 
-                                        <h:outputLabel for="@next" style="font-size: 18px;"  
+                                        <h:outputLabel for="egu" style="font-size: 18px;"  
                                                        value="Url"/>
 
-                                        <p:inputText required="true"
+                                        <p:inputText  id="egu"
                                                      value="#{appSettingForm.model.egosmsUrl}" 
-                                                     maxlength="20" />
+                                                  />
 
                                     </div>
 
                                     <div class="p-col-12 p-md-12 p-lg-6">
 
-                                        <h:outputLabel for="@next" style="font-size: 18px;"  
+                                        <h:outputLabel for="egn" style="font-size: 18px;"  
                                                        value="User name"/>
                                         <div class="ui-inputgroup">
-                                            <p:inputText required="true"
+                                            <p:inputText  id="egn"
                                                          value="#{appSettingForm.model.egoSmsApiUsername}" 
                                                          maxlength="20" />
                                         </div>
@@ -98,41 +107,41 @@
 
                                     <div class="p-col-12 p-md-12 p-lg-6">
 
-                                        <h:outputLabel for="@next" style="font-size: 18px;"  
+                                        <h:outputLabel for="egp" style="font-size: 18px;"  
                                                        value="Password"/>
 
-                                        <p:inputText required="true"
+                                        <p:inputText id="egp"
                                                      value="#{appSettingForm.model.egoSmsApiPassword}" 
-                                                     maxlength="100"/>
+                                                     />
 
                                     </div>
                                  
                                 </div>
                             </p:tab>
-                            <p:tab title="Mail settings">
+                            <p:tab id="mail" title="Mail settings">
                                 <div class="p-grid">
                                     <div class="p-col-12 p-md-12 p-lg-6">
-                                        <h:outputLabel for="@next" value="Sender Email address"
+                                        <h:outputLabel for="sea" value="Sender Email address"
                                                        style="font-size: 18px;" />
-                                        <p:inputText required="true"
+                                        <p:inputText required="true" id="sea"
                                                      value="#{appSettingForm.model.smtpAddress}"/>
                                     </div>
                                     <div class="p-col-12 p-md-12 p-lg-6">
-                                        <h:outputLabel for="@next" value="Sender Email password"
+                                        <h:outputLabel for="sep" value="Sender Email password"
                                                        style="font-size: 18px;" />
-                                        <p:inputText required="true" rendered="#{true}"
+                                        <p:inputText required="true" id="sep" rendered="#{true}"
                                                       value="#{appSettingForm.model.smtpPassword}"/>
                                     </div>
 
                                     <div class="p-col-12 p-md-12 p-lg-6">
-                                        <h:outputLabel for="@next" value="Email smtp host" style="font-size: 18px;" />
-                                        <p:inputText required="true"
+                                        <h:outputLabel for="seh" value="Email smtp host" style="font-size: 18px;" />
+                                        <p:inputText required="true" id="seh"
                                                      value="#{appSettingForm.model.smtpHost}"
                                                      />
                                     </div>
                                     <div class="p-col-12 p-md-12 p-lg-6">
-                                        <h:outputLabel for="@next" style="font-size: 18px;"  value="Email smtp port" />
-                                        <p:inputText required="true"
+                                        <h:outputLabel for="port" style="font-size: 18px;"  value="Email smtp port" />
+                                        <p:inputText required="true" id="port"
                                                      value="#{appSettingForm.model.smtpPort}"
                                                      />
                                     </div>
@@ -147,15 +156,55 @@
 
                             </p:tab>
                           
-                       
+                        <p:tab id="flutter" title="Flutter settings">
+                                <div class="p-grid">
+                                    <div class="p-col-12 p-md-12 p-lg-6">
+                                        <h:outputLabel for="fwpk" value="Pubic key"
+                                                       style="font-size: 18px;" />
+                                        <p:inputText required="true" id="fwpk"
+                                                     value="#{appSettingForm.model.flutterwavePublicKey}"/>
+                                    </div>
+                                    <div class="p-col-12 p-md-12 p-lg-6">
+                                        <h:outputLabel for="fwek" value="Enc key"
+                                                       style="font-size: 18px;" />
+                                        <p:inputText required="true" id="fwek" rendered="#{true}"
+                                                      value="#{appSettingForm.model.flutterwaveEncryptionKey}"/>
+                                    </div>
+
+                                    <div class="p-col-12 p-md-12 p-lg-6">
+                                        <h:outputLabel for="fwsk" value="Secret key" style="font-size: 18px;" />
+                                        <p:inputText required="true" id="fwsk"
+                                                     value="#{appSettingForm.model.flutterwaveSecretKey}"
+                                                     />
+                                    </div>
+                                    <div class="p-col-12 p-md-12 p-lg-6">
+                                        <h:outputLabel for="fwu" style="font-size: 18px;"  value="Wave url" />
+                                        <p:inputText required="true" id="fwu"
+                                                     value="#{appSettingForm.model.flutterwaveUrl}"
+                                                     />
+                                    </div>
+                                    
+                                      <div class="p-col-12 p-md-12 p-lg-6">
+                                        <h:outputLabel for="fwru" style="font-size: 18px;"  value="Wave url" />
+                                        <p:inputText required="true" id="fwru"
+                                                     value="#{appSettingForm.model.flutterwaveReditectUrl}"
+                                                     />
+                                    </div>
+
+                                  
+                                </div>
+
+                            </p:tab>
                           
                         </p:tabView>
                         <div class="p-grid p-justify-end">
                             <div class="p-col-2">
                                 <p:commandButton icon="fa fa-save" value="Save" id="saveBtn2"
-                                                 styleClass="primary-button" validateClient="true"
-                                                 action="#{appSettingForm.save}"
-                                                 update="appSettingForm" />
+                                                 styleClass="primary-button"
+                                                 process=":appSettingForm:tab:general :appSettingForm:tab:mail 
+                                                 :appSettingForm:tab:egoSms :appSettingForm:tab:flutter @this"
+                                                 validateClient="true"
+                                                 action="#{appSettingForm.save}" />
                             </div>
 
                             <div class="p-col-2">

@@ -4,14 +4,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.model.utils.SortField;
 
 import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
 import com.googlecode.genericdao.search.Sort;
+import org.pahappa.systems.constants.AccountStatus;
+import org.pahappa.systems.constants.MemberRegistrationType;
+import org.pahappa.systems.constants.Region;
+import org.pahappa.systems.constants.TransactionStatus;
+import org.pahappa.systems.models.PaymentReasonType;
+import org.pahappa.systems.models.ProfessionValue;
 
 public class CustomSearchUtils {
 
@@ -39,7 +45,7 @@ public class CustomSearchUtils {
     private static boolean generateSearchTerms(List<String> searchFields, String query, List<Filter> filters) {
         if (searchFields != null && !searchFields.isEmpty()) {
             for (String token : query.replaceAll("  ", " ").split(" ")) {
-                String searchTerm = "%" + StringEscapeUtils.escapeSql(token) + "%";
+                String searchTerm = "%" + StringEscapeUtils(token) + "%";
                 Filter[] orFilters = new Filter[searchFields.size()];
                 int counter = 0;
                 for (String searchField : searchFields) {
@@ -65,7 +71,58 @@ public class CustomSearchUtils {
         return search;
     }
 
-    
+    public static Search genereateSearchObjectForMembers(String query, ProfessionValue profession, Region region, AccountStatus accountStatus,MemberRegistrationType registrationType, SortField sortField) {
+        Search search = generateSearchTerms(query, Arrays.asList("firstName", "lastName", "emailAddress", "location", "gender", "region", "lastEmailVerificationCode"));
 
-    
+        if (sortField != null) {
+            search.addSort(sortField.getSort());
+        } else {
+            search.addSort(new Sort("dateCreated", true));
+        }
+
+        if (profession != null) {
+            search.addFilterEqual("professionValue", profession);
+        }
+
+        if (region != null) {
+            search.addFilterEqual("region", region);
+        }
+
+        if (accountStatus != null) {
+            search.addFilterEqual("accountStatus", accountStatus);
+        }
+        
+          if (registrationType != null) {
+            search.addFilterEqual("registrationType", registrationType);
+        }
+
+        return search;
+    }
+
+    public static Search genereateSearchObjectForPayments(String query, List<TransactionStatus> statuses, PaymentReasonType paymentReasonType, SortField sortField) {
+        Search search = generateSearchTerms(query, Arrays.asList("phoneNumber", "message", "description", "member.firstName", "member.lastName", "raveId", "transactionId", "member.emailAddress"));
+
+        if (sortField != null) {
+            search.addSort(sortField.getSort());
+        } else {
+            search.addSort(new Sort("dateCreated", true));
+        }
+
+        if (statuses != null) {
+            search.addFilterIn("trasanctionStatus", statuses);
+        }
+
+        if (paymentReasonType != null) {
+            search.addFilterIn("reasonType", paymentReasonType);
+        }
+
+        return search;
+    }
+
+    private static String StringEscapeUtils(String token) {
+        if (token == null) {
+            return null;
+        }
+        return StringUtils.replace(token, "'", "''");
+    }
 }

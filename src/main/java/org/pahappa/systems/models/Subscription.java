@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.pahappa.systems.models;
 
 import java.util.Date;
@@ -14,6 +13,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import org.pahappa.systems.constants.SubscriptionStatus;
@@ -25,18 +25,16 @@ import org.sers.webutils.model.BaseEntity;
  */
 @Entity
 @Table(name = "subscriptions")
-public class Subscription extends BaseEntity{
+public class Subscription extends BaseEntity {
 
     private Date startDate;
     private Date endDate;
     private int duration = 365;
-    private float amountPaid;
+    private Payment payment;
     private Member member;
-    private float charge;
     private SubscriptionStatus status = SubscriptionStatus.ACTIVE;
 
-
-     @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     public Member getMember() {
         return member;
@@ -45,7 +43,6 @@ public class Subscription extends BaseEntity{
     public void setMember(Member member) {
         this.member = member;
     }
- 
 
     @Temporal(javax.persistence.TemporalType.DATE)
     @Column(name = "start_date", nullable = true)
@@ -55,6 +52,16 @@ public class Subscription extends BaseEntity{
 
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
+    }
+
+    @OneToOne
+    @JoinColumn(name = "payment_id")
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -76,31 +83,7 @@ public class Subscription extends BaseEntity{
         this.duration = duration;
     }
 
-    @Column(name = "amount", nullable = true)
-    public float getAmountPaid() {
-        return amountPaid;
-    }
-
-    public void setAmountPaid(float amountPaid) {
-        this.amountPaid = amountPaid;
-    }
-
-    /**
-	 * @return the charge
-	 */
-    @Column(name = "charge", nullable = true)
-	public float getCharge() {
-		return charge;
-	}
-
-	/**
-	 * @param charge the charge to set
-	 */
-	public void setCharge(float charge) {
-		this.charge = charge;
-	}
-
-	@Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "status", nullable = true)
     public SubscriptionStatus getStatus() {
         return status;
@@ -109,8 +92,6 @@ public class Subscription extends BaseEntity{
     public void setStatus(SubscriptionStatus status) {
         this.status = status;
     }
-    
-    
 
     @Override
     public String toString() {

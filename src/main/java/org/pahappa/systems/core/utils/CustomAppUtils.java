@@ -19,13 +19,13 @@ public class CustomAppUtils {
     public static final int MAX_CONTENT_PACKAGES = 9;
     public static final int MAX_MESSAGES_PER_BATCH = 100;
     public static final int EGO_SMS_MESSAGE_COST = 30;
-    public static final int MIN_TRANSACRION_AMOUNT=1000;
+    public static final int MIN_TRANSACRION_AMOUNT = 1000;
 
     public static String validatePhoneNumber(String phoneNumber) {
         if (phoneNumber == null) {
             return null;
         }
-
+        phoneNumber = phoneNumber.replace("+", "");
         if (phoneNumber.matches("\\d{12}") && phoneNumber.startsWith("256")) {
             return phoneNumber;
         } else if (phoneNumber.matches("\\d{9}") && phoneNumber.startsWith("7")) {
@@ -55,6 +55,5 @@ public class CustomAppUtils {
         return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
                 + request.getContextPath();
     }
-
 
 }
