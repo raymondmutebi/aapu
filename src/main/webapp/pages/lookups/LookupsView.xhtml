@@ -1,0 +1,176 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/freyatemplate/template.xhtml">
+
+    <ui:define name="content">
+        <ui:fragment rendered="#{!componentRenderer.administrator}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="freya-layout" />
+                        </h:link>
+                    </div>
+
+                    <div class="exception-panel">
+                        <p:graphicImage styleClass="exception-icon"
+                                        name="images/icon-access.png" library="freya-layout" />
+                        <h1 class="exception-summary">Access Denied
+                        </h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br></br> LookUp the
+                            administrator for more information.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </ui:fragment>
+
+        <h:form id="lookUpsView" enctype="multipart/form-data"
+                rendered="#{ (componentRenderer.administrator) }">
+            <div class="p-grid ">
+                <div class="p-col-12">
+                    <div class="card">
+                        <p:growl id="messages" showDetail="true" />
+                        <div class="p-d-flex p-jc-between" style="margin: 5px " >
+                            <div>
+                                <p:inputText id="searchTerm" required="false"
+                                             placeholder="Search for datasets ..."
+                                             onkeyup="#{lookUpsView.reloadFilterReset()}"
+                                             value="#{lookUpsView.searchTerm}" />
+                            </div>
+                            <div>
+                                <p:commandButton icon="fa fa-search" styleClass="p-mr-2 p-mb-2 primary-button"
+                                                 id="searchBtn" 
+                                                 actionListener="#{lookUpsView.reloadFilterReset()}"
+                                                 value="Search">
+                                </p:commandButton>
+
+
+
+                            </div>
+
+                        </div>
+
+                    </div> 
+                </div> 
+            </div>
+            <div class="p-grid ">
+                <div class="p-col-12">
+                    <div class="card">
+
+                        <p:dataTable id="lookUpTable" var="model" value="#{lookUpsView}"
+                                     widgetVar="lookUpTable"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                     paginator="true" lazy="true"
+                                     rows="#{lookUpsView.maximumresultsPerpage}"
+                                     emptyMessage="#{lookUpsView.dataEmptyMessage}"
+                                     paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                     rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+                            <f:facet name="header">
+                                <div class="p-d-flex p-jc-between">
+                                    <div>
+                                        <span style="font-weight: bold">Datasets</span>
+
+                                    </div>
+                                    <div>
+
+                                        <p:commandButton value="Export" process="lookUpsTable" icon="pi pi-upload" styleClass="help-button" ajax="false">
+                                            <p:dataExporter type="pdf"  target="lookUpsTable" fileName="lookUps"/>
+                                        </p:commandButton>
+                                        <p:commandButton icon="fa fa-plus" value="Add New" styleClass="success-button"
+                                                         style="margin-left: 5px"
+                                                         oncomplete="PF('lookUpDialog').show()" 
+                                                         validateClient="true"
+                                                         update=":lookUpsView:lookUpForm"
+                                                         actionListener="#{lookUpsView.loadSelectedLookUp(null) }">
+                                        </p:commandButton>
+                                    </div>
+                                </div>
+                            </f:facet>
+
+                            <p:column width="30" headerText="No.">
+                                <h:outputText value="#{row + 1}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Name" />
+                                </f:facet>
+                                <h:outputText value="#{model.name}" />
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Size" />
+                                </f:facet>
+                                <h:outputText value="#{model.lookUpValues.size()}" />
+                            </p:column>
+
+
+                            <p:column headerText="Action" exportable="false">
+
+                                <p:commandButton icon="fa fa-edit" 
+                                                 styleClass="success-button" 
+                                                 action= "#{lookUpForm.getViewPath}"  >
+                                    <f:setPropertyActionListener value="#{model}" target="#{lookUpForm.model}" />
+                                </p:commandButton>
+
+                                <p:commandButton icon="fa fa-trash" disabled="#{model.isMigration}"
+                                                 styleClass="danger-button" style=" margin-left: 10px;"
+                                                 action="#{lookUpsView.deleteLookUp(model)}"
+                                                 update="lookUpTable">
+                                    <p:confirm header="Confirmation"
+                                               message="You are about to delete a lookUp. Do you wish to continue?"
+                                               icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </p:column>
+
+                        </p:dataTable>
+
+                        <p:blockUI block="lookUpsView" trigger="searchBtn">
+                            <p:graphicImage value="/resources/images/workingicon.png" />
+                        </p:blockUI>
+
+                    </div>
+                </div>
+            </div>
+            <p:dialog header="#{lookUpsView.selectedLookUpField.name==null?'New dataset':lookUpsView.selectedLookUpField.name}" 
+                      width="450" height="300px" showEffect="fade" modal="true" 
+                       widgetVar="lookUpDialog" responsive="true">
+
+                <p:outputPanel id="lookUpForm" styleClass="ui-fluid"  >
+                    <p:outputPanel  rendered="#{not empty lookUpsView.selectedLookUpField}" >
+                        <div class="p-formgrid p-grid">
+                            <div class="p-field p-col-12">
+                                <h5>Name</h5>
+                                <p:inputText required="true"  id="name"
+                                             value="#{lookUpsView.selectedLookUpField.name}"/>
+                            </div>
+                           
+                        </div>
+
+                    </p:outputPanel>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Save" icon="pi pi-check" actionListener="#{lookUpsView.saveLookUpField(lookUpsView.selectedLookUpField)}" update="lookUpTable" process="lookUpForm @this" 
+                                     oncomplete="PF('lookUpDialog').hide()"/>
+                    <p:commandButton value="Cancel" icon="pi pi-times" onclick="PF('lookUpDialog').hide()" styleClass="secondary-button"  update="lookUpTable" />
+                </f:facet>
+            </p:dialog> 
+            <p:confirmDialog global="true">
+                <p:commandButton value="Yes" type="button"
+                                 styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />
+            </p:confirmDialog>
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>

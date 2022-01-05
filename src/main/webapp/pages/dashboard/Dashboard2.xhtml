@@ -1,0 +1,319 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/freyatemplate/template.xhtml">
+
+    <ui:define name="title">Dashboard</ui:define>
+
+    <ui:define name="viewname">
+        <ui:fragment rendered="#{pgwRenderer.administrator}">
+            Dashboard
+        </ui:fragment>
+        <ui:fragment rendered="#{! (pgwRenderer.administrator)}">
+            #{pgwRenderer.churchOfUser.getName()}
+        </ui:fragment>
+    </ui:define>
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            //<![CDATA[
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.title = '';
+                this.cfg.seriesColors = ['#00acac', '#3e96e7'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#ffffff',
+                    gridLineColor: '#EEEEEE',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#212121'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    lineWidth: 1,
+                    markerOptions: {
+                        shadow: false,
+                        size: 7,
+                        style: 'circle'
+                    }
+                }
+            }
+            $(document).ready(function () {
+                var unique_id = $.gritter.add({
+                    // (string | mandatory) the heading of the notification
+                    title: 'Alert',
+                    text: "Hello Word",
+                    sticky: false,
+                    // (int | optional) the time you want it to be alive for before fading out
+                    time: '20000',
+                    // (string | optional) the class name you want to apply to that specific message
+                    class_name: 'my-sticky-class'
+                });
+                return false;
+            });
+            function skinBar() {
+                this.cfg.shadow = false;
+                this.cfg.title = '';
+                this.cfg.seriesColors = ['#fdb81e', '#00a6d2'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#ffffff',
+                    gridLineColor: '#F5F5F5',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    borderWidth: 0.1,
+                    borderColor: 'bdbdbd',
+                    rendererOptions: {
+                        textColor: '#666F77'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    lineWidth: 1,
+                    renderer: $.jqplot.BarRenderer,
+                    markerOptions: {
+                        shadow: false,
+                        size: 7,
+                        style: 'circle'
+                    }
+                }
+            }
+
+            //]]>
+        </script>
+        <style type="text/css">
+            .main-content {
+                padding: 0;
+            }
+            .top {
+                filter:alpha(opacity=80);
+                opacity:0.8;
+                padding:0 0 0 0px;
+                z-index: 1000;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+        <ui:fragment
+            rendered="#{!pgwRenderer.dashboardsPerm and !pgwRenderer.administrator}">
+            <div class="dashboard">
+                <div class="exception-topbar">
+                    <h:link styleClass="logo">
+                        <p:graphicImage library="freya-layout" />
+                    </h:link>
+                </div>
+
+                <div class="exception-panel">
+                    <p:graphicImage styleClass="exception-icon"
+                                    name="images/icon-access.png" library="freya-layout" />
+                    <h1 class="exception-summary">Access Denied</h1>
+                    <p class="exception-detail">
+                        You don't have the necessary permissions to view Dashboard
+                        content.<br></br> Contact the administrator for more information.
+                    </p>
+                </div>
+            </div>
+        </ui:fragment>
+        <ui:fragment
+            rendered="#{pgwRenderer.dashboardsPerm or pgwRenderer.administrator or pgwRenderer.churchAdmin }">
+            <div class="dashboard">
+
+
+
+                <div class="ui-g">
+                    <ui:fragment rendered="#{pgwRenderer.administrator}">
+
+                        <div class="ui-g-12 ui-md-12 ui-lg-6">
+                            <div class="overview-box monthly-sales">
+                                <div class="overview-title">System Users</div>
+                                <i class="fa fa-arrow-circle-up" />
+                                <div class="overview-numbers">
+                                    <strong>
+                                        <h:outputText value="#{dashboard.yoPaymentbalance}">
+                                            <f:convertNumber groupingUsed="true"
+                                                             maxFractionDigits="2"  />
+                                        </h:outputText>
+                                    </strong> 
+                                </div>
+                                <p:graphicImage name="images/icon-users.png"
+                                                library="freya-layout" />
+                            </div>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-12 ui-lg-6">
+                            <div class="overview-box monthly-sales">
+                                <div class="overview-title">Companies</div>
+                                <i class="fa fa-arrow-circle-up" />
+                                <div class="overview-numbers">
+                                    <strong>#{dashboard.contacts}</strong>
+                                </div>
+                                <p:graphicImage name="images/icon-sales.png"
+                                                library="freya-layout" />
+                            </div>
+                        </div>
+                       
+
+                    </ui:fragment>
+
+                    <ui:fragment rendered="#{!pgwRenderer.administrator}">
+
+                        <div class="ui-g-12 ui-md-12 ui-lg-3">
+                            <div class="overview-box monthly-sales">
+                                <div class="overview-title">Counter 1</div>
+                                <i class="fa fa-arrow-circle-up" />
+                                <div class="overview-numbers">
+                                    <strong>0</strong>
+                                </div>
+                                <p:graphicImage name="images/icon-views.png"
+                                                library="freya-layout" />
+                            </div>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-12 ui-lg-3">
+                            <div class="overview-box monthly-sales">
+                                 <div class="overview-title">Counter 2</div>
+                                <i class="fa fa-arrow-circle-up" />
+                                <div class="overview-numbers">
+                                    <strong>0</strong> /=
+                                </div>
+                                <p:graphicImage name="images/icon-sales.png"
+                                                library="freya-layout" />
+                            </div>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-3">
+                            <div class="overview-box monthly-views">
+                                <div class="overview-title">
+                                    E-WALLET BALANCE <i class="fa fa-arrow-circle-up" />
+                                </div>
+                                <div class="overview-numbers">
+                                    <strong>0</strong> /=
+                                </div>
+                                <p:graphicImage name="images/icon-sales.png"
+                                                library="freya-layout" />
+                            </div>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-3">
+                            <div class="overview-box monthly-users">
+                                <div class="overview-title">
+                                    PACKAGES <i class="fa fa-arrow-circle-down" />
+                                </div>
+                                <div class="overview-numbers">
+                                    <strong>0</strong>
+                                </div>
+                                <p:graphicImage name="images/icon-views.png"
+                                                library="freya-layout" />
+                            </div>
+                        </div>
+
+                    </ui:fragment>
+
+                    <div class="ui-g-12 ui-md-6 ui-lg-3">
+                        <div class="stats">
+                            <div class="stats-icon">
+                                <p:graphicImage name="images/icon-message.png"
+                                                library="freya-layout" styleClass="message-icon" />
+                            </div>
+                            <div class="stats-numbers">0</div>
+                            <div class="stats-title">Counter 1</div>
+                            <div class="stats-subtitle">
+                                A description of counter 1
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-6 ui-lg-3">
+                        <div class="stats">
+                            <div class="stats-icon">
+                                <p:graphicImage name="images/icon-doc.png"
+                                                library="freya-layout" styleClass="doc-icon" />
+                            </div>
+                            <div class="stats-numbers">0</div>
+                            <div class="stats-title">Counter 2</div>
+                            <div class="stats-subtitle">
+                                A description of counter 2
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-6 ui-lg-3">
+                        <div class="stats">
+                            <div class="stats-icon">
+                                <p:graphicImage name="images/icon-mark.png"
+                                                library="freya-layout" styleClass="mark-icon" />
+                            </div>
+                            <div class="stats-numbers">0</div>
+                            <div class="stats-title">Counter 3</div>
+                            <div class="stats-subtitle">
+                                A description of counter 3
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-6 ui-lg-3">
+                        <div class="stats">
+                            <div class="stats-icon">
+                                <p:graphicImage name="images/icon-profile.png"
+                                                library="freya-layout" styleClass="profile-icon" />
+                            </div>
+                            <div class="stats-numbers">#{dashboard.contactGroupsCount}</div>
+                           <div class="stats-title">Counter 4</div>
+                            <div class="stats-subtitle">
+                                A description of counter 4
+                            </div>
+                        </div>
+                    </div>
+
+                  
+                    <ui:fragment rendered="#{ (pgwRenderer.administrator) }">
+
+                        <div class="ui-g-12 ui-md-12 ui-lg-6">
+                            <p:panel styleClass="profile-details ui-g-12">
+                                <ui:fragment rendered="#{(pgwRenderer.administrator)}">
+
+                                    <div class="ui-g-12">
+                                        <p:chart id="bar2" type="bar"
+                                                 model="#{dashboard.groupMemberBarModel}" responsive="true" />
+                                    </div>
+
+                                </ui:fragment>
+                            </p:panel>
+
+                        </div>
+
+                    </ui:fragment>
+
+                    <ui:fragment rendered="#{(pgwRenderer.administrator) }">
+
+                        <div class="ui-g-12 ui-md-12 ui-lg-6">
+                            <p:panel styleClass="profile-details ui-g-12">
+                                <ui:fragment rendered="#{(pgwRenderer.administrator)}">
+
+                                    <div class="ui-g-12">
+                                        <p:chart id="bar3" type="bar" 
+                                                 model="#{dashboard.groupMemberBarModel}"
+                                                 responsive="true" />
+                                    </div>
+
+                                </ui:fragment>
+                            </p:panel>
+
+                        </div>
+
+                    </ui:fragment>
+
+
+
+                </div>
+            </div>
+        </ui:fragment>
+        <p:growl id="growl" showDetail="true"  sticky="true" widgetVar="growl" />
+
+
+    </ui:define>
+
+</ui:composition>

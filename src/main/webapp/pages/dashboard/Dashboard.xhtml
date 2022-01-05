@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:po="http://primefaces.org/freya" 
+                template="/pages/freyatemplate/template.xhtml">
+
+    <ui:define name="title">Dashboard</ui:define>
+
+    <ui:define name="head">
+        <h:outputScript name="chartjs/chart.js" library="demo" />
+      
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="layout-dashboard">
+            <div class="p-grid">
+                <div class="p-col-12">
+                    <div class="notification">
+                        <h6>Hello! Welcome to AAPU! Before start please complete your profile to know you better. <a href="#">Profile settings <i class="pi pi-arrow-up"></i></a></h6>
+                    </div>
+                </div>
+                <div class="p-col-12">
+                    <div class="p-grid" style="margin: -1rem;">
+                        <div class="p-col">
+                            <div class="card overview-box white">
+                                <div class="overview-info">
+                                    <h6>Total Members</h6>
+                                    <h1>
+                                        <h:outputText value="#{dashboard.manufacturers}">
+                                            <f:convertNumber groupingUsed="true"
+                                                             maxFractionDigits="2"  />
+                                        </h:outputText>
+                                    </h1>
+                                </div>
+                                <i class="pi pi-image"></i>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <div class="card overview-box blue">
+                                <div class="overview-info">
+                                    <h6>New users (Today)</h6>
+                                    <h1>32</h1>
+                                </div>
+                                <i class="pi pi-users"></i>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <div class="card overview-box gray">
+                                <div class="overview-info">
+                                    <h6>Uptime</h6>
+                                    <h1>5h12m</h1>
+                                </div>
+                                <i class="pi pi-globe"></i>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <div class="card overview-box darkgray">
+                                <div class="overview-info">
+                                    <h6>Monthly subscriptions</h6>
+                                    <h1>#{dashboard.manufacturers}</h1>
+                                </div>
+                                <i class="pi pi-th-large"></i>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <div class="card overview-box orange">
+                                <div class="overview-info">
+                                    <h6>Cloud users</h6>
+                                    <h1>4216</h1>
+                                </div>
+                                <i class="pi pi-cloud"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,198 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/freyatemplate/template.xhtml">
+
+    <ui:define name="content">
+        <ui:fragment rendered="#{!componentRenderer.administrator}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="california-layout" />
+                        </h:link>
+                    </div>
+
+                    <div class="exception-panel">
+                        <p:graphicImage styleClass="exception-icon"
+                                        name="images/icon-access.png" library="california-layout" />
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br></br> Contact the
+                            administrator for more information.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </ui:fragment>
+
+        <h:form id="subscriptionsView" rendered="#{componentRenderer.administrator}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="p-grid overlay-demo">
+                        <div class="p-col-12 p-md-3">
+                            <div class="card">
+                                <h:outputText value="Total amount" />
+                                <h2 class="p-text-right">0.0</h2>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-3">
+                            <div class="card">
+                                <h:outputText value="Success" />
+                                <h2 class="p-text-right">399</h2>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-3">
+                            <div class="card">
+                                <h:outputText value="Pending" />
+                                <h2 class="p-text-right">20</h2>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-3">
+                            <div class="card">
+                                <h:outputText value="Failed" />
+                                <h2 class="p-text-right">40</h2>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="card">
+                        <h:outputText value="Filters" />
+
+                        <div class="p-grid" >
+                            <div class="p-col-12 p-md-6 p-lg-3" >
+                                <p:inputText id="searchTerm" required="false"
+                                             placeholder="Search for subscriptions ..."
+                                             value="#{subscriptionsView.searchTerm}" >
+                                    <p:ajax event="change" update="subscriptionsView" listener="#{businessesView.reloadFilterReset()}"/>
+                                </p:inputText>
+                            </div>
+                            <div class="p-col-12 p-md-6 p-lg-3" >
+                                <p:commandButton icon="fa fa-search" styleClass="primary-button"
+                                                 style="margin-right: 18px"
+                                                 id="searchBtn" actionListener="#{subscriptionsView.reloadFilterReset()}"
+                                                 update="subscriptionsTable" >
+                                </p:commandButton>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="p-grid table-demo">
+                        <div class="p-col-12">
+                            <div class="card">
+                                <p:dataTable id="subscriptionsTable" var="model" value="#{subscriptionsView}"
+                                             widgetVar="subscriptionsTable"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                             paginator="true" lazy="true"
+                                             rows="#{subscriptionsView.maximumresultsPerpage}"
+                                             emptyMessage="#{subscriptionsView.dataEmptyMessage}"
+                                             paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                             rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+                                    <f:facet name="header">
+                                        <p:outputPanel styleClass="leftAlign">
+                                            <p:outputPanel styleClass="centerAlign">
+                                                <p:outputLabel
+                                                    value="#{subscriptionsView.totalRecords} subscription (s) found"
+                                                    styleClass="white bold" />
+                                            </p:outputPanel>
+                                        </p:outputPanel>
+                                    </f:facet>
+
+                                    <p:column width="30" headerText="No.">
+                                        <h:outputText value="#{row + 1}" />
+                                    </p:column>
+
+                                    <p:column  headerText="Transaction id">
+                                        <h:outputText value="#{model.payment.transactionId}" />
+                                    </p:column>
+
+                                    <p:column  width="200" headerText="Status">
+                                        <h:outputText value="#{model.status}" />
+                                    </p:column>
+
+                                   
+
+                                    <p:column width="100">
+                                        <f:facet name="header">
+                                            <h:outputText value="Start date" />
+                                        </f:facet>
+                                        <h:outputText value="#{model.startDate}" >
+                                            <f:convertDateTime pattern="dd/MMM/yy 'at' hh:mm"/>
+                                        </h:outputText>
+                                    </p:column>
+                                    
+                                    <p:column width="100">
+                                        <f:facet name="header">
+                                            <h:outputText value="End date" />
+                                        </f:facet>
+                                        <h:outputText value="#{model.endDate}" >
+                                            <f:convertDateTime pattern="dd/MMM/yy 'at' hh:mm"/>
+                                        </h:outputText>
+                                    </p:column>
+
+
+                                    <p:column width="200">
+                                        <f:facet name="header">
+                                            <h:outputText value="Date made" />
+                                        </f:facet>
+                                        <h:outputText value="#{model.dateCreated}" />
+                                    </p:column>
+                                    
+                                    <p:column width="200" rendered="#{componentRenderer.administrator}"  headerText="Member">
+                                        <h:outputText value="#{model.member.firstName} #{model.member.lastName}" />
+                                    </p:column>
+
+                                    <p:column headerText="Action" style="text-align: center" width="80">
+
+                                        <p:commandButton update="transactionDetail" 
+                                                         styleClass="help-button"
+                                                         icon="fa fa-eye"
+                                                         oncomplete="PF('transactionDialog').show()" 
+                                                         title="View Detail">
+                                            <f:setPropertyActionListener value="#{model}" target="#{subscriptionsView.selectedTransaction}" />
+                                        </p:commandButton>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </div>
+                        </div>
+                    </div>
+                    <p:blockUI block="subscriptionsView" trigger="searchBtn">
+                        <p:graphicImage value="/resources/images/workingicon.png" />
+                    </p:blockUI>
+                </div>
+            </div>
+
+
+        </h:form>
+        <p:dialog header="Transaction Info" widgetVar="transactionDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+            <p:outputPanel id="transactionDetail" style="text-align:left;">
+                <p:panelGrid  columns="2" rendered="#{not empty subscriptionsView.selectedTransaction}" style="text-align: left !important;max-width: 100%" columnClasses="label,value">
+
+                    <h:outputText value="Id:" style="text-align: left" />
+                    <h:outputText value="#{subscriptionsView.selectedTransaction.id}" />
+
+                    <h:outputText value="Internal Reference Number" />
+                    <h:outputText value="#{subscriptionsView.selectedTransaction.referenceNumber}" />
+
+
+                    <h:outputText value="Amount" />
+                    <h:outputText value="#{subscriptionsView.selectedTransaction.amount}" />
+
+
+                    <h:outputText value="Details" />
+                    <h:outputText value="#{subscriptionsView.selectedTransaction.description}" />
+
+
+
+
+                </p:panelGrid>
+            </p:outputPanel>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,215 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/pages/californiatemplate/template.xhtml">
+
+	<ui:define name="head">
+		<style>
+body .ui-panelgrid tbody tr.ui-widget-content {
+	border-top: 0px solid #d8d8d8 !important;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="content">
+		<ui:fragment rendered="#{!pgwRenderer.administrator}">
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+					<div class="exception-topbar">
+						<h:link styleClass="logo">
+							<p:graphicImage library="california-layout" />
+						</h:link>
+					</div>
+
+					<div class="exception-panel">
+						<p:graphicImage styleClass="exception-icon"
+							name="images/icon-access.png" library="california-layout" />
+						<h1 class="exception-summary">Access Denied</h1>
+						<p class="exception-detail">
+							You don't have the necessary permissions.<br></br> Contact the
+							administrator for more information.
+						</p>
+					</div>
+
+				</div>
+			</div>
+		</ui:fragment>
+	
+		<h:form id="taskSchedulesView" rendered="#{pgwRenderer.administrator}">
+			<div class="ui-g">
+				<div class="ui-g">
+
+					<div class="ui-g-12">
+						<div class="card">
+							<div>
+								<p:breadCrumb homeDisplay="text" styleClass="breadcrumbs">
+									<p:menuitem value="" />
+									<p:menuitem value="Tasks Schedules"
+										url="#{taskSchedulesView.viewPath}" />
+								</p:breadCrumb>
+							</div>
+						</div>
+					</div>
+
+					<div class="card card-w-title">
+						<div class="ui-g">
+							<p:inputText id="searchField" required="false"
+								placeholder="Search Jobs" style="width: 300px;"
+								value="#{taskSchedulesView.searchTerm}" />
+
+							<p:calendar value="#{taskSchedulesView.from}" showOn="both"
+								inputStyle="width: 200px; margin-left: 10px;" navigator="true"
+								pattern="EEE, dd MMM, yyyy" />
+
+							<p:calendar value="#{taskSchedulesView.to}" showOn="both"
+								inputStyle="width: 200px; margin-left: 10px;" navigator="true"
+								styleClass="Wid100 WidthAuto" pattern="EEE, dd MMM, yyyy" />
+
+
+							<p:commandButton id="searchBtn" icon="fa fa-search"
+								style="width: 100px; margin-left: 10px;" value="Search"
+								actionListener="#{taskSchedulesView.reloadFilterReset()}"
+								update="taskSchedulesTable">
+							</p:commandButton>
+						</div>
+
+					</div>
+
+					<div class="shadow-box ui-shadow-1">
+						<p:dataTable id="taskSchedulesTable" var="model"
+							value="#{taskSchedulesView}" widgetVar="taskSchedulesTable"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+							paginator="true" lazy="true"
+							rows="#{taskSchedulesView.maximumresultsPerpage}"
+							emptyMessage="#{taskSchedulesView.dataEmptyMessage}"
+							paginatorPosition="bottom" paginatorAlwaysVisible="false"
+							rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+							<f:facet name="header">
+								<p:outputPanel styleClass="leftAlign">
+									<p:outputPanel styleClass="centerAlign">
+										<p:outputLabel styleClass="official-fg-color bold"
+											value="#{taskSchedulesView.totalRecords}  Task Schedule (s) found" />
+									</p:outputPanel>
+								</p:outputPanel>
+							</f:facet>
+
+							<p:column width="30" headerText="No.">
+								<h:outputText value="#{row + 1}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Name" />
+								</f:facet>
+								<h:outputText value="#{model.backgroundTask.name}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Active" />
+								</f:facet>
+								<h:outputText value="#{model.active}" />
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Executed" />
+								</f:facet>
+								<h:outputText value="#{model.executed}" />
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Successful" />
+								</f:facet>
+								<h:outputText value="#{model.successful}" />
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Date of Execution" />
+								</f:facet>
+								<h:outputText value="#{model.dateOfExecution}" />
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Details" />
+								</f:facet>
+								<h:outputText value="#{model.details}" />
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Comment" />
+								</f:facet>
+								<h:outputText value="#{model.comment}" />
+							</p:column>
+							<p:column headerText="Options" width="60"
+								styleClass="centerAlign">
+								<p:commandButton icon="fa fa-close" title="Pause Background Job"
+									rendered="#{model.isActive()}" update="taskSchedulesTable"
+									styleClass="hyperLink red-btn"
+									action="#{taskSchedulesView.pause(model)}">
+									<p:confirm header="Confirmation"
+										message="You are about to Terminate a Background Job. Do you wish to continue?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+
+								<p:commandButton icon="fa fa-check"
+									title="Resume Background Job" rendered="#{model.isNotActive()}"
+									update="taskSchedulesTable" styleClass="hyperLink green-btn"
+									action="#{taskSchedulesView.resume(model)}">
+									<p:confirm header="Confirmation"
+										message="You are about to Resume Execution of a Background Job. Do you wish to continue?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+
+						<h:panelGrid style="width:50%;" columns="5">
+							<p:outputPanel>
+								<p:outputLabel value="Active?" style="padding: 10px;" />
+								<p:triStateCheckbox id="active"
+									value="#{taskSchedulesView.active}" style="padding: 10px;">
+									<p:ajax event="change" update="taskSchedulesTable"
+										listener="#{taskSchedulesView.reloadFilterReset()}" />
+								</p:triStateCheckbox>
+							</p:outputPanel>
+							<div class="vertical-div-strip" />
+							<p:outputPanel>
+								<p:outputLabel value="Executed?" style="padding: 10px;" />
+								<p:triStateCheckbox id="executed"
+									value="#{taskSchedulesView.executed}" style="padding: 10px;">
+									<p:ajax event="change" update="taskSchedulesTable"
+										listener="#{taskSchedulesView.reloadFilterReset()}" />
+								</p:triStateCheckbox>
+							</p:outputPanel>
+							<div class="vertical-div-strip" />
+							<p:outputPanel>
+								<p:outputLabel value="Successful?" style="padding: 10px;" />
+								<p:triStateCheckbox id="successful"
+									value="#{taskSchedulesView.successful}" style="padding: 10px;">
+									<p:ajax event="change" update="taskSchedulesTable"
+										listener="#{taskSchedulesView.reloadFilterReset()}" />
+								</p:triStateCheckbox>
+							</p:outputPanel>
+						</h:panelGrid>
+						<p:blockUI block="taskSchedulesView"
+							trigger="taskSchedulesTable searchBtn searchField active executed successful">
+							<p:graphicImage value="/resources/images/workingicon.png" />
+						</p:blockUI>
+
+						<p:confirmDialog global="true">
+							<p:commandButton value="Yes" type="button"
+								styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />
+							<p:commandButton value="No" type="button"
+								styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />
+						</p:confirmDialog>
+					</div>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

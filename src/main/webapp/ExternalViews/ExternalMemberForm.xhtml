@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      lang="en">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+            <link rel="icon" href="#{request.contextPath}/resources/freya-layout/images/uma-logo.png" type="image/x-icon"></link>
+        </f:facet>
+        <title><ui:insert name="title">AAPU</ui:insert></title>
+        <link rel="shortcut icon" type="image/x-icon"
+              href="#{request.contextPath}/resources/images/favicon_ico.png" />
+        <h:outputScript name="js/layout.js" library="freya-layout" />
+        <h:outputStylesheet name="css/primeicons.css" library="freya-layout" />
+        <h:outputStylesheet name="css/primeflex.min.css" library="freya-layout" />
+        <h:outputStylesheet name="css/#{guestPreferences.layout}.css" library="freya-layout" />
+        <h:outputStylesheet name="css/demo-#{guestPreferences.darkMode}.css" library="demo" />
+        <ui:insert name="head"/>
+    </h:head>
+
+    <h:body styleClass="#{guestPreferences.inputStyleClass}" >
+
+        <div class="ui-g-12  layout-wrapper layout-topbar-#{guestPreferences.topbarTheme} layout-menu-#{guestPreferences.menuTheme} #{guestPreferences.menuMode}" >
+            <div class="ui-g-4 card-body" style="text-align: center">
+                <h2>Become a member</h2>
+                <h:link  styleClass="logo">
+                    <p:graphicImage name="images/uma-logo.png" width="200" height="200" library="freya-layout" />
+                </h:link>
+                <p style="padding: 10%;font-size: 18px;color: #35557e">We are an umbrella body that brings together all 
+                    Pre-hospital Emergency Medical Services providers in Uganda. We operate to represent 
+                    and serve emergency medical services (EMS) practitioners through advocacy, 
+                    education programs (Trainings) , coordination of emergency responses in times 
+                    of disaster and conducting research, using our structures and secretariat staff 
+                    that are committed, dedicated, and strive to achieve the Association objectives.  </p>
+                <p>Have an account? <a href="Login.xhtml">Login instead</a></p>
+            </div>   
+            <div class="ui-g-8">
+                <h:form id="externalMemberForm" enctype="multipart/form-data">
+
+                    <ui:fragment >
+                        <div style="margin-top: 5%;height: 600px" >
+                            <p:fieldset styleClass="card " rendered="#{externalMemberForm.showForm}" >
+                                <div class="ui-fluid p-grid">
+                                    <div class="p-field p-col-12 p-md-12">
+                                        <h2 style="text-align: center; opacity: .6">Step 1: Enter your details</h2>
+                                    </div>
+                                    <p:outputPanel styleClass="p-field p-col-12 p-md-12" 
+                                                   style=" background-color:red;color: white;" 
+                                                   rendered="#{not externalMemberForm.successResponse}" >
+                                        <h5 >#{externalMemberForm.customUiMessage}</h5>
+                                    </p:outputPanel>
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <p:outputLabel for="fname" value="First name" />
+                                        <p:inputText required="true" id="fname"
+                                                     value="#{externalMemberForm.model.firstName}"/>
+                                    </div>
+
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <p:outputLabel for="lname" value="Last name" />
+                                        <p:inputText required="true" id="lname"
+                                                     value="#{externalMemberForm.model.lastName}"/>
+                                    
+                                    </div>
+
+
+
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <p:outputLabel for="gender" value="Gender" />
+                                        <p:selectOneMenu  value="#{externalMemberForm.model.gender}" 
+                                                          id="gender"   effect="fade">
+
+                                            <f:selectItems value="#{externalMemberForm.genders}"/>
+
+                                        </p:selectOneMenu>
+                                    </div>
+
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <p:outputLabel for="phone" value="Phone number" />
+                                        <p:inputText required="true" id="phone"
+                                                     value="#{externalMemberForm.model.phoneNumber}"/>
+                                   
+                                    </div>
+
+
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <p:outputLabel for="email" value="Email" />
+                                        <p:inputText required="true" id="email"
+                                                     value="#{externalMemberForm.model.emailAddress}"/>
+                                    </div>
+
+
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <p:outputLabel for="loc" value="Location" />
+                                        <p:inputText required="true" id="loc"
+                                                     value="#{externalMemberForm.model.location}"/>
+                                    </div>
+
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <p:outputLabel for="prof" value="Profession" />
+                                        <p:selectOneMenu  value="#{externalMemberForm.model.professionValue}" 
+                                                          id="prof"  effect="fade" filter="true"  
+                                                          filterMatchMode="startsWith">
+
+                                            <f:selectItems value="#{externalMemberForm.professions}" var="proffession"
+                                                           itemLabel="#{proffession.name}" itemValue="#{proffession}" />
+
+                                        </p:selectOneMenu>
+                                    </div>
+
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <p:outputLabel for="prof2" value="Region" />
+                                        <p:selectOneMenu  value="#{externalMemberForm.model.region}" 
+                                                          id="prof2"  effect="fade" filter="true"  
+                                                          filterMatchMode="startsWith">
+
+                                            <f:selectItems value="#{externalMemberForm.regions}" var="proffession"
+                                                           itemLabel="#{proffession}" itemValue="#{proffession}" />
+
+                                        </p:selectOneMenu>
+                                    </div>
+
+
+                                    <div class="p-field p-col-12 p-md-12" >
+                                        <div style="text-align: end; display: flex">
+
+                                            <p:commandButton  value="Submit" id="saveBtn"
+                                                              styleClass="green-btn" validateClient="true"
+                                                              style="margin-left: auto; width: 30%"
+                                                              action="#{externalMemberForm.createMember()}"
+                                                              update="externalMemberForm" />
+
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                            </p:fieldset>
+
+                            <p:fieldset id="codeSection"  style="width: 100%; text-align: center; " styleClass="card " rendered="#{externalMemberForm.showCodeSection}">
+                                <div class="ui-fluid p-grid"  style="width: 100%; text-align: center; ">
+                                    <div class="p-field p-col-12 p-md-12">
+                                        <h2 style="text-align: center; opacity: .6">Step 2: Email verification</h2>
+                                    </div>
+                                    <p:outputPanel style=" background-color:red;color: white" 
+                                                   rendered="#{ not externalMemberForm.successResponse}" styleClass="p-field p-col-12 p-md-12">
+                                        <h4 >#{externalMemberForm.customUiMessage}</h4>
+                                    </p:outputPanel>
+
+
+                                    <div class="p-field p-col-12 p-md-12">
+
+                                        <h:outputLabel for="code" value="Enter code sent to your email" style="font-size: 18px;" />
+                                        <p:inputText required="true" id="code"
+                                                     maxlength="6"
+                                                     value="#{externalMemberForm.verificationCode}"
+                                                     style="padding: 10px;margin-bottom: 2%; font-size: 25px;" />
+
+                                        <p:commandButton  
+                                            process="codeSection"
+                                            value="Verify" id="saveBtn2"
+
+                                            styleClass="green-btn" validateClient="true"
+                                            action="#{externalMemberForm.verifyCode()}"
+                                            update="externalMemberForm" />
+                                    </div>
+
+
+
+                                </div>
+
+                            </p:fieldset>
+
+
+                            <p:fieldset id="paymentSection" rendered="#{externalMemberForm.showPaymentSection}">
+
+                                <div class="ui-g p-grid" style="margin-bottom:20px">
+                                    <div class="p-field p-col-12 p-md-12" style="text-align: center;">
+                                        <h2 style="text-align: center; opacity: .6">Step 3: Membership fee</h2>
+                                        <p>After this payment, check your email for login credentials</p>
+                                        <a href="#{externalMemberForm.paymentUrl}">
+                                            <input icon="fa fa-save" id="saveBtn4" type="button"
+                                                   style="background: #464DF2;
+                                                   color: #FFFFFF;
+                                                   border: 1px solid #464DF2;font-size: 18px; border-radius: 6px;width: 50%;height: 40%"
+                                                   value="Proceed to payment"
+                                                   styleClass="successs-button" />
+
+                                        </a>
+                                    </div>
+
+
+
+
+
+                                </div>
+                            </p:fieldset>
+
+                            <p:fieldset id="postMessageSection" rendered="#{externalMemberForm.showSuccessMessageSection}">
+                                <div class="ui-g p-grid" style="margin-bottom:20px">
+                                    <div class="p-field p-col-12 p-md-12">
+                                        <h2 style="text-align: center; opacity: .6">Step 3: Membership fee</h2>
+                                    </div>
+                                    <p>After this payment, check your email for login credentials</p>
+                                    <p:commandButton icon="fa fa-save" 
+                                                     value="Proceed to payment" id="saveBtn6"
+                                                     styleClass="warning-button" validateClient="true"
+                                                     action="#{externalMemberForm.makePayment()}"
+                                                     update="externalMemberForm" />
+
+
+                                </div>
+
+                            </p:fieldset>
+
+                        </div>
+
+                    </ui:fragment>
+
+
+
+                    <p:blockUI block="externalMemberForm" trigger="saveBtn saveBtn2">
+                        <p:graphicImage value="/resources/images/workingicon.png" />
+                    </p:blockUI>
+                </h:form>
+
+            </div>
+
+        </div>
+    </h:body>
+
+</html>
