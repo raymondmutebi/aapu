@@ -62,8 +62,8 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
     private Member loggedInMember;
     private String logoutUrl = "ServiceLogout";
     @SuppressWarnings("unused")
-    private String viewPath;
-    private int totalMembers, monthySubscriptions, monthyCommunications;
+    private String viewPath, subscriptionStatus;
+    private int totalMembers, monthySubscriptions, monthyCommunications,dailymembers;
     private int subscripionDaysRemaining, myTotalSubscriptions, subscriptionAmount;
     private List<Member> members;
     private List<Communication> smsCommunications, emailCommunications;
@@ -77,6 +77,7 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
     private List<WordPressPost> previousPosts;
 
     private float egosmsBalance;
+    private float totalRegistartionPayment, totalSubscriptionPayment;
 
     Search search = new Search().addFilterEqual("recordStatus", RecordStatus.ACTIVE);
 
@@ -109,34 +110,47 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
     }
 
     public void initMemberData() {
+        Date endDate = new Date();
+        subscripionDaysRemaining = 0;
+        subscriptionStatus = "Expired";
         this.loggedInMember = this.memberService.getMemberByUserAccount(loggedinUser);
-        Date lastSubScriptionDate = new Date();
+        this.activeSubscription = this.subscriptionService.getActiveSubscription(loggedInMember);
+        if (this.activeSubscription != null) {
+            endDate = activeSubscription.getEndDate();
+            subscripionDaysRemaining = (int) DateUtils.calculateDaysBetween(new Date(), activeSubscription.getEndDate());
+            subscriptionStatus = "Active";
+              this.previousPosts = loadPosts();
+        }
+       
         this.smsCommunications = this.communicationService.getInstances(new Search()
                 .addFilterEqual("communicationType", CommunicationType.Sms)
-                .addFilterLessOrEqual("scheduleDate", DateUtils.getDateAfterDays(lastSubScriptionDate, -300)), 0, 0);
+                .addFilterLessOrEqual("scheduleDate", DateUtils.getDateAfterDays(endDate, 3)), 0, 0);
 
         this.emailCommunications = this.communicationService.getInstances(new Search()
                 .addFilterEqual("communicationType", CommunicationType.Sms)
-                .addFilterLessOrEqual("scheduleDate", DateUtils.getDateAfterDays(lastSubScriptionDate, -30)), 0, 0);
+                .addFilterLessOrEqual("scheduleDate", DateUtils.getDateAfterDays(endDate, 3)), 0, 0);
 
         this.memberSubscriptions = this.subscriptionService.getInstances(new Search()
                 .addFilterEqual("member", this.loggedInMember), 0, 0);
 
-        this.activeSubscription = this.subscriptionService.getActiveSubscription(loggedInMember);
-        this.previousPosts=loadPosts();
+      
 
     }
 
     public void initSystemAdminData() {
         this.monthyCommunications = this.communicationService.countInstances(new Search()
-                .addFilterLessOrEqual("dateCreated", DateUtils.getDateAfterDays(-30)));
+                .addFilterGreaterOrEqual("dateCreated", DateUtils.getFirstDateOfThisMonth()));
 
         this.monthySubscriptions = this.subscriptionService.countInstances(new Search()
-                .addFilterLessOrEqual("dateCreated", DateUtils.getDateAfterDays(-30)));
+              .addFilterGreaterOrEqual("dateCreated", DateUtils.getFirstDateOfThisMonth()));
 
         this.totalMembers = this.memberService.countInstances(new Search()
                 .addFilterNotEqual("accountStatus", AccountStatus.Created)
                 .addFilterNotEqual("accountStatus", AccountStatus.Verified));
+        
+          this.dailymembers = this.memberService.countInstances(new Search()
+                .addFilterGreaterOrEqual("dateCreated", DateUtils.getDateAfterDays(-1)));
+        
         createMembersBarModel();
     }
 
@@ -213,18 +227,18 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
         clientsBarChartModel.setOptions(options);
     }
 
-    public List<WordPressPost> loadPosts(){
-    
+    public List<WordPressPost> loadPosts() {
+
         try {
             return new WordPressClient().fetchPosts("..");
         } catch (IOException ex) {
             Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return new ArrayList<>();
-    
+
     }
-    
+
     public User getLoggedinUser() {
         return loggedinUser;
     }
@@ -376,7 +390,21 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
     public void setPreviousPosts(List<WordPressPost> previousPosts) {
         this.previousPosts = previousPosts;
     }
-    
-    
+
+    public String getSubscriptionStatus() {
+        return subscriptionStatus;
+    }
+
+    public void setSubscriptionStatus(String subscriptionStatus) {
+        this.subscriptionStatus = subscriptionStatus;
+    }
+
+    public int getDailymembers() {
+        return dailymembers;
+    }
+
+    public void setDailymembers(int dailymembers) {
+        this.dailymembers = dailymembers;
+    }
 
 }

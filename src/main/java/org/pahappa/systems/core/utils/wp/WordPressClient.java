@@ -61,8 +61,8 @@ public class WordPressClient {
 
         OkHttpClient client = builder.build();
         Request request = new Request.Builder()
-                //   .url(systemSetting.getPostEndpoint())
-                .url("http://aapug.org/wp-json/wp/v2/posts")
+                  .url(systemSetting.getPostEndpoint())
+               // .url("http://aapug.org/wp-json/wp/v2/posts")
                 .get()
                 .addHeader("Accept", "application/json")
                 .addHeader("Content-Type", "application/json")

@@ -113,6 +113,7 @@ public class RolesView extends PaginatedTableView<Role, RolesView, RolesView> {
     
     private void resetInput() {
         this.searchTerm = "";
+        this.selectedRole=null;
     }
     
     public Role getSelectedRole() {

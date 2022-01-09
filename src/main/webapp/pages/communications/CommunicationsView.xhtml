@@ -124,7 +124,7 @@
                                     <f:facet name="header">
                                         <h:outputText value="Message body" />
                                     </f:facet>
-                                    <h:outputText value="#{model.emailBody} #{model.smsMessage}" />
+                                    <h:outputText value="#{model.emailBody} #{model.smsMessage}" escape="false" />
                                 </p:column>
 
                                 <p:column width="100" headerText="Scedule date" >

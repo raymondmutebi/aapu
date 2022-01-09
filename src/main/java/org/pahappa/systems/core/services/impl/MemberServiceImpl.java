@@ -305,7 +305,7 @@ public class MemberServiceImpl extends GenericServiceImpl<Member> implements Mem
                     if (emailTemplate != null) {
                         String html = emailTemplate.getTemplate();
 
-                        html = html.replace("{fullName}", savedMember.composeFullName());
+                        html = html.replace("{username}", savedMember.getEmailAddress());
                         html = html.replace("{password}", password);
                         new EmailService().sendMail(savedMember.getEmailAddress(), "AAPU Login details", html);
                     } else {

@@ -25,6 +25,7 @@
 
 
                             <h5 style="text-align: center">#{memberProfileView.model.firstName}</h5>
+                            <p:outputPanel rendered="#{memberProfileView.model.accountStatus eq 'Active' or memberProfileView.model.accountStatus eq 'Registered'}">
                             <h5 style="text-align: center">
                                 <p:commandLink  value="Edit profile" id="editBtn" style="text-align: center"
                                                 validateClient="true"
@@ -35,6 +36,7 @@
                                                 validateClient="true"
                                                 oncomplete="PF('passwordChangeDialogue').show()"/>
                             </h5>
+                                </p:outputPanel>
 
 
 
@@ -164,7 +166,7 @@
                                 <h5>Email</h5>
                                 <div class="ui-inputgroup">
 
-                                    <p:inputText value="#{memberProfileView.model.emailAddress}" required="true" />
+                                    <p:inputText value="#{memberProfileView.model.emailAddress}" disabled="true" required="true" />
                                 </div>
                             </div>
 
