@@ -39,7 +39,7 @@ public class EmailFormDialog extends DialogForm<Communication> {
     }
     
     public EmailFormDialog() {
-        super(HyperLinks.EMAIL_DIALOG, 800, 700);
+        super(HyperLinks.EMAIL_DIALOG, 800, 600);
     }
     
     @Override

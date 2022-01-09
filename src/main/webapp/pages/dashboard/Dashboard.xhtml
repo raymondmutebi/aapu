@@ -74,7 +74,7 @@
                             <div class="card overview-box blue">
                                 <div class="overview-info">
                                     <h6>New users (Today)</h6>
-                                    <h1>#{dashboard.egosmsBalance}</h1>
+                                    <h1>#{dashboard.dailymembers}</h1>
                                 </div>
                                 <i class="pi pi-users"></i>
                             </div>
@@ -82,8 +82,8 @@
                         <div class="p-col">
                             <div class="card overview-box gray">
                                 <div class="overview-info">
-                                    <h6>Uptime</h6>
-                                    <h1>5h12m</h1>
+                                    <h6>Month subscriptions</h6>
+                                    <h1>#{dashboard.monthySubscriptions}</h1>
                                 </div>
                                 <i class="pi pi-globe"></i>
                             </div>
@@ -91,8 +91,8 @@
                         <div class="p-col">
                             <div class="card overview-box darkgray">
                                 <div class="overview-info">
-                                    <h6>Monthly subscriptions</h6>
-                                    <h1>#{dashboard.monthySubscriptions}</h1>
+                                    <h6>Monthly communications</h6>
+                                    <h1>#{dashboard.monthyCommunications}</h1>
                                 </div>
                                 <i class="pi pi-th-large"></i>
                             </div>
@@ -100,8 +100,8 @@
                         <div class="p-col">
                             <div class="card overview-box orange">
                                 <div class="overview-info">
-                                    <h6>Cloud users</h6>
-                                    <h1>4216</h1>
+                                    <h6>Monthly revenue</h6>
+                                    <h1>#{dashboard.monthyCommunications}</h1>
                                 </div>
                                 <i class="pi pi-cloud"></i>
                             </div>
@@ -139,36 +139,28 @@
                 </div>
                 <div class="p-col-12">
                     <div class="p-grid" style="margin: -1rem;">
-                        <div class="p-col">
+                        <div class="p-col-3">
                             <div class="card overview-box white">
                                 <div class="overview-info">
                                     <h6>Subscription status</h6>
                                     <h4>
-                                        #{'Active'}
+                                        #{dashboard.subscriptionStatus}
                                     </h4>
                                 </div>
                                 <i class="pi pi-image"></i>
                             </div>
                         </div>
-                        <div class="p-col">
-                            <div class="card overview-box blue">
-                                <div class="overview-info">
-                                    <h6>New sms</h6>
-                                    <h1>#{dashboard.monthyCommunications}</h1>
-                                </div>
-                                <i class="pi pi-users"></i>
-                            </div>
-                        </div>
-                        <div class="p-col">
+                       
+                        <div class="p-col-3">
                             <div class="card overview-box gray">
                                 <div class="overview-info">
                                     <h6>My subscriptions</h6>
-                                    <h1>#{dashboard.myTotalSubscriptions}</h1>
+                                    <h1>#{dashboard.memberSubscriptions}</h1>
                                 </div>
                                 <i class="pi pi-globe"></i>
                             </div>
                         </div>
-                        <div class="p-col">
+                        <div class="p-col-3">
                             <div class="card overview-box darkgray">
                                 <div class="overview-info">
                                     <h6>Subscription ends in</h6>
@@ -177,7 +169,7 @@
                                 <i class="pi pi-th-large"></i>
                             </div>
                         </div>
-                        <div class="p-col">
+                        <div class="p-col-3">
                             <div class="card overview-box orange">
                                 <div class="overview-info">
                                     <h6>Total members</h6>
@@ -234,7 +226,7 @@
                                 <p class="subtitle">Last 6 years</p>
                             </div>
                             <p class="subtitle">
-                                <p:commandButton value="make Subscription" 
+                                <p:commandButton value="Extend Subscription" 
                                                  process="@this"  
                                                  oncomplete="makePayment('#{dashboard.appSetting.subscriptionFee}','#{dashboard.initiateSubscriptionPayment()}');" />
                             </p>
@@ -285,7 +277,7 @@
                                         <h6>#{email.emailSubject}</h6>
                                         <span>#{email.scheduleDate}</span>
                                     </div>
-                                    <a href="#">#{email.scheduleTime}</a>
+                                    <a href="#">#{email.emailSubject}</a>
                                     <span>#{email.emailBody}</span>
                                 </li>
                             </p:repeat>
@@ -326,31 +318,27 @@
 
                 <div class="p-col-12">
 
-                    <div class="card schedule">
-                        <div class="card-header">
-                            <div class="card-title">
-                                <h6>Recent news and posts</h6>
-                              
-                            </div>
-                          
-                        </div>
-
+                    <div class="card ">
+                       
                         <p:dataView var="product" value="#{dashboard.previousPosts}" rows="10" paginator="true"
                                     rowsPerPageTemplate="6,12,16" layout="grid"
+                                    paginatorPosition="bottom" 
                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                    gridIcon="pi pi-th-large" listIcon="pi pi-bars">
+                                    >
+                            <f:facet name="header">
+                                 <h3>Recent news and posts</h3>
+                                
+                            </f:facet>
 
-                            <p:dataViewListItem>
-                                <div class="product-list-item">
+                            <p:dataViewGridItem>
+                                <div class="card product-list-item">
                                     <p:graphicImage name="demo/images/product/#{product.featuredMedia}"/>
                                     <div class="product-list-detail">
-                                        <div class="product-name">#{product.title.rendered}</div>
-                                        <div class="product-description">#{product.content.rendered}</div>
+                                        <h4>#{product.title.rendered}</h4>
+                                        <div class="product-description"><h:outputText value="#{product.content.rendered}" escape="false"></h:outputText></div>
 
-                                        <i class="pi pi-tag product-category-icon"/><span
-                                            class="product-category">#{product.categories.get(0)}</span>
                                     </div>
-                                    <div class="product-list-action">
+                                    <div style="margin-top: 5px">
 
                                         <p:commandButton type="button"
                                                          value="Read more"
@@ -360,7 +348,7 @@
 
                                     </div>
                                 </div>
-                            </p:dataViewListItem>
+                            </p:dataViewGridItem>
                         </p:dataView>
 
 

@@ -157,7 +157,7 @@
 
                                     <div class="p-field p-col-12 p-md-12">
 
-                                        <h:outputLabel for="code" value="Enter code sent to your email" style="font-size: 18px;" />
+                                        <h:outputLabel for="code" value="Enter the 6-digit code sent to your email. If you dont see it, try to check in your spam/junk emails" style="font-size: 18px;" />
                                         <p:inputText required="true" id="code"
                                                      maxlength="6"
                                                      value="#{externalMemberForm.verificationCode}"
@@ -184,7 +184,7 @@
                                 <div class="ui-g p-grid" style="margin-bottom:20px">
                                     <div class="p-field p-col-12 p-md-12" style="text-align: center;">
                                         <h2 style="text-align: center; opacity: .6">Step 3: Membership fee</h2>
-                                        <p>After this payment, check your email for login credentials</p>
+                                        <p>Congrats, you have successfully verified your email address. Now proceed to registration fee payment. After successful payment, check your email for login credentials</p>
                                         <a href="#{externalMemberForm.paymentUrl}">
                                             <input icon="fa fa-save" id="saveBtn4" type="button"
                                                    style="background: #464DF2;
