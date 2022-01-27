@@ -15,20 +15,29 @@
         <title>Compose broadcast sms</title>
         <h:form id="smsFormDialog" styleClass="card ui-fluid" style="border-radius: 2px !important">
             <div class="p-grid" >
-                <div class="p-col-12 p-md-8 " >
-                    <h5>Schedule date</h5>
-                    <div class="ui-inputgroup">
+                <div class="p-col-12 p-md-12 " >
+                    <p:outputLabel for="switch" value="Send instant"  />
+                    <p:selectBooleanCheckbox id="switch"  value="#{smsFormDialog.immediate}" >
+                        <p:ajax event="change" process="@this" update="schedule_details" />
+                    </p:selectBooleanCheckbox>
 
-                        <p:datePicker value="#{smsFormDialog.model.scheduleDate}"  mindate="#{now}" showTime="false" />
-                    </div>
                 </div>
-                <div class="p-col-12 p-md-4 " >
-                    <h5>Schedule time</h5>
-                    <div class="ui-inputgroup">
+                <p:outputPanel rendered="#{not smsFormDialog.immediate or true}" styleClass="p-col-12 p-md-8 p-grid" id="schedule_details">
+                    <div class="p-col-12 p-md-8 " >
+                        <h5>Schedule date</h5>
+                        <div class="ui-inputgroup">
 
-                        <p:datePicker value="#{smsFormDialog.model.scheduleTime}" timeOnly="true" pattern="HH:mm"  />
+                            <p:datePicker value="#{smsFormDialog.model.scheduleDate }"  mindate="#{now}" showTime="false" />
+                        </div>
                     </div>
-                </div>
+                    <div class="p-col-12 p-md-4 " >
+                        <h5>Schedule time</h5>
+                        <div class="ui-inputgroup">
+
+                            <p:datePicker value="#{smsFormDialog.model.scheduleTime}" timeOnly="true" pattern="HH:mm"  />
+                        </div>
+                    </div>
+                </p:outputPanel>
                 <div class="p-col-12 p-md-12 " >
                     <h5>Message</h5>
                     <div class="ui-inputgroup">

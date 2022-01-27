@@ -1,15 +1,19 @@
 package org.pahappa.systems.core.services.impl;
 
+import com.googlecode.genericdao.search.Search;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 
 import org.hibernate.SessionFactory;
 import org.pahappa.systems.core.services.LookUpService;
+import org.pahappa.systems.core.services.MemberService;
 import org.pahappa.systems.core.services.SystemSettingService;
 import org.pahappa.systems.core.utils.AppUtils;
 import org.pahappa.systems.models.LookUpField;
 import org.pahappa.systems.models.LookUpValue;
+import org.pahappa.systems.models.Member;
+import org.pahappa.systems.models.ProfessionValue;
 import org.pahappa.systems.models.SystemSetting;
 import org.pahappa.systems.models.security.PermissionConstants;
 import org.pahappa.systems.models.security.PermissionInterpreter;
@@ -87,34 +91,88 @@ public class CustomPermissionMigrations {
     }
 
     @Migration(orderNumber = 3)
-    public void saveSetting() {
+    public void saveSettingsV1() {
 
         try {
             lookUpService = ApplicationContextProvider.getBean(LookUpService.class);
             settingService = ApplicationContextProvider.getBean(SystemSettingService.class);
+            LookUpField field = lookUpService.getLookUpFieldByName(AppUtils.PROF_DATASET_NAME);
 
-            LookUpField field = new LookUpField();
-            LookUpValue value1 = new LookUpValue();
-            value1.setName("Medical");
+            if (field == null) {
+                field = new LookUpField();
+                System.out.println("No setting found..");
+            }
+            for (ProfessionValue professionValue : ProfessionValue.values()) {
+                LookUpValue lookUpValue = new LookUpValue();
+                lookUpValue.setName(professionValue.getName());
+                field.addLookupValue(lookUpValue);
 
-            LookUpValue value2 = new LookUpValue();
-            value2.setName("Engineering");
+            }
 
             field.setIsMigration(Boolean.TRUE);
             field.setName(AppUtils.PROF_DATASET_NAME);
             field.setDescription(AppUtils.PROF_DATASET_NAME);
+
             System.out.println("Started saving settings..");
-            field = lookUpService.save(field);
+
+            field = lookUpService.saveInstance(field);
             System.out.println("Prof lookup saved...");
-            SystemSetting setting = new SystemSetting();
+
+            SystemSetting setting = settingService.getAppSetting();
             setting.setProfessional(field);
 
             settingService.save(setting);
             System.out.println("Setting saved...");
 
         } catch (Exception exe) {
-            System.out.println("Role already exists");
+            System.out.println("Some error occurred \n" + exe.getLocalizedMessage());
         }
+    }
+
+    @Migration(orderNumber = 3)
+    public void saveCourseTypesV1() {
+
+        try {
+            lookUpService = ApplicationContextProvider.getBean(LookUpService.class);
+            LookUpField field = new LookUpField();
+            field.setName(AppUtils.COURSE_TYPES_DATASET_NAME);
+            field.setLookUpValues(new HashSet<>());
+            lookUpService.saveInstance(field);
+            System.out.println("Setting saved...");
+
+        } catch (Exception exe) {
+            System.out.println("Some error occurred \n" + exe.getLocalizedMessage());
+        }
+    }
+
+    @Migration(orderNumber = 3)
+    public void updateMembeProffessionalsV2() {
+
+        MemberService memberService = ApplicationContextProvider.getBean(MemberService.class);
+
+        LookUpService lookUpService2 = ApplicationContextProvider.getBean(LookUpService.class);
+
+        for (Member member : memberService.getInstances(new Search(), 0, 0)) {
+            try {
+                System.out.println("Now on member ..." + member.composeFullName());
+                if (member.getProfessionValue() != null) {
+                    LookUpValue proffessionLookup = lookUpService2.findValueInLookUp(AppUtils.PROF_DATASET_NAME, member.getProfessionValue().getName());
+                    if (proffessionLookup != null) {
+                        System.out.println("Gotten lookup ..." + proffessionLookup.getName());
+                        member.setProfession(proffessionLookup);
+                    }
+                    member.setProfessionValue(null);
+                    memberService.saveInstance(member);
+                    System.out.println("Saved member...");
+                }
+            } catch (Exception exe) {
+                System.out.println("Some error occurred at " + member.composeFullName() + "\n" + exe.getLocalizedMessage());
+            }
+
+        }
+
+        System.out.println("Setting saved...");
+
     }
 
 }

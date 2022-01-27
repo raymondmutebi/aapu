@@ -3,6 +3,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
+                  xmlns:of="http://omnifaces.org/functions"
                 template="/pages/freyatemplate/template.xhtml">
 
     <ui:define name="content">
@@ -124,7 +125,7 @@
                                     <f:facet name="header">
                                         <h:outputText value="Message body" />
                                     </f:facet>
-                                    <h:outputText value="#{model.emailBody} #{model.smsMessage}" escape="false" />
+                                    <h:outputText value="#{of:abbreviate(model.emailBody,100)} #{model.smsMessage}" escape="false" />
                                 </p:column>
 
                                 <p:column width="100" headerText="Scedule date" >
@@ -144,14 +145,14 @@
                                     <f:facet name="header">
                                         <h:outputText value="Sent" />
                                     </f:facet>
-                                    <h:outputText value="#{!(model.emailsSent and model.smsSent)?'Not yet':'Yes'}" />
+                                    <h:outputText value="#{(model.emailsSent or model.smsSent)?'Yes':'Not yet'}" />
                                 </p:column>
 
                                 <p:column width="100">
                                     <f:facet name="header">
                                         <h:outputText value="Receipients" />
                                     </f:facet>
-                                    <h:outputText value="#{model.sentEmails} #{model.sentPhones}" />
+                                    <h:outputText value="Email: #{model.sentEmails} SMS: #{model.sentPhones}" />
                                 </p:column>
                                 <p:column width="50">
                                     <f:facet name="header">

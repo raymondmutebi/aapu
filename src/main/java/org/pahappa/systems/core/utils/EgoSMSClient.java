@@ -148,7 +148,7 @@ public class EgoSMSClient {
         } catch (IOException ex) {
             System.out.println("=======Some Error Occured=====");
             System.out.println(ex);
-            throw new ValidationFailedException("Action Failed");
+            throw new ValidationFailedException(ex.getLocalizedMessage());
             // handle exception here
         } finally {
 

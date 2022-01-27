@@ -1,0 +1,55 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/freyatemplate/template.xhtml"
+                xmlns:pf="http://jsf.playerfinder.net/components">
+
+    <ui:define name="content">
+        <h:form id="courseProfileView" enctype="multipart/form-data">
+            <ui:fragment rendered="#{componentRenderer.memberPerm}">
+                <div class="card " style="width: 100%;height: 100%">
+                    <div class="card-header">
+                        <div style="font-size: 22px" class="card-title">
+                            <p:commandLink action="#{coursesListView.getViewPath}" 
+                                           value="Back " >
+                               
+                            </p:commandLink>
+                           
+
+                        </div>
+                    </div>
+
+                    <div class="p-grid ui-fluid ">
+
+                        <div class="p-col-12 p-md-12">
+                            <h2>#{courseProfileView.model.title}</h2>
+                            <h4>Category: #{courseProfileView.model.courseType}</h4>
+                            <h4>Start date:
+                                <h:outputText value=" #{courseProfileView.model.startDate}" >
+                                    <f:convertDateTime pattern="dd/MMM/yyyy"/>
+                                </h:outputText> 
+                                End date: 
+                                <h:outputText value="#{courseProfileView.model.endDate}">
+                                    <f:convertDateTime pattern="dd/MMM/yyyy"/>
+                                </h:outputText>
+                            </h4>
+                            <h:outputText value="#{courseProfileView.model.description}" escape="false"/>
+
+                            <p:graphicImage  style="width: 100%;padding: 0%;border-radius:2px" value="#{courseProfileView.model.imageUrl}"/>
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </ui:fragment>
+        </h:form>
+    </ui:define>
+</ui:composition>
+
+
+
+

@@ -113,7 +113,7 @@
                             </p:column>
 
 
-                            <p:column headerText="Action" exportable="false">
+                            <p:column width="50" headerText="Action" exportable="false">
 
                                 <p:commandButton icon="fa fa-edit" 
                                                  styleClass="success-button" 
@@ -121,14 +121,7 @@
                                     <f:setPropertyActionListener value="#{model}" target="#{lookUpForm.model}" />
                                 </p:commandButton>
 
-                                <p:commandButton icon="fa fa-trash" disabled="#{model.isMigration}"
-                                                 styleClass="danger-button" style=" margin-left: 10px;"
-                                                 action="#{lookUpsView.deleteLookUp(model)}"
-                                                 update="lookUpTable">
-                                    <p:confirm header="Confirmation"
-                                               message="You are about to delete a lookUp. Do you wish to continue?"
-                                               icon="ui-icon-alert" />
-                                </p:commandButton>
+                               
                             </p:column>
 
                         </p:dataTable>

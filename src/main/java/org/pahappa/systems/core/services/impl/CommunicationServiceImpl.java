@@ -40,8 +40,22 @@ public class CommunicationServiceImpl extends GenericServiceImpl<Communication> 
     }
 
     @Override
-    public Communication saveInstance(Communication instance) throws ValidationFailedException, OperationFailedException {
-        return super.save(instance);
+    public Communication saveInstance(Communication communication, boolean instant) throws ValidationFailedException, OperationFailedException {
+
+        communication = super.save(communication);
+        if (instant) {
+            sendInstantCommunication(communication);
+        } else {
+            sendCommunications();
+        }
+        return communication;
+
+    }
+    
+     @Override
+    public Communication saveInstance(Communication communication) throws ValidationFailedException, OperationFailedException {
+
+        return super.save(communication);
 
     }
 
@@ -52,9 +66,8 @@ public class CommunicationServiceImpl extends GenericServiceImpl<Communication> 
                 new Search().addFilterGreaterOrEqual("scheduleDate", new Date())
                         .addFilterEqual("emailsSent", false)
                         .addFilterEqual("smsSent", false)
-                        .addFilterGreaterOrEqual("scheduleTime", CustomAppUtils.addMinutesToJavaUtilDate(new Date(), -10))
+                        .addFilterGreaterOrEqual("scheduleTime", CustomAppUtils.addMinutesToJavaUtilDate(new Date(), -50))
                         .addFilterLessOrEqual("scheduleTime", CustomAppUtils.addMinutesToJavaUtilDate(new Date(), 10)), 0, 0);
-        ;
 
         List<Member> members = ApplicationContextProvider.getBean(MemberService.class).getInstances(new Search().addFilterEqual("accountStatus", AccountStatus.Registered), 0, 0);
         for (Communication communication : communications) {
@@ -68,8 +81,25 @@ public class CommunicationServiceImpl extends GenericServiceImpl<Communication> 
         }
     }
 
-    private void sendEmail(final Communication communication, List<Member> members) {
+    public void sendInstantCommunication(Communication communication) {
 
+        List<Member> members = ApplicationContextProvider.getBean(MemberService.class)
+                .getInstances(
+                        new Search()
+                                .addFilterEqual("accountStatus", AccountStatus.Registered), 0, 0);
+
+        if (communication.getCommunicationType().equals(CommunicationType.Email)) {
+            sendEmail(communication, members);
+        }
+
+        if (communication.getCommunicationType().equals(CommunicationType.Sms)) {
+            sendSMS(communication, members);
+        }
+
+    }
+
+    private void sendEmail(final Communication communication, List<Member> members) {
+        System.out.println("Sending email " + communication.getEmailSubject() + "....");
         final Set<String> emails = new HashSet<>();
 
         for (Member member : members) {
@@ -92,16 +122,14 @@ public class CommunicationServiceImpl extends GenericServiceImpl<Communication> 
         communication.setEmailsSent(true);
         try {
             saveInstance(communication);
-        } catch (ValidationFailedException ex) {
-            Logger.getLogger(CommunicationServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (OperationFailedException ex) {
+        } catch (ValidationFailedException | OperationFailedException ex) {
             Logger.getLogger(CommunicationServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
     private void sendSMS(final Communication communication, List<Member> members) {
-
+        System.out.println("Sending sms " + communication.getSmsMessage() + "....");
         final Set<String> phoneNumbers = new HashSet<>();
 
         for (Member member : members) {
@@ -126,13 +154,11 @@ public class CommunicationServiceImpl extends GenericServiceImpl<Communication> 
         });
         t1.start();
 
-        communication.setSentEmails(phoneNumbers.size());
+        communication.setSentPhones(phoneNumbers.size());
         communication.setSmsSent(true);
         try {
             saveInstance(communication);
-        } catch (ValidationFailedException ex) {
-            Logger.getLogger(CommunicationServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (OperationFailedException ex) {
+        } catch (ValidationFailedException | OperationFailedException ex) {
             Logger.getLogger(CommunicationServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 

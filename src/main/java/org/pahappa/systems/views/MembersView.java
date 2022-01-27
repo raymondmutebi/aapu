@@ -4,12 +4,18 @@ import com.googlecode.genericdao.search.Search;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import org.apache.commons.io.IOUtils;
 import org.pahappa.systems.constants.AccountStatus;
 import org.pahappa.systems.constants.MemberRegistrationType;
 import org.pahappa.systems.constants.Region;
@@ -22,10 +28,13 @@ import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.pahappa.systems.core.services.MemberService;
+import org.pahappa.systems.core.services.SubscriptionService;
+import org.pahappa.systems.core.utils.AppUtils;
 import org.pahappa.systems.core.utils.CustomSearchUtils;
 import org.pahappa.systems.core.utils.ExcelUploadHelper;
 import org.pahappa.systems.core.utils.UiUtils;
 import org.pahappa.systems.models.ProfessionValue;
+import org.pahappa.systems.models.Subscription;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -58,6 +67,8 @@ public class MembersView extends PaginatedTableView<Member, MembersView, Members
     private List<Member> uploadedMembers;
     private AccountStatus selectedAccountStatus;
     private Search search;
+    private byte[] attachement;
+    private Date startDate;
 
     @PostConstruct
     public void init() {
@@ -83,7 +94,6 @@ public class MembersView extends PaginatedTableView<Member, MembersView, Members
         this.verified = this.memberService.countMembers(search.copy().addFilterEqual("accountStatus", AccountStatus.Verified));
         this.regisered = this.memberService.countMembers(search.copy().addFilterEqual("accountStatus", AccountStatus.Registered));
 
-       
     }
 
     public void loadSelectedMember(Member member) {
@@ -126,11 +136,47 @@ public class MembersView extends PaginatedTableView<Member, MembersView, Members
         }
     }
 
+    public void activateMember(Member member) {
+        try {
+            this.memberService.activateMemberAccount(member);
+            super.reloadFilterReset();
+            UiUtils.showMessageBox(member.composeFullName() + " has been activatd", "Action Successful");
+        } catch (Exception e) {
+            e.printStackTrace();
+            UiUtils.showMessageBox(e.getMessage(), "Action failed");
+        }
+    }
+
+    public void extendMemberSubscription(Member member) {
+        try {
+            
+            ApplicationContextProvider.getBean(SubscriptionService.class).extendSubscription(member, startDate, attachement);
+            super.reloadFilterReset();
+            UiUtils.showMessageBox(member.composeFullName() + "subscription has been extended", "Action Successful");
+        } catch (Exception e) {
+            UiUtils.showMessageBox("Action failed", e.getMessage());
+        }
+    }
+
+    /*
+    Upload images to cloudinary
+     */
+    public void imageUploadEvent(FileUploadEvent event) {
+        try {
+            attachement = IOUtils.toByteArray(event.getFile().getInputstream());
+
+        } catch (Exception ex) {
+            FacesMessage msg = new FacesMessage("Failed", "Image upload failed");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            Logger.getLogger(MemberProfileView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public void unBlockMember(Member member, String notes) {
         try {
             this.memberService.unblock(member, notes);
             super.reloadFilterReset();
-            UiUtils.showMessageBox(member.composeFullName() + " has been blocked", "Action Successful");
+            UiUtils.showMessageBox(member.composeFullName() + " has been unblocked", "Action Successful");
         } catch (Exception e) {
             UiUtils.showMessageBox(e.getMessage(), "Action failed");
         }
@@ -216,8 +262,6 @@ public class MembersView extends PaginatedTableView<Member, MembersView, Members
         this.regions = regions;
     }
 
-   
-
     public List<ProfessionValue> getProfessions() {
         return professions;
     }
@@ -257,7 +301,6 @@ public class MembersView extends PaginatedTableView<Member, MembersView, Members
     public void setSelectedRegistrationType(MemberRegistrationType selectedRegistrationType) {
         this.selectedRegistrationType = selectedRegistrationType;
     }
-
 
     public List<AccountStatus> getAccountStatuses() {
         return accountStatuses;
@@ -326,5 +369,15 @@ public class MembersView extends PaginatedTableView<Member, MembersView, Members
     public void setBlockNotes(String blockNotes) {
         this.blockNotes = blockNotes;
     }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+    
+    
 
 }

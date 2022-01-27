@@ -48,7 +48,7 @@ public class WordPressClient {
     }
 
     public List<WordPressPost> fetchPosts(String transactionId) throws IOException {
-        //  initSettings();
+        initSettings();
         SSLUtilities.trustAllHostnames();
         SSLUtilities.trustAllHttpsCertificates();
         OkHttpClient.Builder builder = new OkHttpClient.Builder();

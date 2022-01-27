@@ -32,34 +32,7 @@
         <h:form id="subscriptionsView" rendered="#{componentRenderer.administrator}">
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12">
-                    <div class="p-grid overlay-demo">
-                        <div class="p-col-12 p-md-3">
-                            <div class="card">
-                                <h:outputText value="Total amount" />
-                                <h2 class="p-text-right">0.0</h2>
-                            </div>
-                        </div>
-                        <div class="p-col-12 p-md-3">
-                            <div class="card">
-                                <h:outputText value="Success" />
-                                <h2 class="p-text-right">399</h2>
-                            </div>
-                        </div>
-                        <div class="p-col-12 p-md-3">
-                            <div class="card">
-                                <h:outputText value="Pending" />
-                                <h2 class="p-text-right">20</h2>
-                            </div>
-                        </div>
-                        <div class="p-col-12 p-md-3">
-                            <div class="card">
-                                <h:outputText value="Failed" />
-                                <h2 class="p-text-right">40</h2>
-                            </div>
-                        </div>
-
-                    </div>
-
+                 
                     <div class="card">
                         <h:outputText value="Filters" />
 
@@ -107,31 +80,31 @@
                                         <h:outputText value="#{row + 1}" />
                                     </p:column>
 
-                                    <p:column  headerText="Transaction id">
-                                        <h:outputText value="#{model.payment.transactionId}" />
+                                    <p:column  headerText="Subscription id">
+                                        <h:outputText value="#{model.id}" />
                                     </p:column>
 
-                                    <p:column  width="200" headerText="Status">
+                                    <p:column  width="70" headerText="Status">
                                         <h:outputText value="#{model.status}" />
                                     </p:column>
 
                                    
 
-                                    <p:column width="100">
+                                    <p:column width="200">
                                         <f:facet name="header">
                                             <h:outputText value="Start date" />
                                         </f:facet>
                                         <h:outputText value="#{model.startDate}" >
-                                            <f:convertDateTime pattern="dd/MMM/yy 'at' hh:mm"/>
+                                            <f:convertDateTime pattern="dd/MMM/yy"/>
                                         </h:outputText>
                                     </p:column>
                                     
-                                    <p:column width="100">
+                                    <p:column width="200">
                                         <f:facet name="header">
                                             <h:outputText value="End date" />
                                         </f:facet>
                                         <h:outputText value="#{model.endDate}" >
-                                            <f:convertDateTime pattern="dd/MMM/yy 'at' hh:mm"/>
+                                            <f:convertDateTime pattern="dd/MMM/yy "/>
                                         </h:outputText>
                                     </p:column>
 
@@ -154,7 +127,7 @@
                                                          icon="fa fa-eye"
                                                          oncomplete="PF('transactionDialog').show()" 
                                                          title="View Detail">
-                                            <f:setPropertyActionListener value="#{model}" target="#{subscriptionsView.selectedTransaction}" />
+                                            <f:setPropertyActionListener value="#{model}" target="#{subscriptionsView.selectedSubscription}" />
                                         </p:commandButton>
                                     </p:column>
 
@@ -170,25 +143,24 @@
 
 
         </h:form>
-        <p:dialog header="Transaction Info" widgetVar="transactionDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+        <p:dialog header="Subscription Info" widgetVar="transactionDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
             <p:outputPanel id="transactionDetail" style="text-align:left;">
-                <p:panelGrid  columns="2" rendered="#{not empty subscriptionsView.selectedTransaction}" style="text-align: left !important;max-width: 100%" columnClasses="label,value">
+                <p:panelGrid  columns="2" rendered="#{not empty subscriptionsView.selectedSubscription}" style="text-align: left !important;max-width: 100%" columnClasses="label,value">
 
                     <h:outputText value="Id:" style="text-align: left" />
-                    <h:outputText value="#{subscriptionsView.selectedTransaction.id}" />
+                    <h:outputText value="#{subscriptionsView.selectedSubscription.id}" />
 
-                    <h:outputText value="Internal Reference Number" />
-                    <h:outputText value="#{subscriptionsView.selectedTransaction.referenceNumber}" />
-
-
-                    <h:outputText value="Amount" />
-                    <h:outputText value="#{subscriptionsView.selectedTransaction.amount}" />
+                    <h:outputText value="Member name" />
+                    <h:outputText value="#{subscriptionsView.selectedSubscription.member.composeFullName()}" />
 
 
-                    <h:outputText value="Details" />
-                    <h:outputText value="#{subscriptionsView.selectedTransaction.description}" />
+                    <h:outputText value="Attachment" />
+                    <p:graphicImage width="100" height="200" value="#{subscriptionsView.selectedSubscription.attachmentUrl}" />
 
 
+                    <h:outputText value="Date made" />
+                    <h:outputText value="#{subscriptionsView.selectedSubscription.dateCreated}" />
+                    
 
 
                 </p:panelGrid>

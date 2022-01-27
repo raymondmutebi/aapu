@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.googlecode.genericdao.search.Search;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.pahappa.systems.constants.AccountStatus;
@@ -27,6 +30,7 @@ import org.pahappa.systems.models.Subscription;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.security.User;
 import org.sers.webutils.server.core.dao.RoleDao;
+import org.sers.webutils.server.core.dao.UserDao;
 import org.sers.webutils.server.core.service.UserService;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.sers.webutils.server.core.utils.DateUtils;
@@ -38,6 +42,9 @@ public class MemberServiceImpl extends GenericServiceImpl<Member> implements Mem
 
     @Autowired
     RoleDao roleDao;
+
+    @Autowired
+    UserDao userDao;
 
     @Override
     public Member saveInstance(Member member) throws ValidationFailedException {
@@ -64,7 +71,7 @@ public class MemberServiceImpl extends GenericServiceImpl<Member> implements Mem
         if (existingWithEmail != null && !existingWithEmail.getId().equals(member.getId())) {
             throw new ValidationFailedException("A member with the same email already exists!");
         }
-        member.setRegistrationType(MemberRegistrationType.SYSTEM);
+
         return super.merge(member);
     }
 
@@ -84,9 +91,11 @@ public class MemberServiceImpl extends GenericServiceImpl<Member> implements Mem
         if (member.getDateCreated() == null) {
             throw new ValidationFailedException("Missing registartion date");
         }
+
         if (member.getDateChanged() == null) {
             throw new ValidationFailedException("Missing subscription");
         }
+
         member.setPhoneNumber(validatedPhoneNumber);
 
         Member existingWithPhone = getMemberByPhoneNumber(member.getPhoneNumber());
@@ -100,12 +109,13 @@ public class MemberServiceImpl extends GenericServiceImpl<Member> implements Mem
             throw new ValidationFailedException("A member with the same email already exists!");
         }
 
-        Member existsWithBoth = getMemberByPhoneNumberAndEmail(member.getPhoneNumber(), member.getEmailAddress());
+        Member existsWithBoth = getUnregisteredMemberByEmail(member.getEmailAddress());
         if (existsWithBoth != null && !existsWithBoth.getId().equals(member.getId())) {
-            existsWithBoth.setLastEmailVerificationCode(member.getLastEmailVerificationCode());
+
             member.setId(existsWithBoth.getId());
 
         }
+
         member.setRegistrationType(MemberRegistrationType.MANUAL);
 
         member = super.save(member);
@@ -118,6 +128,19 @@ public class MemberServiceImpl extends GenericServiceImpl<Member> implements Mem
         member = activateMemberAccount(member);
         return member;
 
+    }
+
+    public Member extendSubscription(Member member, Date date) throws ValidationFailedException, Exception {
+        SubscriptionService subscriptionService = ApplicationContextProvider.getBean(SubscriptionService.class);
+        Subscription subscription = new Subscription();
+        subscription.setMember(member);
+        subscription.setStartDate(date);
+        subscription.setEndDate(DateUtils.getDateAfterDays(member.getDateChanged(), 365));
+        subscription.setStatus(SubscriptionStatus.ACTIVE);
+        subscriptionService.saveInstance(subscription);
+        member.setAccountStatus(AccountStatus.Active);
+
+        return super.save(member);
     }
 
     @Override
@@ -146,9 +169,9 @@ public class MemberServiceImpl extends GenericServiceImpl<Member> implements Mem
             throw new ValidationFailedException("A member with the same email already exists!");
         }
 
-        Member existsWithBoth = getMemberByPhoneNumberAndEmail(member.getPhoneNumber(), member.getEmailAddress());
+        Member existsWithBoth = getUnregisteredMemberByEmail(member.getEmailAddress());
         if (existsWithBoth != null && !existsWithBoth.getId().equals(member.getId())) {
-            existsWithBoth.setLastEmailVerificationCode(member.getLastEmailVerificationCode());
+
             member.setId(existsWithBoth.getId());
 
         }
@@ -158,12 +181,10 @@ public class MemberServiceImpl extends GenericServiceImpl<Member> implements Mem
         return super.mergeBG(member);
     }
 
-    public Member getMemberByPhoneNumberAndEmail(String phoneNumber, String email) {
+    public Member getUnregisteredMemberByEmail(String email) {
         Search search = new Search();
         search.addFilterEqual("emailAddress", email);
-        search.addFilterEqual("phoneNumber", phoneNumber);
-
-        search.addFilterNotEqual("accountStatus", AccountStatus.Registered);
+        search.addFilterNotIn("accountStatus", new ArrayList<>(Arrays.asList(AccountStatus.Registered, AccountStatus.Blocked, AccountStatus.Active)));
         search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
         List<Member> members = super.search(search);
         if (members.isEmpty()) {
@@ -176,8 +197,7 @@ public class MemberServiceImpl extends GenericServiceImpl<Member> implements Mem
     public Member getMemberByPhoneNumber(String phoneNumber) {
         Search search = new Search();
         search.addFilterEqual("phoneNumber", phoneNumber);
-
-        search.addFilterEqual("accountStatus", AccountStatus.Registered);
+        search.addFilterIn("accountStatus", new ArrayList<>(Arrays.asList(AccountStatus.Registered, AccountStatus.Blocked, AccountStatus.Active)));
         search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
         List<Member> members = super.search(search);
         if (members.isEmpty()) {
@@ -190,7 +210,7 @@ public class MemberServiceImpl extends GenericServiceImpl<Member> implements Mem
     public Member getMemberByEmail(String email) {
         Search search = new Search();
         search.addFilterEqual("emailAddress", email);
-        search.addFilterEqual("accountStatus", AccountStatus.Registered);
+        search.addFilterIn("accountStatus", new ArrayList<>(Arrays.asList(AccountStatus.Registered, AccountStatus.Blocked, AccountStatus.Active)));
         search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
         List<Member> members = super.search(search);
         if (members.isEmpty()) {
@@ -264,7 +284,7 @@ public class MemberServiceImpl extends GenericServiceImpl<Member> implements Mem
         unBlockUser(member.getUserAccount());
         System.out.println("Unblocked user account...");
 
-        Member savedMember = saveInstance(member);
+        Member savedMember = super.save(member);
         System.out.println("Saved member...");
 
         new Thread(new Runnable() {
@@ -285,13 +305,15 @@ public class MemberServiceImpl extends GenericServiceImpl<Member> implements Mem
     @Override
     public Member activateMemberAccount(Member member) throws Exception {
         System.out.println("Starting member activation...");
-        String password = "business" + AppUtils.generateOTP(4);
+        String password = "aapu" + AppUtils.generateOTP(4);
         member.setLastEmailVerificationCode(password);
         member.setAccountStatus(AccountStatus.Registered);
-        member.setUserAccount(createDefaultUser(member, password));
+        User userAccount = createDefaultUser(member, password);
+       
+        member.setUserAccount(userDao.searchUniqueByPropertyEqual("id", userAccount.getId()));
         System.out.println("Created user account...");
 
-        Member savedMember = saveInstance(member);
+        Member savedMember = quickSave(member);
         System.out.println("Saved member...");
 
         new Thread(new Runnable() {
@@ -329,11 +351,12 @@ public class MemberServiceImpl extends GenericServiceImpl<Member> implements Mem
         user.setUsername(member.getEmailAddress());
         user.setFirstName(member.getFirstName());
         user.setLastName(member.getLastName());
+        user.setEmailAddress(member.getEmailAddress());
         user.setClearTextPassword(password);
         UserService userService = ApplicationContextProvider.getBean(UserService.class);
         user.addRole(userService.getRoleByRoleName(AppUtils.MEMBER_ROLE_NAME));
 
-        return userService.saveUser(user);
+        return ApplicationContextProvider.getBean(UserService.class).saveUser(user);
 
     }
 
@@ -358,6 +381,12 @@ public class MemberServiceImpl extends GenericServiceImpl<Member> implements Mem
         user.addRole(userService.getRoleByRoleName(AppUtils.MEMBER_ROLE_NAME));
 
         return userService.saveUser(user);
+
+    }
+
+    @Override
+    public Member quickSave(Member member) throws ValidationFailedException {
+        return super.save(member);
 
     }
 

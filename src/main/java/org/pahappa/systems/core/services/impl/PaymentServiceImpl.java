@@ -65,7 +65,7 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
         newPayment = createNewPaymentInstanceWithTransactionId(newPayment);
 
         member.setRegistrationFeePayment(newPayment);
-        ApplicationContextProvider.getBean(MemberService.class).save(member);
+        ApplicationContextProvider.getBean(MemberService.class).quickSave(member);
 
         String redirectUrl = ApplicationContextProvider.getBean(SystemSettingService.class).getAppSetting().getFlutterwaveReditectUrl();
         String paymentUrl;

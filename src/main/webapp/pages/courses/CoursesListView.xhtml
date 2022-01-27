@@ -1,0 +1,109 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:of="http://omnifaces.org/functions"
+                template="/pages/freyatemplate/template.xhtml">
+
+    <ui:define name="content">
+
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <h:form id="coursesListView" enctype="multipart/form-data"
+                        rendered="#{ (componentRenderer.activeMember) or (componentRenderer.administrator) }">
+
+
+                    <div class="card">
+
+                        <h:outputText value="Filters" />
+
+                        <div class="p-grid" >
+                            <div class="p-col" >
+
+                                <p:inputText id="searchTerm" required="false"
+                                             placeholder="Search for courses ..."
+                                             style="width: 100%;"
+                                             onkeypress="#{coursesView.reloadFilterReset()}"
+                                             value="#{coursesView.searchTerm}" />
+                            </div>
+
+
+                            <div class="p-col-fixed" style="width:100px; margin-right: 10px">
+
+                                <p:commandButton icon="fa fa-search" styleClass="primary-button"
+                                                 id="searchBtn"
+                                                 actionListener="#{coursesView.reloadFilterReset()}"
+                                                 update="coursesTable" value="Search">
+                                </p:commandButton>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-grid ">
+                        <div class="p-col-12">
+
+                            <p:dataView var="course" value="#{coursesListView}" paginator="true"
+                                        rowsPerPageTemplate="6,12,16" layout="grid" paginatorAlwaysVisible="true"
+                                        paginatorPosition="bottom" 
+                                        id="coursesTable"
+                                        rows="#{coursesListView.maximumresultsPerpage}"
+
+                                        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                        >
+                                <f:facet name="header">
+                                    <h3>#{coursesListView.dataModels.size()} - Courses</h3>
+
+                                </f:facet>
+
+                                <p:dataViewGridItem>
+                                    <div class="card">
+                                        <p:graphicImage  style="width: 100%;padding: 0%;border-radius:10px" value="#{course.imageUrl}"/>
+                                        <div class="product-list-detail">
+                                            <h4>#{course.title}</h4>
+                                            <div style="opacity: .6" class="product-description">
+                                                <h:outputText  value="#{of:abbreviate(course.description, 200)}" escape="false">
+                                                </h:outputText>
+                                            </div>
+
+                                        </div>
+                                        <div style="margin-top: 5px">
+
+                                            <p:commandButton styleClass="ui-button-primary"
+                                                             value="Read more"
+                                                             process="@this"
+                                                             action="#{courseProfileView.getViewPath}">
+                                                <f:setPropertyActionListener target="#{courseProfileView.model}"
+                                                                             value="#{course}" />
+
+                                            </p:commandButton>
+
+                                        </div>
+                                    </div>
+                                </p:dataViewGridItem>
+                            </p:dataView>
+
+
+                            <p:blockUI block="coursesListView" trigger="searchBtn ">
+                                <p:graphicImage value="/resources/images/workingicon.png" />
+                            </p:blockUI>
+
+
+                        </div>
+                    </div>
+
+                    <p:confirmDialog global="true">
+                        <p:commandButton value="Yes" type="button"
+                                         styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />
+                        <p:commandButton value="No" type="button"
+                                         styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />
+                    </p:confirmDialog>
+
+                </h:form>
+
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -48,6 +48,25 @@
                                 rendered="#{ componentRenderer.managePayments}"
                                 icon="pi pi-money-bill" 
                                 outcome="/pages/payments/PaymentsView.xhtml" />
+                      
+                       <p:menuitem id="subscriptionsViews" 
+                                value="Subscriptions"
+                                rendered="#{ componentRenderer.managePayments}"
+                                icon="pi pi-money-bill" 
+                                outcome="/pages/payments/SubscriptionsView.xhtml" />
+                      
+                       <p:menuitem id="coursesView" 
+                                value="Course setup"
+                                rendered="#{ componentRenderer.managePayments}"
+                                icon="pi pi-bars" 
+                                outcome="/pages/courses/CoursesView.xhtml" />
+                       
+                         
+                       <p:menuitem id="coursesListView" 
+                                value="Courses"
+                                rendered="#{false }"
+                                icon="pi pi-bars" 
+                                outcome="/pages/courses/CoursesListView.xhtml" />
 
                     <p:menuitem id="admins" value="System Admins"
                                 icon="pi pi-users" 
@@ -57,7 +76,7 @@
 
                     <p:submenu id="tools"  icon="pi pi-cog" rendered="#{ componentRenderer.administrator}"   label="Tools">
                         <p:menuitem id="datasets" 
-                                    value="Datasets" rendered="false"
+                                    value="Datasets" rendered="true"
                                     icon="pi pi-bars" 
                                     outcome="/pages/lookups/LookupsView.xhtml"/>
                         

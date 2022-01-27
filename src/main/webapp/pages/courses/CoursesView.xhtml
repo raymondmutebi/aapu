@@ -1,0 +1,198 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                  xmlns:of="http://omnifaces.org/functions"
+                template="/pages/freyatemplate/template.xhtml">
+
+    <ui:define name="content">
+        <ui:fragment rendered="#{!componentRenderer.administrator}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="freya-layout" />
+                        </h:link>
+                    </div>
+
+                    <div class="exception-panel">
+                        <p:graphicImage styleClass="exception-icon"
+                                        name="images/icon-access.png" library="freya-layout" />
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br></br> Manufacturer the
+                            administrator for more information.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </ui:fragment>
+
+        <h:form id="coursesView" enctype="multipart/form-data"
+                rendered="#{ (componentRenderer.administrator) }">
+            <div class="ui-g">
+                <div class="ui-g-12">
+
+                    <div class="card">
+
+                        <h:outputText value="Filters" />
+
+                        <div class="p-grid" >
+                            <div class="p-col" >
+
+                                <p:inputText id="searchTerm" required="false"
+                                             placeholder="Search for courses ..."
+                                             style="width: 100%;"
+                                             onkeypress="#{coursesView.reloadFilterReset()}"
+                                             value="#{coursesView.searchTerm}" />
+                            </div>
+
+
+                            <div class="p-col-fixed" style="width:100px; margin-right: 10px">
+
+                                <p:commandButton icon="fa fa-search" styleClass="primary-button"
+                                                 id="searchBtn"
+                                                 actionListener="#{coursesView.reloadFilterReset()}"
+                                                 update="coursesTable" value="Search">
+                                </p:commandButton>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-grid table-demo">
+                        <div class="p-col-12">
+                            <div class="card">
+
+                                <p:dataTable id="coursesTable" var="model" value="#{coursesView}"
+                                             widgetVar="coursesTable"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                             paginator="true" lazy="true"
+                                             rows="#{coursesView.maximumresultsPerpage}"
+                                             emptyMessage="#{coursesView.dataEmptyMessage}"
+                                             paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                             rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+                                    <f:facet name="header">
+                                        <div class="p-d-flex">
+
+                                            <div class="p-mr-2" style="margin-left: auto">
+                                                <p:commandButton value="Export" process=":coursesView:coursesTable" 
+                                                                 title="Export courses list" icon="pi pi-print" styleClass="help-button" ajax="false">
+                                                    <p:dataExporter type="pdf"  target="coursesTable" fileName="courses"/>
+                                                </p:commandButton> 
+
+
+                                                <p:commandButton icon="fa fa-plus" value="Add new" styleClass="primary-button"
+                                                                 style="margin-left: 5px" process="@this" 
+                                                                 title="Add new course" 
+                                                                 actionListener="#{courseFormDialog.show}">
+                                                    <f:setPropertyActionListener value="#{null}" target="#{courseFormDialog.model}"/>
+                                                    <p:ajax  update="coursesView" event="dialogReturn"  />
+                                                </p:commandButton>
+                                            </div>
+                                        </div>
+                                    </f:facet>
+
+                                    <p:column width="30" headerText="No.">
+                                        <h:outputText value="#{row + 1}" />
+                                    </p:column>
+                                    <p:column exportable="false" width="100" headerText="Image">
+
+                                        <p:graphicImage id="imageView"
+                                                        height="100" width="100" value="#{model.imageUrl}" 
+                                                        />
+                                    </p:column>
+                                    <p:column >
+                                        <f:facet name="header">
+                                            <h:outputText value="Title" />
+                                        </f:facet>
+                                        <h:outputText value="#{model.title}" />
+                                    </p:column>
+                                    <p:column headerText="Course type">
+
+                                        <h:outputText value="#{model.courseType.name}" />
+                                    </p:column>
+                                    <p:column width="100">
+                                        <f:facet name="header">
+                                            <h:outputText value="Start date" />
+                                        </f:facet>
+                                        <h:outputText value="#{model.startDate}" />
+                                    </p:column>
+
+                                    <p:column width="100" headerText="End date">
+
+                                        <h:outputText value="#{model.endDate}" />
+                                    </p:column>
+
+
+
+
+
+
+                                    <p:column >
+                                        <f:facet name="header">
+                                            <h:outputText value="Description" />
+                                        </f:facet>
+                                        <h:outputText value="#{of:abbreviate(model.description,200)}" escape="false" />
+                                    </p:column>
+
+                                    <p:column width="150" headerText="Sign up date">
+
+                                        <h:outputText value="#{model.dateCreated}" />
+                                    </p:column>
+
+
+
+
+                                    <p:column exportable="false" headerText="Action" style="text-align: center" width="100">
+                                        <p:commandButton icon="fa fa-edit"  styleClass="primary-button"
+                                                         style="margin-left: 5px" process="@this" 
+                                                         title="Add new course" 
+                                                         actionListener="#{courseFormDialog.show}">
+                                            <f:setPropertyActionListener value="#{model}" target="#{courseFormDialog.model}"/>
+                                            <p:ajax  update="coursesView" event="dialogReturn"  />
+                                        </p:commandButton>
+
+                                        <p:commandButton icon="fa fa-trash"
+                                                         styleClass="danger-button"
+                                                         style="margin-left: 5px"
+                                                         action="#{coursesView.deleteManufacturer(model)}"
+                                                         update=":coursesView"
+
+                                                         >
+
+                                        </p:commandButton>
+
+
+                                    </p:column>
+
+                                </p:dataTable>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <p:blockUI block="coursesView" trigger="searchBtn ">
+                        <p:graphicImage value="/resources/images/workingicon.png" />
+                    </p:blockUI>
+
+
+                </div>
+            </div>
+
+            <p:confirmDialog global="true">
+                <p:commandButton value="Yes" type="button"
+                                 styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />
+            </p:confirmDialog>
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>

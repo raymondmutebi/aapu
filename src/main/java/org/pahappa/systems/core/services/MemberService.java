@@ -24,7 +24,7 @@ public interface MemberService extends GenericService<Member> {
      * @throws ValidationFailedException if the following attributes are blank:
      * name, phoneNumber
      */
-    Member save(Member member) throws ValidationFailedException;
+    Member quickSave(Member member) throws ValidationFailedException;
 
     /**
      * Adds a member to the database outside the spring security context.

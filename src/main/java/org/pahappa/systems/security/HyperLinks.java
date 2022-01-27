@@ -19,6 +19,12 @@ public static final String FORGOT_PASSWORD_FORM = "/ExternalViews/ForgotPassword
     public static final String PAYMENTS_VIEW = "/pages/payments/PaymentsView.xhtml?faces-redirect=true";
     public static final String SUBSCRIPTIONS_VIEW = "/pages/payments/SubscriptionsView.xhtml?faces-redirect=true";
     public static final String COMMUNICATIONS_VIEW = "/pages/communications/CommunicationsView.xhtml?faces-redirect=true";
+    
+    public static final String COURSES_VIEW = "/pages/courses/CoursesView.xhtml?faces-redirect=true";
+     public static final String COURSE_FORM_DIALOG = "/pages/courses/CourseFormDialog.xhtml?faces-redirect=true";
+    public static final String COURSES_LIST_VIEW = "/pages/courses/CoursesListView.xhtml?faces-redirect=true";
+    public static final String COURSE_PROFILE_VIEW = "/pages/courses/CourseProfileView.xhtml?faces-redirect=true";
+    
     public static final String SMS_DIALOG = "/pages/communications/SmsDialog.xhtml?faces-redirect=true";
     public static final String EMAIL_DIALOG = "/pages/communications/EmailDialog.xhtml?faces-redirect=true";
 

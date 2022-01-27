@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.googlecode.genericdao.search.Search;
 import org.apache.commons.text.WordUtils;
 import org.pahappa.systems.core.services.LookUpService;
+import org.pahappa.systems.core.services.LookUpValueDao;
 import org.pahappa.systems.models.LookUpField;
 import org.pahappa.systems.models.LookUpValue;
 import org.sers.webutils.model.exception.OperationFailedException;
@@ -19,6 +20,8 @@ import org.sers.webutils.model.exception.OperationFailedException;
 @Transactional
 public class LookUpServiceImpl extends GenericServiceImpl<LookUpField> implements LookUpService {
 
+    @Autowired
+    LookUpValueDao lookUpValueDao;
   
 
     @Override
@@ -28,7 +31,9 @@ public class LookUpServiceImpl extends GenericServiceImpl<LookUpField> implement
             throw new ValidationFailedException("Dataset with same name exists");
         }
         lookUpField.setName(WordUtils.capitalize(lookUpField.getName()));
-       return super.save(lookUpField);
+        
+        
+       return super.merge(lookUpField);
     }
  
     @Override
@@ -57,7 +62,7 @@ public class LookUpServiceImpl extends GenericServiceImpl<LookUpField> implement
 
     @Override
     public LookUpValue getLookUpValueById(String id) {
-        return null;
+        return lookUpValueDao.searchUniqueByPropertyEqual("id", id,RecordStatus.ACTIVE);
     }
 
     @Override

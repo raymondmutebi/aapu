@@ -1,0 +1,122 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/freyatemplate/dialog-template.xhtml">
+    <ui:define name="head">
+        <style type="text/css">
+            .capitalized {
+                text-transform: capitalize;
+            }
+        </style>
+    </ui:define>
+    <ui:define name="content">
+        <title>Create course account</title>
+        <h:form id="courseFormDialog" styleClass="card ui-fluid" style="padding-bottom: 0px !important; border-radius: 2px !important">
+            <div class=" p-grid" >
+
+                <div class="p-col-12 p-md-6 " >
+                    <h5>Title</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText required="true" id="fname"
+                                     value="#{courseFormDialog.model.title}"/>
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-6 " >
+                    <h5>Type</h5>
+                    <div class="ui-inputgroup">
+                        <p:selectOneMenu  value="#{courseFormDialog.model.courseType}" 
+                                          converter="lookUpValueConverter"   id="prof"  
+                                          effect="fade" filter="true"  
+                                          required="true"
+                                          filterMatchMode="startsWith">
+                            <f:selectItem itemLabel="Select type" itemValue="#{null}" />
+                            <f:selectItems value="#{courseFormDialog.types}" var="type"
+                                           itemLabel="#{type.name}" itemValue="#{type}" />
+
+                          
+
+                        </p:selectOneMenu>
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-6 " >
+                    <h5>Start date</h5>
+                    <div class="ui-inputgroup">
+                        <p:calendar required="true" id="phone"
+                                    value="#{courseFormDialog.model.startDate}"/>
+
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-md-6 " >
+                    <h5>End date</h5>
+                    <div class="ui-inputgroup">
+                        <p:calendar required="true" id="endDate"
+                                    value="#{courseFormDialog.model.endDate}"/>
+
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-12 " >
+                    <h5>Description</h5>
+                    <div class="ui-inputgroup">
+
+                        <p:textEditor required="true" id="lname" height="200"
+                                      value="#{courseFormDialog.model.description}"/>
+
+                    </div>
+                </div>
+
+
+
+                <p:outputPanel rendered="#{courseFormDialog.model.id != null}" styleClass="p-col-12 p-md-12 " >
+                    <div class="p-grid" >
+                        <div class="p-col-12 p-md-12 p-d-flex p-jc-center" >
+                            <p:graphicImage id="imageView" 
+                                            styleClass="profile-image" 
+                                            value="#{courseFormDialog.model.imageUrl}" 
+                                            />
+                        </div>
+                        <div class="p-col-12 p-md-12">
+
+                            <p:fileUpload 
+                                multiple="false"
+                                style="width: 100%"
+
+                                sizeLimit="3145728" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                invalidSizeMessage="Maximum file size allowed is 3 MB"
+                                invalidFileMessage="only gif | jpg | jpeg | png is allowed"
+                                update="imageView"
+
+                                fileUploadListener="#{courseFormDialog.imageUploadEvent}"/>
+
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+
+
+
+
+                <div class="p-col-12 p-md-12" style="margin-top: 5px;margin-bottom: 0px">
+                    <div class="p-grid p-justify-end">
+                        <div class="p-col-2">
+                            <p:commandButton value="Cancel" icon="pi pi-times"
+                                             validateClient="false"
+                                             process="@this"
+                                             action="#{courseFormDialog.hide}"
+                                             styleClass="ui-button-help" />
+                        </div>
+                        <div class="p-col-2">
+                            <p:commandButton value="Save" icon="pi pi-check"
+                                             process="@form"
+                                             actionListener="#{courseFormDialog.save}"
+                                             update="courseFormDialog" validateClient="true" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

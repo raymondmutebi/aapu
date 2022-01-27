@@ -4,6 +4,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui" 
                 xmlns:po="http://primefaces.org/freya" 
+                xmlns:of="http://omnifaces.org/functions"
                 template="/pages/freyatemplate/template.xhtml">
 
     <ui:define name="title">Dashboard</ui:define>
@@ -150,12 +151,12 @@
                                 <i class="pi pi-image"></i>
                             </div>
                         </div>
-                       
+
                         <div class="p-col-3">
                             <div class="card overview-box gray">
                                 <div class="overview-info">
                                     <h6>My subscriptions</h6>
-                                    <h1>#{dashboard.memberSubscriptions}</h1>
+                                    <h1>#{dashboard.memberSubscriptions.size()}</h1>
                                 </div>
                                 <i class="pi pi-globe"></i>
                             </div>
@@ -259,36 +260,8 @@
                     </div>
 
                 </div>
+
                 <div class="p-col-3">
-
-                    <div class="card schedule">
-                        <div class="card-header">
-                            <div class="card-title">
-                                <h6>Email</h6>
-                                <p class="subtitle">Communications</p>
-                            </div>
-                            <p class="subtitle">Today</p>
-                        </div>
-
-                        <ul>
-                            <p:repeat var="email" value="#{dashboard.emailCommunications}">
-                                <li>
-                                    <div class="schedule-header">
-                                        <h6>#{email.emailSubject}</h6>
-                                        <span>#{email.scheduleDate}</span>
-                                    </div>
-                                    <a href="#">#{email.emailSubject}</a>
-                                    <span>#{email.emailBody}</span>
-                                </li>
-                            </p:repeat>
-
-                        </ul>
-                       
-                    </div>
-
-                </div>
-
-                <div class="p-col-4">
 
                     <div class="card schedule">
                         <div class="card-header">
@@ -311,7 +284,100 @@
                             </p:repeat>
 
                         </ul>
-                      
+
+                    </div>
+
+                </div>
+                <div class="p-col-4">
+
+                    <div class="card schedule">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <h6>Email</h6>
+                                <p class="subtitle">Communications</p>
+                            </div>
+                            <p class="subtitle">Today</p>
+                        </div>
+
+                        <ul>
+                            <p:repeat var="email" value="#{dashboard.emailCommunications}">
+                                <li>
+                                    <div >
+                                        <h6>#{email.emailSubject}</h6>
+
+                                    </div>
+
+                                    <p style="opacity: 0.7">
+                                        <h:outputText value="#{email.emailBody}" escape="false" /> 
+                                    </p>
+                                </li>
+                            </p:repeat>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+                <div class="p-col-8">
+
+                    <div class="card ">
+
+                        <p:dataView var="course" value="#{dashboard.courses}" rows="5" paginator="true"
+                                    rowsPerPageTemplate="6,12,16" layout="grid" paginatorAlwaysVisible="false"
+                                    paginatorPosition="bottom" 
+                                    paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                    >
+                            <f:facet name="header">
+                                <h3>Courses</h3>
+
+                            </f:facet>
+
+                            <p:dataViewGridItem>
+                                <div class="card product-list-item">
+                                    <p:graphicImage  style="width: 100%;padding: 0%;border-radius:10px" value="#{course.imageUrl}"/>
+                                    <div class="product-list-detail">
+                                        <h4>#{course.title}</h4>
+                                        <div style="opacity: .6" class="product-description"><h:outputText  value="#{of:abbreviate(course.description, 200)}" escape="false"></h:outputText></div>
+
+                                    </div>
+                                    <div style="margin-top: 5px">
+
+                                        <p:commandButton styleClass="ui-button-primart"
+                                                         value="Read more"
+                                                         process="@this"
+                                                         action="#{courseProfileView.getViewPath}">
+                                            <f:setPropertyActionListener target="#{courseProfileView.model}"
+                                                                         value="#{course}" />
+                                        </p:commandButton>
+
+                                    </div>
+                                </div>
+                            </p:dataViewGridItem>
+                        </p:dataView>
+
+
+                        <p:dialog  height="600px" width="60%" 
+                                   widgetVar="courseDetailsDialog" minHeight="40"   showEffect="fade" modal="true">
+                            <p:outputPanel id="courseDetails" >
+                                <div class="p-grid ui-fluid ">
+
+                                    <div class="p-col-12 p-md-12">
+                                        <h2>#{dashboard.selecetedCourse.title}</h2>
+                                        <h:outputText value="#{dashboard.selecetedCourse.description}" escape="false"/>
+
+                                        <p:graphicImage  style="width: 100%;padding: 0%;border-radius:10px" value="#{dashboard.selecetedCourse.imageUrl}"/>
+
+
+                                    </div>
+                                </div>
+
+                            </p:outputPanel>
+
+                        </p:dialog>
+
+
                     </div>
 
                 </div>
@@ -319,20 +385,20 @@
                 <div class="p-col-12">
 
                     <div class="card ">
-                       
+
                         <p:dataView var="product" value="#{dashboard.previousPosts}" rows="10" paginator="true"
                                     rowsPerPageTemplate="6,12,16" layout="grid"
                                     paginatorPosition="bottom" 
                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                     >
                             <f:facet name="header">
-                                 <h3>Recent news and posts</h3>
-                                
+                                <h3>Recent news and posts</h3>
+
                             </f:facet>
 
                             <p:dataViewGridItem>
                                 <div class="card product-list-item">
-                                    <p:graphicImage name="demo/images/product/#{product.featuredMedia}"/>
+                                    <p:graphicImage style="width: 100px" name="demo/images/product/#{product.featuredMedia}"/>
                                     <div class="product-list-detail">
                                         <h4>#{product.title.rendered}</h4>
                                         <div class="product-description"><h:outputText value="#{product.content.rendered}" escape="false"></h:outputText></div>
