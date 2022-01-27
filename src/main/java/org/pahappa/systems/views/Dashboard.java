@@ -37,8 +37,10 @@ import org.pahappa.systems.models.Payment;
 import org.pahappa.systems.models.PaymentReasonType;
 import org.pahappa.systems.models.Subscription;
 import org.pahappa.systems.constants.TransactionStatus;
+import org.pahappa.systems.core.services.CourseService;
 import org.pahappa.systems.core.utils.wp.WordPressClient;
 import org.pahappa.systems.core.utils.wp.WordPressPost;
+import org.pahappa.systems.models.Course;
 
 import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.axes.cartesian.CartesianScales;
@@ -63,7 +65,7 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
     private String logoutUrl = "ServiceLogout";
     @SuppressWarnings("unused")
     private String viewPath, subscriptionStatus;
-    private int totalMembers, monthySubscriptions, monthyCommunications,dailymembers;
+    private int totalMembers, monthySubscriptions, monthyCommunications, dailymembers;
     private int subscripionDaysRemaining, myTotalSubscriptions, subscriptionAmount;
     private List<Member> members;
     private List<Communication> smsCommunications, emailCommunications;
@@ -75,6 +77,8 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
     private CommunicationService communicationService;
     private BarChartModel clientsBarChartModel;
     private List<WordPressPost> previousPosts;
+    private List<Course> courses;
+    private Course selecetedCourse;
 
     private float egosmsBalance;
     private float totalRegistartionPayment, totalSubscriptionPayment;
@@ -119,21 +123,22 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
             endDate = activeSubscription.getEndDate();
             subscripionDaysRemaining = (int) DateUtils.calculateDaysBetween(new Date(), activeSubscription.getEndDate());
             subscriptionStatus = "Active";
-              this.previousPosts = loadPosts();
-        }
-       
-        this.smsCommunications = this.communicationService.getInstances(new Search()
-                .addFilterEqual("communicationType", CommunicationType.Sms)
-                .addFilterLessOrEqual("scheduleDate", DateUtils.getDateAfterDays(endDate, 3)), 0, 0);
+            this.previousPosts = loadPosts();
+            this.courses = ApplicationContextProvider.getBean(CourseService.class).getInstances(new Search()
+                    .addFilterEqual("recordStatus", RecordStatus.ACTIVE)
+                    .addFilterGreaterOrEqual("endDate", new Date()), 0, 0);
+            this.smsCommunications = this.communicationService.getInstances(new Search()
+                    .addFilterEqual("communicationType", CommunicationType.Sms)
+                    .addFilterLessOrEqual("scheduleDate", DateUtils.getDateAfterDays(endDate, 3)), 0, 0);
 
-        this.emailCommunications = this.communicationService.getInstances(new Search()
-                .addFilterEqual("communicationType", CommunicationType.Sms)
-                .addFilterLessOrEqual("scheduleDate", DateUtils.getDateAfterDays(endDate, 3)), 0, 0);
+            this.emailCommunications = this.communicationService.getInstances(new Search()
+                    .addFilterEqual("communicationType", CommunicationType.Email)
+                    .addFilterLessOrEqual("scheduleDate", DateUtils.getDateAfterDays(endDate, 3)), 0, 0);
+
+        }
 
         this.memberSubscriptions = this.subscriptionService.getInstances(new Search()
                 .addFilterEqual("member", this.loggedInMember), 0, 0);
-
-      
 
     }
 
@@ -142,15 +147,15 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
                 .addFilterGreaterOrEqual("dateCreated", DateUtils.getFirstDateOfThisMonth()));
 
         this.monthySubscriptions = this.subscriptionService.countInstances(new Search()
-              .addFilterGreaterOrEqual("dateCreated", DateUtils.getFirstDateOfThisMonth()));
+                .addFilterGreaterOrEqual("dateCreated", DateUtils.getFirstDateOfThisMonth()));
 
         this.totalMembers = this.memberService.countInstances(new Search()
                 .addFilterNotEqual("accountStatus", AccountStatus.Created)
                 .addFilterNotEqual("accountStatus", AccountStatus.Verified));
-        
-          this.dailymembers = this.memberService.countInstances(new Search()
+
+        this.dailymembers = this.memberService.countInstances(new Search()
                 .addFilterGreaterOrEqual("dateCreated", DateUtils.getDateAfterDays(-1)));
-        
+
         createMembersBarModel();
     }
 
@@ -225,6 +230,14 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
         options.setTitle(title);
 
         clientsBarChartModel.setOptions(options);
+    }
+
+    public Course getSelecetedCourse() {
+        return selecetedCourse;
+    }
+
+    public void setSelecetedCourse(Course selecetedCourse) {
+        this.selecetedCourse = selecetedCourse;
     }
 
     public List<WordPressPost> loadPosts() {
@@ -405,6 +418,30 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
 
     public void setDailymembers(int dailymembers) {
         this.dailymembers = dailymembers;
+    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
+    }
+
+    public float getTotalRegistartionPayment() {
+        return totalRegistartionPayment;
+    }
+
+    public void setTotalRegistartionPayment(float totalRegistartionPayment) {
+        this.totalRegistartionPayment = totalRegistartionPayment;
+    }
+
+    public float getTotalSubscriptionPayment() {
+        return totalSubscriptionPayment;
+    }
+
+    public void setTotalSubscriptionPayment(float totalSubscriptionPayment) {
+        this.totalSubscriptionPayment = totalSubscriptionPayment;
     }
 
 }

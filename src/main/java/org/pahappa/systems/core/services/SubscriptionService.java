@@ -1,5 +1,6 @@
 package org.pahappa.systems.core.services;
 
+import java.util.Date;
 import org.pahappa.systems.models.Member;
 import org.pahappa.systems.models.Payment;
 import org.pahappa.systems.models.Subscription;
@@ -27,6 +28,15 @@ public interface SubscriptionService extends GenericService<Subscription> {
      * @return 
      */
     public Subscription getActiveSubscription(Member member);
+    
+    /**
+     * 
+     * @param member
+     * @param startDate
+     * @param attachment
+     * @return 
+     */
+    public Subscription extendSubscription(Member member, Date startDate, byte[] attachment) ;
    
     /**
      * 

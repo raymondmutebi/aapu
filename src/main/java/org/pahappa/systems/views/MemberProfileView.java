@@ -51,7 +51,7 @@ public class MemberProfileView extends WebFormView<Member, MemberProfileView, Me
 
     @Override
     public void persist() throws Exception {
-        this.userService.save(super.model);
+        this.userService.saveInstance(super.model);
     }
 
     @Override

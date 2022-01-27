@@ -9,13 +9,14 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import org.pahappa.systems.core.services.LookUpService;
 import org.pahappa.systems.core.utils.UiUtils;
-
 import org.pahappa.systems.models.LookUpField;
 import org.pahappa.systems.models.LookUpValue;
+
 import org.pahappa.systems.security.HyperLinks;
 import org.primefaces.event.CellEditEvent;
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.client.views.presenters.WebFormView;
+import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
@@ -29,12 +30,11 @@ public class LookUpForm extends WebFormView<LookUpField, LookUpForm, LookUpsView
      */
     private static final long serialVersionUID = 1L;
     private LookUpService lookUpFieldService;
-
+    private LookUpValue selectedLookUpValue;
     private String lookUpFieldName = "";
     private String lookUpFieldNumber = "";
     private boolean newView;
     private String[] stringLookupValues;
-    private LookUpValue selectedLookUpValue;
 
     @Override
     public void beanInit() {
@@ -52,14 +52,17 @@ public class LookUpForm extends WebFormView<LookUpField, LookUpForm, LookUpsView
     @Override
     public void persist() throws Exception {
 
-        this.lookUpFieldService.save(super.model);
+        this.lookUpFieldService.saveInstance(super.model);
     }
 
-    public void loadLookupValue(LookUpValue lookUpValue) {
-        if (lookUpValue == null) {
-            lookUpValue = new LookUpValue();
+    public void loadPastedValues() {
+        super.model.setLookUpValues(new HashSet<LookUpValue>());
+        for (String stringValue : stringLookupValues) {
+            LookUpValue newLookUpValue = new LookUpValue();
+            newLookUpValue.setName(stringValue);
+            super.model.addLookupValue(newLookUpValue);
+
         }
-        this.selectedLookUpValue = lookUpValue;
 
     }
 
@@ -74,18 +77,32 @@ public class LookUpForm extends WebFormView<LookUpField, LookUpForm, LookUpsView
         super.setFormProperties();
     }
 
-    public void saveNewValue(LookUpValue lookUpValue) {
+    public void addNewValue() {
+        LookUpValue newLookUpValue = new LookUpValue();
+        newLookUpValue.setName("New value");
+        super.model.addLookupValue(newLookUpValue);
 
+    }
+
+    public void loadValue(LookUpValue lookUpValue) {
+        if (lookUpValue == null) {
+            lookUpValue = new LookUpValue();
+        }
+        this.selectedLookUpValue = lookUpValue;
+
+    }
+
+    public void saveLookUpValue(LookUpValue lookUpValue) {
         try {
             super.model.addLookupValue(lookUpValue);
-            super.model = lookUpFieldService.save(super.model);
-            UiUtils.showMessageBox("Value saved", "Action successfull");
+            super.model = this.lookUpFieldService.saveInstance(super.model);
+            this.selectedLookUpValue = null;
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Action successfull", "Added " + lookUpValue.getName() + " to " + super.model.getName());
+            FacesContext.getCurrentInstance().addMessage(null, msg);
 
-        } catch (ValidationFailedException ex) {
-            UiUtils.ComposeFailure(ex.getLocalizedMessage(), "Action failed");
-
+        } catch (OperationFailedException | ValidationFailedException ex) {
+            UiUtils.ComposeFailure("Action failed", ex.getLocalizedMessage());
         }
-
     }
 
     public void removeLookUpValue(LookUpValue lookUpValue) {
@@ -100,6 +117,13 @@ public class LookUpForm extends WebFormView<LookUpField, LookUpForm, LookUpsView
         if (newValue != null && !newValue.equals(oldValue)) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Change made", oldValue + " changed to " + newValue);
             FacesContext.getCurrentInstance().addMessage(null, msg);
+            try {
+                //super.model.addLookupValue(newLookUpValue);
+                this.lookUpFieldService.save(super.model);
+            } catch (ValidationFailedException ex) {
+                Logger.getLogger(LookUpForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
     }
 
@@ -145,14 +169,6 @@ public class LookUpForm extends WebFormView<LookUpField, LookUpForm, LookUpsView
 
     public void setStringLookupValues(String[] stringLookupValues) {
         this.stringLookupValues = stringLookupValues;
-    }
-
-    public LookUpService getLookUpFieldService() {
-        return lookUpFieldService;
-    }
-
-    public void setLookUpFieldService(LookUpService lookUpFieldService) {
-        this.lookUpFieldService = lookUpFieldService;
     }
 
     public LookUpValue getSelectedLookUpValue() {

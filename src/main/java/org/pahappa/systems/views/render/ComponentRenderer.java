@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import org.pahappa.systems.constants.AccountStatus;
+import org.pahappa.systems.core.services.MemberService;
 
 import org.pahappa.systems.models.security.PermissionConstants;
 import org.sers.webutils.model.security.User;
@@ -17,10 +19,9 @@ import org.pahappa.systems.models.SystemSetting;
 @SessionScoped
 public class ComponentRenderer implements Serializable {
 
-   
     private static final long serialVersionUID = 1L;
 
-    private boolean administrator, manageMembers, manageCommunications, managePayments, memberPerm = false;
+    private boolean administrator, manageMembers, activeMember=true, manageCommunications, managePayments, memberPerm = false;
     private User loggedInUser;
     private SystemSetting appSetting;
 
@@ -34,6 +35,10 @@ public class ComponentRenderer implements Serializable {
         this.managePayments = loggedInUser.hasPermission(PermissionConstants.PERM_MANAGE_PAYMENTS);
         this.manageMembers = loggedInUser.hasPermission(PermissionConstants.PERM_MANAGE_MEMBERS);
         this.memberPerm = loggedInUser.hasPermission(PermissionConstants.PERM_MEMBER);
+
+        if (loggedInUser.hasPermission(PermissionConstants.PERM_MEMBER) && !loggedInUser.hasAdministrativePrivileges()) {
+            //this.activeMember= ApplicationContextProvider.getBean(MemberService.class).getMemberByUserAccount(loggedInUser).getAccountStatus().equals(AccountStatus.Active);
+        }
 
     }
 
@@ -64,7 +69,6 @@ public class ComponentRenderer implements Serializable {
     public void setAdministrator(boolean administrator) {
         this.administrator = administrator;
     }
-
 
     /**
      * @return the appSetting
@@ -111,7 +115,13 @@ public class ComponentRenderer implements Serializable {
     public void setMemberPerm(boolean memberPerm) {
         this.memberPerm = memberPerm;
     }
-    
-    
+
+    public boolean isActiveMember() {
+        return activeMember;
+    }
+
+    public void setActiveMember(boolean activeMember) {
+        this.activeMember = activeMember;
+    }
 
 }

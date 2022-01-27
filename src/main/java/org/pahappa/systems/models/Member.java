@@ -8,6 +8,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import org.apache.commons.lang3.StringUtils;
@@ -45,10 +46,11 @@ public class Member extends BaseEntity {
     private Gender gender;
     private Region region;
     private String phoneNumber;
+    private String paymentAttachmentUrl;
     private Payment registrationFeePayment;
     private String lastEmailVerificationCode;
     private String lastPhoneVerificationCode;
-    private MemberRegistrationType registrationType;
+    private MemberRegistrationType registrationType = MemberRegistrationType.SYSTEM;
 
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -127,7 +129,8 @@ public class Member extends BaseEntity {
         return StringUtils.capitalize(this.firstName + " " + this.lastName);
     }
 
-    @Column(name = "profession")
+    @ManyToOne
+    @JoinColumn(name = "profession_id")
     public LookUpValue getProfession() {
         return profession;
     }
@@ -219,7 +222,7 @@ public class Member extends BaseEntity {
         this.professionValue = professionValue;
     }
 
-     @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     @Column(name = "registration_type")
     public MemberRegistrationType getRegistrationType() {
         return registrationType;
@@ -228,8 +231,6 @@ public class Member extends BaseEntity {
     public void setRegistrationType(MemberRegistrationType registrationType) {
         this.registrationType = registrationType;
     }
-    
-    
 
     @Enumerated(EnumType.STRING)
     @Column(name = "regions")
@@ -251,12 +252,19 @@ public class Member extends BaseEntity {
         this.registrationFeePayment = registrationFeePayment;
     }
 
+    @Column(name = "payment_attachment_url")
+    public String getPaymentAttachmentUrl() {
+        return paymentAttachmentUrl;
+    }
+
+    public void setPaymentAttachmentUrl(String paymentAttachmentUrl) {
+        this.paymentAttachmentUrl = paymentAttachmentUrl;
+    }
+
     @Override
     public String toString() {
         return "Member{" + "userAccount=" + userAccount + ", profileImageUrl=" + profileImageUrl + ", location=" + location + ", bioInformation=" + bioInformation + ", accountStatus=" + accountStatus + ", twitterHandle=" + twitterHandle + ", facebookUsername=" + facebookUsername + ", website=" + website + ", profession=" + profession + ", professionValue=" + professionValue + ", clearTextPassword=" + clearTextPassword + ", emailAddress=" + emailAddress + ", lastName=" + lastName + ", firstName=" + firstName + ", gender=" + gender + ", region=" + region + ", phoneNumber=" + phoneNumber + ", registrationFeePayment=" + registrationFeePayment + ", lastEmailVerificationCode=" + lastEmailVerificationCode + ", lastPhoneVerificationCode=" + lastPhoneVerificationCode + '}';
     }
-
-    
 
     @Override
     public boolean equals(Object object) {

@@ -76,8 +76,8 @@
                             </div>
                             <div class="p-col" >
                                 <p:selectOneMenu id="regions" label="Filter region" 
-                                                      value="#{membersView.selectedRegion}" 
-                                                      style="width: 100%;height: 100%" >
+                                                 value="#{membersView.selectedRegion}" 
+                                                 style="width: 100%;height: 100%" >
                                     <f:selectItem itemLabel="All regions" itemValue="#{null}"/>
                                     <f:selectItems itemLabel="#{region.name}" var="region" value="#{membersView.regions}"/>
                                     <p:ajax event="change" update="membersView" listener="#{membersView.reloadFilterReset()}"/>
@@ -85,19 +85,19 @@
                             </div>
                             <div class="p-col" >
                                 <p:selectOneMenu id="professions" label="Filter profession"
-                                                  
-                                                      value="#{membersView.selectedProfession}" 
-                                                      style="width: 100%;height: 100%" >
+
+                                                 value="#{membersView.selectedProfession}" 
+                                                 style="width: 100%;height: 100%" >
                                     <f:selectItem itemLabel="All professions" itemValue="#{null}"/>
                                     <f:selectItems  itemLabel="#{profession.name}" var="profession" value="#{membersView.professions}"/>
                                     <p:ajax event="change" update="membersView" listener="#{membersView.reloadFilterReset()}"/>
                                 </p:selectOneMenu>
                             </div>
-                              <div class="p-col" >
+                            <div class="p-col" >
                                 <p:selectOneMenu id="regType" label="Filter registartion type"
-                                                   
+
                                                  value="#{membersView.selectedRegistrationType}" 
-                                                      style="width: 100%;height: 100%" >
+                                                 style="width: 100%;height: 100%" >
                                     <f:selectItem itemLabel="All" itemValue="#{null}"/>
                                     <f:selectItems value="#{membersView.registrationTypes}"/>
                                     <p:ajax event="change" update="membersView" listener="#{membersView.reloadFilterReset()}"/>
@@ -138,7 +138,7 @@
 
                                     <f:facet name="header">
                                         <div class="p-d-flex">
-                                            
+
                                             <div class="p-mr-2" style="margin-left: auto">
                                                 <p:commandButton value="Export" process=":membersView:membersTable" 
                                                                  title="Export members list" icon="pi pi-print" styleClass="help-button" ajax="false">
@@ -160,12 +160,12 @@
                                                                  validateClient="true"
                                                                  update=":membersView:fileUploadDialogue">
                                                 </p:commandButton>
-                                                  <p:commandButton icon="fa fa-plus" value="Add new" styleClass="primary-button"
+                                                <p:commandButton icon="fa fa-plus" value="Add new" styleClass="primary-button"
                                                                  style="margin-left: 5px" process="@this" 
                                                                  title="Add new member" 
                                                                  actionListener="#{memberFormDialog.show}">
-                                                      <f:setPropertyActionListener value="#{null}" target="#{memberFormDialog.model}"/>
-                                                      <p:ajax  update="membersView" event="dialogReturn"  />
+                                                    <f:setPropertyActionListener value="#{null}" target="#{memberFormDialog.model}"/>
+                                                    <p:ajax  update="membersView" event="dialogReturn"  />
                                                 </p:commandButton>
                                             </div>
                                         </div>
@@ -174,7 +174,7 @@
                                     <p:column width="30" headerText="No.">
                                         <h:outputText value="#{row + 1}" />
                                     </p:column>
-                                    <p:column exportable="false" headerText="Image">
+                                    <p:column width="100" exportable="false" headerText="Image">
 
                                         <p:graphicImage id="imageView"
                                                         styleClass="profile-image-small"  value="#{not empty model.profileImageUrl?model.profileImageUrl:'/resources/freya-layout/images/unnamed.png'}" 
@@ -184,17 +184,25 @@
                                         <f:facet name="header">
                                             <h:outputText value="First name" />
                                         </f:facet>
-                                        <h:outputText value="#{model.firstName}" />
+                                        <p:commandLink action="#{memberProfileView.getViewPath}">
+                                            <f:setPropertyActionListener target="#{memberProfileView.model}"
+                                                                         value="#{model}" />
+                                            <h:outputText value="#{model.firstName} #{model.lastName}" />
+                                        </p:commandLink>
                                     </p:column>
 
-                                    <p:column width="100">
-                                        <f:facet name="header">
-                                            <h:outputText value="Last name" />
-                                        </f:facet>
-                                        <h:outputText value="#{model.lastName}" />
+
+                                    <p:column headerText="Email">
+                                        <p:commandLink action="#{memberProfileView.getViewPath}">
+                                            <f:setPropertyActionListener target="#{memberProfileView.model}"
+                                                                         value="#{model}" />
+
+                                            #{model.emailAddress}
+                                        </p:commandLink>
                                     </p:column>
 
-                                    <p:column width="100" headerText="Gender">
+
+                                    <p:column width="50" headerText="Gender">
 
                                         <h:outputText value="#{model.gender}" />
                                     </p:column>
@@ -209,27 +217,25 @@
                                         <h:outputText value="#{model.phoneNumber}" />
                                     </p:column>
 
-                                    <p:column headerText="Email">
 
-                                        <h:outputText value="#{model.emailAddress}" />
-                                    </p:column>
+                                    <p:column headerText="Profession">
 
-                                    <p:column headerText="Proffessional">
-
-                                        <h:outputText value="#{model.professionValue.name}" />
+                                        <h:outputText value="#{model.profession.name}" />
                                     </p:column>
                                     <p:column width="150" headerText="Sign up date">
 
-                                        <h:outputText value="#{model.dateCreated}" />
+                                        <h:outputText value="#{model.dateCreated}" >
+                                            <f:convertDateTime pattern="dd-MMM-yyy 'at' hh:mm"/>
+                                        </h:outputText>
                                     </p:column>
 
-                                    <p:column width="50">
+                                    <p:column width="100">
                                         <f:facet name="header">
                                             <h:outputText value="Status" />
                                         </f:facet>
                                         <h:outputText value="#{model.accountStatus}" />
                                     </p:column>
-                                    <p:column width="50">
+                                    <p:column width="100">
                                         <f:facet name="header">
                                             <h:outputText value="Last OTP" />
                                         </f:facet>
@@ -239,16 +245,13 @@
 
 
                                     <p:column exportable="false" headerText="Action" style="text-align: center" width="100">
-                                        <p:commandButton action="#{memberProfileView.getViewPath}"
-                                                         icon="fa fa-eye">
-                                            <f:setPropertyActionListener target="#{memberProfileView.model}"
-                                                                         value="#{model}" />
-                                        </p:commandButton>
 
-                                        <p:commandButton icon="fa fa-pause"
+
+                                        <p:commandButton icon="fa fa-stop"
                                                          rendered="#{model.accountStatus eq 'Registered' or model.accountStatus eq 'Active'}"
                                                          styleClass="danger-button"
                                                          title="Block this member"
+                                                          process="@this"
                                                          style="margin-left: 5px"
                                                          actionListener="#{membersView.loadSelectedMember(model)}"
                                                          update=":membersView:blockDialog"
@@ -257,9 +260,35 @@
 
                                         </p:commandButton>
 
+                                        <p:commandButton icon="fa fa-plus"
+                                                         rendered="#{model.accountStatus eq 'Registered' or model.accountStatus eq 'Active'}"
+                                                         styleClass="success-button"
+                                                         title="Extend member subsctiption"
+                                                         process="@this"
+                                                         style="margin-left: 5px"
+                                                         actionListener="#{membersView.loadSelectedMember(model)}"
+                                                         update=":membersView:subscriptionDialog"
+                                                         oncomplete="PF('subscriptionDialog').show()"
+                                                         >
+
+                                        </p:commandButton>
+
+                                        <p:commandButton icon="fa fa-check"
+                                                         rendered="#{model.accountStatus eq 'Verified'}"
+                                                         styleClass="warning-button"
+                                                         title="Actvate this member"
+                                                         style="margin-left: 5px"
+                                                         action="#{membersView.activateMember(model)}"
+                                                         update=":membersView"
+
+                                                         >
+
+                                        </p:commandButton>
+
                                         <p:commandButton icon="fa fa-check"
                                                          title="Unblock this member"
                                                          styleClass="success-button"
+                                                          process="@this"
                                                          rendered="#{model.accountStatus eq 'Blocked'}"
                                                          style="margin-left: 5px"
                                                          actionListener="#{membersView.loadSelectedMember(model)}"
@@ -338,6 +367,51 @@
                         </f:facet>
                     </p:dialog>
 
+
+                    <p:dialog  height="400px" width="50%" 
+                               header="Extend subscription for #{membersView.selectedMember.firstName}" 
+                               widgetVar="subscriptionDialog" minHeight="40"   showEffect="fade" modal="true">
+                        <p:outputPanel id="subscriptionDialog" >
+                            <p:outputPanel rendered="#{membersView.selectedMember!=null}" styleClass="p-grid ui-fluid">
+
+                                <div class="p-col-12 p-md-12">
+                                    <h4>
+                                        <h:outputLabel for="blockNotes" value="Subscription start date"/></h4>
+                                    <p:calendar 
+                                        value="#{membersView.startDate}"/>
+
+
+                                </div>
+
+                                <div class="p-col-12 p-md-12">
+                                    <h4>
+                                        <h:outputLabel for="image" value="Proof of payment"/>
+                                    </h4>
+                                    <p:fileUpload 
+                                        id="image"
+                                        multiple="false"
+                                        style="width: 100%"
+                                        label="Add attachment"
+                                        sizeLimit="3145728" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                        invalidSizeMessage="Maximum file size allowed is 3 MB"
+                                        invalidFileMessage="only gif | jpg | jpeg | png is allowed"
+
+                                        fileUploadListener="#{membersView.imageUploadEvent}"/>
+
+                                </div>
+                            </p:outputPanel>
+                        </p:outputPanel>
+                        <f:facet name="footer" >
+                            <div style="display: flex">
+                                <p:commandButton id="uploadSaveBtn3" icon="pi pi-save" 
+                                                 process="subscriptionDialog @this" 
+                                                 style="margin-left: auto"
+                                                 actionListener="#{membersView.extendMemberSubscription(membersView.selectedMember)}" 
+                                                 oncomplete="PF('subscriptionDialog').hide()" update="membersTable" value="Save" />
+
+                            </div>
+                        </f:facet>
+                    </p:dialog>
                     <p:dialog  height="400px" width="50%" 
                                header="Unblock #{membersView.selectedMember.composeFullName()}" 
                                widgetVar="unBlockDialog" minHeight="40"   showEffect="fade" modal="true">
@@ -367,7 +441,7 @@
                             </div>
                         </f:facet>
                     </p:dialog>
-                    <p:blockUI block="membersView" trigger="searchBtn ">
+                    <p:blockUI block="membersView" trigger="searchBtn uploadSaveBtn3">
                         <p:graphicImage value="/resources/images/workingicon.png" />
                     </p:blockUI>
 

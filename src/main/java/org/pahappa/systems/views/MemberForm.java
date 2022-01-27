@@ -41,7 +41,7 @@ public class MemberForm extends WebFormView<Member, MemberForm, MembersView> {
     
     @Override
     public void persist() throws Exception {
-        this.contactService.save(super.model);
+        this.contactService.saveInstance(super.model);
     }
     
    

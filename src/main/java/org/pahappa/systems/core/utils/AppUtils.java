@@ -19,6 +19,7 @@ public class AppUtils {
 
     public static String MEMBER_ROLE_NAME = "Aapu member";
     public static String PROF_DATASET_NAME = "Professionals";
+     public static String COURSE_TYPES_DATASET_NAME = "Course types";
 
     public static String CLOUDINARY_CLOUD_NAME = "revival-gateway";
     public static String CLOUDINARY_API_KEY = "114516888855596";

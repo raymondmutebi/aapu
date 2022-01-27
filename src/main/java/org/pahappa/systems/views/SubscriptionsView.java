@@ -34,6 +34,7 @@ public class SubscriptionsView extends PaginatedTableView<Subscription, Subscrip
     private List<SortField> sortFields;
     private Date startDate = null;
     private Date endDate = null;
+    private Subscription selectedSubscription;
 
     @PostConstruct
     @Override
@@ -139,5 +140,15 @@ public class SubscriptionsView extends PaginatedTableView<Subscription, Subscrip
     private void resetInput() {
         this.searchTerm = "";
     }
+
+    public Subscription getSelectedSubscription() {
+        return selectedSubscription;
+    }
+
+    public void setSelectedSubscription(Subscription selectedSubscription) {
+        this.selectedSubscription = selectedSubscription;
+    }
+    
+    
 
 }

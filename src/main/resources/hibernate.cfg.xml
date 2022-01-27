@@ -68,6 +68,8 @@
             class="org.pahappa.systems.models.Subscription" />
         <mapping 
             class="org.pahappa.systems.models.Communication" />
+         <mapping 
+            class="org.pahappa.systems.models.Course" />
        
           
             

@@ -28,18 +28,21 @@
     <h:body styleClass="#{guestPreferences.inputStyleClass}" >
 
         <div class="ui-g-12  layout-wrapper layout-topbar-#{guestPreferences.topbarTheme} layout-menu-#{guestPreferences.menuTheme} #{guestPreferences.menuMode}" >
-            <div class="ui-g-4 card-body" style="text-align: center">
+            <div class="ui-g-4 card" style="text-align: center; margin-top: 50px;padding-left: 0%;padding-right: 0%">
                 <h2>Become a member</h2>
-                <h:link  styleClass="logo">
-                    <p:graphicImage name="images/uma-logo.png" width="200" height="200" library="freya-layout" />
-                </h:link>
-                <p style="padding: 10%;font-size: 18px;color: #35557e">We are an umbrella body that brings together all 
+                <a class="logo"  href="https://www.aapug.org" >
+                    <p:graphicImage value="https://aapug.org/wp-content/uploads/2021/10/image008-1-368x290.jpg" style="height: 70%; width: 100%" library="freya-layout" />
+                </a>
+
+                <p style="padding-right:5%;padding-left: 5%;padding-bottom: 5%;font-size: 18px;color: #35557e">We are an umbrella body that brings together all 
                     Pre-hospital Emergency Medical Services providers in Uganda. We operate to represent 
                     and serve emergency medical services (EMS) practitioners through advocacy, 
                     education programs (Trainings) , coordination of emergency responses in times 
                     of disaster and conducting research, using our structures and secretariat staff 
                     that are committed, dedicated, and strive to achieve the Association objectives.  </p>
+
                 <p>Have an account? <a href="Login.xhtml">Login instead</a></p>
+
             </div>   
             <div class="ui-g-8">
                 <h:form id="externalMemberForm" enctype="multipart/form-data">
@@ -54,7 +57,7 @@
                                     <p:outputPanel styleClass="p-field p-col-12 p-md-12" 
                                                    style=" background-color:red;color: white;" 
                                                    rendered="#{not externalMemberForm.successResponse}" >
-                                        <h5 >#{externalMemberForm.customUiMessage}</h5>
+                                        <h5>#{externalMemberForm.customUiMessage}</h5>
                                     </p:outputPanel>
                                     <div class="p-field p-col-12 p-md-6">
                                         <p:outputLabel for="fname" value="First name" />
@@ -66,7 +69,7 @@
                                         <p:outputLabel for="lname" value="Last name" />
                                         <p:inputText required="true" id="lname"
                                                      value="#{externalMemberForm.model.lastName}"/>
-                                    
+
                                     </div>
 
 
@@ -85,7 +88,7 @@
                                         <p:outputLabel for="phone" value="Phone number" />
                                         <p:inputText required="true" id="phone"
                                                      value="#{externalMemberForm.model.phoneNumber}"/>
-                                   
+
                                     </div>
 
 
@@ -104,8 +107,9 @@
 
                                     <div class="p-field p-col-12 p-md-6">
                                         <p:outputLabel for="prof" value="Profession" />
-                                        <p:selectOneMenu  value="#{externalMemberForm.model.professionValue}" 
-                                                          id="prof"  effect="fade" filter="true"  
+                                        <p:selectOneMenu  value="#{externalMemberForm.model.profession}" 
+                                                          converter="lookUpValueConverter"  id="prof"  
+                                                          effect="fade" filter="true"  
                                                           filterMatchMode="startsWith">
 
                                             <f:selectItems value="#{externalMemberForm.professions}" var="proffession"
@@ -177,14 +181,65 @@
                                 </div>
 
                             </p:fieldset>
+                            <p:fieldset id="paymentSection2" rendered="#{externalMemberForm.showPaymentSection }">
+
+                                <div class="ui-g p-grid" style="margin-bottom:20px">
+                                    <div class="p-col-12 " >
+
+                                        <h2 style="text-align: center; opacity: .6">Step 3: Membership fee</h2>
+
+                                        <p style="font-size: 18px;text-align: center">Congrats, you have successfully verified your email address. 
+                                            Now proceed to registration fee payment using any of the following methods. 
+                                        </p>
+                                    </div>
+                                    <div class="p-col-4 card" style="text-align: center" >
+                                        <h2 style="opacity: .7; font-weight: bolder" > Mobile money</h2>
+                                        <p style="font-size: 20px"> Aitel:<b>07038639960</b></p>
+                                        <p style="font-size: 20px"> MTN:<b>0788787978</b></p>
+                                        <p style="font-size: 20px">  Names:<b> Edith Kyakunzire</b> </p>
+                                    </div>
+                                    <div class="p-col-4 card" style="text-align: center" >
+                                         <h2 style="opacity: .7; font-weight: bolder" >  Bank details</h2>
+                                        <p style="font-size: 20px">  Account number: <b>01493659481305</b> </p>
+                                        <p style="font-size: 20px">  Account name: <b>Association of Ambulance Professionals Uganda</b> </p>
+                                        <p style="font-size: 20px">  Bank type: <b>DFCU</b> </p>
+                                        <p style="font-size: 20px">  Branch: <b>Ntinda</b> </p>
+                                        <p style="font-size: 20px">  Swift code: <b>DFCUUGKA</b> </p>
+                                    </div>
+                                    <div class="p-col-4 card" style="text-align: center" >
+                                          <h2 style="opacity: .7; font-weight: bolder" >Fees</h2>
+                                        <p style="font-size: 20px">  Registration fee: <b>20,000/=</b> </p>
+                                        <p style="font-size: 20px">  Annual subscription: <b>50,000/=</b> </p>
+                                        <p style="font-size: 20px">  Total payment: <b>70,000/=</b> 
+                                        </p>
+                                    </div>
+                                    <div class="p-col-12" style="text-align: center" >
+                                        <p style="font-size: 18px">
+                                            After successful payment, 
+                                            contact 0788788887 or <a href="mailto:info@aapug.org">info@aapug.org</a> for account activation </p>
+                                        <a href="Login.xhtml">
+                                            <input icon="fa fa-save" id="saveBtn4" type="button"
+                                                   style="background: #464DF2;
+                                                   color: #FFFFFF;
+                                                   border: 1px solid #464DF2;font-size: 15px; border-radius: 6px;width: 40%;height: 50%"
+                                                   value="Proceed to login"
+                                                   styleClass="successs-button" />
+
+                                        </a>
+                                    </div>
+                                </div>
 
 
-                            <p:fieldset id="paymentSection" rendered="#{externalMemberForm.showPaymentSection}">
+                            </p:fieldset>
+
+                            <p:fieldset id="paymentSection" rendered="#{false}">
 
                                 <div class="ui-g p-grid" style="margin-bottom:20px">
                                     <div class="p-field p-col-12 p-md-12" style="text-align: center;">
                                         <h2 style="text-align: center; opacity: .6">Step 3: Membership fee</h2>
-                                        <p>Congrats, you have successfully verified your email address. Now proceed to registration fee payment. After successful payment, check your email for login credentials</p>
+                                        <p>Congrats, you have successfully verified your email address. 
+                                            Now proceed to registration fee payment. After successful payment, 
+                                            check your email for login credentials</p>
                                         <a href="#{externalMemberForm.paymentUrl}">
                                             <input icon="fa fa-save" id="saveBtn4" type="button"
                                                    style="background: #464DF2;

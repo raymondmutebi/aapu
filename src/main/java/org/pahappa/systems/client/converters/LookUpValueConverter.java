@@ -33,6 +33,6 @@ public class LookUpValueConverter implements Converter {
 	public String getAsString(FacesContext arg0, UIComponent arg1, Object object) {
 		if (object == null || object instanceof String)
 			return null;
-		return ((Country) object).getId();
+		return ((LookUpValue) object).getId();
 	}
 }

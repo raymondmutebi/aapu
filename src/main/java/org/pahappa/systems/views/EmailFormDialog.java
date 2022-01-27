@@ -30,6 +30,7 @@ public class EmailFormDialog extends DialogForm<Communication> {
     private static final Logger LOGGER = Logger.getLogger(EmailFormDialog.class.getSimpleName());
     
     private CommunicationService currencyService;
+    private Boolean immediate = false;
     
     @PostConstruct
     public void init() {
@@ -49,13 +50,14 @@ public class EmailFormDialog extends DialogForm<Communication> {
             this.model.setScheduleDate(new Date());
              this.model.setScheduleTime(new Date());
         }
-        this.currencyService.saveInstance(super.model);
+        this.currencyService.saveInstance(super.model,immediate);
         
     }
     
     @Override
     public void resetModal() {
         super.resetModal();
+        this.immediate= null;
         super.model = new Communication();
     }
     
@@ -63,5 +65,23 @@ public class EmailFormDialog extends DialogForm<Communication> {
     public void setFormProperties() {
         super.setFormProperties();
     }
+
+    public CommunicationService getCurrencyService() {
+        return currencyService;
+    }
+
+    public void setCurrencyService(CommunicationService currencyService) {
+        this.currencyService = currencyService;
+    }
+
+    public Boolean getImmediate() {
+        return immediate;
+    }
+
+    public void setImmediate(Boolean immediate) {
+        this.immediate = immediate;
+    }
+    
+    
     
 }

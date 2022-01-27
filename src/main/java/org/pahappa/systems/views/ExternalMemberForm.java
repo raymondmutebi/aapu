@@ -2,6 +2,7 @@ package org.pahappa.systems.views;
 
 import com.googlecode.genericdao.search.Search;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -30,6 +31,7 @@ import org.pahappa.systems.core.utils.AppUtils;
 import org.pahappa.systems.core.utils.EmailService;
 import org.pahappa.systems.core.utils.UiUtils;
 import org.pahappa.systems.models.EmailTemplate;
+import org.pahappa.systems.models.LookUpValue;
 import org.pahappa.systems.models.Member;
 import org.pahappa.systems.models.ProfessionValue;
 import org.primefaces.PrimeFaces;
@@ -46,7 +48,7 @@ public class ExternalMemberForm extends WebFormView<Member, ExternalMemberForm, 
     private UserService userService;
     private SystemSettingService systemSettingService;
     private List<Gender> genders;
-    private List<ProfessionValue> professions;
+    private List<LookUpValue> professions;
     private List<Region> regions;
 
     private String customUiMessage;
@@ -64,7 +66,8 @@ public class ExternalMemberForm extends WebFormView<Member, ExternalMemberForm, 
         this.contactService = ApplicationContextProvider.getBean(MemberService.class);
         this.systemSettingService = ApplicationContextProvider.getBean(SystemSettingService.class);
         this.genders = Arrays.asList(Gender.values());
-        this.professions = Arrays.asList(ProfessionValue.values());
+           this.professions = new ArrayList<>(ApplicationContextProvider.getBean(SystemSettingService.class).getAppSetting().getProfessional().getLookUpValues());
+     
         this.regions = Arrays.asList(Region.values());
         super.model = new Member();
     }
@@ -274,11 +277,11 @@ public class ExternalMemberForm extends WebFormView<Member, ExternalMemberForm, 
         this.showSuccessMessageSection = showSuccessMessageSection;
     }
 
-    public List<ProfessionValue> getProfessions() {
+    public List<LookUpValue> getProfessions() {
         return professions;
     }
 
-    public void setProfessions(List<ProfessionValue> professions) {
+    public void setProfessions(List<LookUpValue> professions) {
         this.professions = professions;
     }
 

@@ -32,9 +32,10 @@ public class Subscription extends BaseEntity {
     private int duration = 365;
     private Payment payment;
     private Member member;
+    private String attachmentUrl;
     private SubscriptionStatus status = SubscriptionStatus.ACTIVE;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "member_id")
     public Member getMember() {
         return member;
@@ -54,8 +55,8 @@ public class Subscription extends BaseEntity {
         this.startDate = startDate;
     }
 
-    @OneToOne
-    @JoinColumn(name = "payment_id")
+    @OneToOne(optional = true)
+    @JoinColumn(name = "payment_id", nullable = true)
     public Payment getPayment() {
         return payment;
     }
@@ -92,6 +93,17 @@ public class Subscription extends BaseEntity {
     public void setStatus(SubscriptionStatus status) {
         this.status = status;
     }
+
+     @Column(name = "attachement_url", nullable = true)
+    public String getAttachmentUrl() {
+        return attachmentUrl;
+    }
+
+    public void setAttachmentUrl(String attachmentUrl) {
+        this.attachmentUrl = attachmentUrl;
+    }
+    
+    
 
     @Override
     public String toString() {

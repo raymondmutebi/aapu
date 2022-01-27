@@ -15,15 +15,21 @@
         <title>Compose broadcast email</title>
         <h:form id="emailFormDialog" styleClass="card ui-fluid" style="border-radius: 2px !important">
             <div class=" p-grid" >
-                
+                <div class="p-col-12 p-md-12 " >
+                    <h5>Send instant</h5>
+                    <p:selectBooleanCheckbox id="switch"  value="#{emailFormDialog.immediate}" >
+                      
+                    </p:selectBooleanCheckbox>
+
+                </div>
                 <div class="p-col-12 p-md-8 " >
                     <h5>Schedule date</h5>
                     <div class="ui-inputgroup">
 
-                        <p:datePicker value="#{emailFormDialog.model.scheduleDate}"  mindate="#{now}" showTime="false" />
+                        <p:datePicker value="#{emailFormDialog.model.scheduleDate}"   showTime="false" />
                     </div>
                 </div>
-                 <div class="p-col-12 p-md-4 " >
+                <div class="p-col-12 p-md-4 " >
                     <h5>Schedule time</h5>
                     <div class="ui-inputgroup">
 
@@ -42,13 +48,13 @@
                     <h5>Body</h5>
                     <div class="ui-inputgroup">
 
-                        <p:textEditor value="#{emailFormDialog.model.emailBody}" height="350" required="true" />
+                        <p:textEditor value="#{emailFormDialog.model.emailBody}" height="250" required="true" />
                     </div>
                 </div>
 
 
 
-                <div class="p-col-12 p-md-12" style="margin-top: 20px;">
+                <div class="p-col-12 p-md-12" style="margin-top: 10px;">
                     <div class="p-grid p-justify-end">
                         <div class="p-col-2">
                             <p:commandButton value="Cancel" icon="pi pi-times"

@@ -6,6 +6,7 @@
  */
 package org.pahappa.systems.views;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
@@ -14,6 +15,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import org.pahappa.systems.constants.Region;
 import org.pahappa.systems.core.services.MemberService;
+import org.pahappa.systems.core.services.SystemSettingService;
+import org.pahappa.systems.models.LookUpValue;
 import org.pahappa.systems.models.Member;
 import org.pahappa.systems.models.ProfessionValue;
 import org.pahappa.systems.security.HyperLinks;
@@ -35,7 +38,7 @@ public class MemberFormDialog extends DialogForm<Member> {
 
     private MemberService memberService;
     private List<Gender> genders;
-    private List<ProfessionValue> professions;
+    private List<LookUpValue> professions;
     private List<Region> regions;
 
     @PostConstruct
@@ -43,7 +46,7 @@ public class MemberFormDialog extends DialogForm<Member> {
 
         memberService = ApplicationContextProvider.getApplicationContext().getBean(MemberService.class);
         this.genders = Arrays.asList(Gender.values());
-        this.professions = Arrays.asList(ProfessionValue.values());
+        this.professions = new ArrayList<>(ApplicationContextProvider.getBean(SystemSettingService.class).getAppSetting().getProfessional().getLookUpValues());
         this.regions = Arrays.asList(Region.values());
     }
 
@@ -77,11 +80,11 @@ public class MemberFormDialog extends DialogForm<Member> {
         this.genders = genders;
     }
 
-    public List<ProfessionValue> getProfessions() {
+    public List<LookUpValue> getProfessions() {
         return professions;
     }
 
-    public void setProfessions(List<ProfessionValue> professions) {
+    public void setProfessions(List<LookUpValue> professions) {
         this.professions = professions;
     }
 

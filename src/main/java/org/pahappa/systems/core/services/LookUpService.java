@@ -18,6 +18,7 @@ public interface LookUpService extends GenericService<LookUpField>{
 	 * Adds a lookUpField to the database.
 	 * 
 	 * @param lookUpField
+     * @return 
 	 * @throws ValidationFailedException if the following attributes are blank:
 	 *                                   name, phoneNumber
 	 */
