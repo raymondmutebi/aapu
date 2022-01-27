@@ -14,7 +14,7 @@
         </f:facet>
         <title>AAPU Login</title>
         <link rel="shortcut icon" type="image/x-icon"
-              href="#{request.contextPath}/resources/images/favicon_ico.png" />
+              href="#{request.contextPath}/resources/images/favicon.png" />
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
     </h:head>
 
@@ -26,8 +26,8 @@
         <div class="login-wrapper" style="background-color:rgba(221, 221, 239, 0.9);">
             <h:form id="loginForm" class="login-panel" prependId="false" >
                 <!--                <div class="login-panel">-->
-                <h:link  styleClass="logo">
-                    <p:graphicImage name="images/uma-logo.png" style="height:170px;width: 170px" library="freya-layout" />
+                <h:link style="margin-bottom: 10px" styleClass="logo">
+                    <p:graphicImage name="images/uma-logo.png" style="height:200px;width: 200px" library="freya-layout" />
                 </h:link>
 
                 <p:inputText id="j_username"  required="true"
